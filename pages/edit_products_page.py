@@ -38,7 +38,7 @@ class EditProductsPage(BasePage):
 
     def check_product_is_exists(self, product_name, expected_value):
         with allure.step(f'Проверка наличия товара "{product_name}" в '
-                         f'каталоге. Ожидаемый результат: {expected_value}'):
+                         f'каталоге. Ожидаемое значение: {expected_value}'):
             AssertValues.compare_values(
                 "EDIT PRODUCTS: PRODUCT IS EXISTS",
                 self.product_is_exists(product_name),
