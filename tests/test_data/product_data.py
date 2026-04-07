@@ -35,5 +35,12 @@ MARGARITA_NAME = "Пицца Маргарита"
 MARGARITA_DESCRIPTION = "Состав: Традиционное тесто, моцарелла, томаты, итальянские травы, томатный соус. Вес: 550 г."
 MARGARITA_CATEGORY = "Пицца"
 MARGARITA_PRICE_INT = 700
-MARGARITA_PRICE_STR = "700 ₽"
+MARGARITA_PRICE_STR = "700.00 ₽"
 MARGARITA_IMAGE_URL = "https://clck.ru/3Rystj"
+
+NEW_MARGARITA_NAME = "Маргарита Пицца"
+NEW_MARGARITA_DESCRIPTION = "Это Маргарита Пицца"
+NEW_MARGARITA_CATEGORY = "Пицца"
+NEW_MARGARITA_PRICE_INT = 1000
+NEW_MARGARITA_PRICE_STR = "1000.00 ₽"
+NEW_MARGARITA_IMAGE_URL = "https://clck.ru/3RytXr"
