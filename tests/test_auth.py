@@ -30,7 +30,7 @@ class TestAuth:
     @allure.story('Проверка авторизации без логина')
     @pytest.mark.parametrize(
         'password',
-        auth_data.PASSWORD_LIST,
+        [auth_data.USER1_PASSWORD, auth_data.ADMIN_PASSWORD ],
         ids=auth_data.USER1_ADMIN_IDS
     )
     def test_login_without_login(self, password, log_out):
@@ -43,7 +43,7 @@ class TestAuth:
     @allure.story('Проверка авторизации без пароля')
     @pytest.mark.parametrize(
         'login',
-        auth_data.LOGIN_LIST,
+        [auth_data.USER1_LOGIN, auth_data.ADMIN_LOGIN],
         ids=auth_data.USER1_ADMIN_IDS
     )
     def test_login_without_password(self, login, log_out):
@@ -56,7 +56,7 @@ class TestAuth:
     @allure.story('Проверка авторизации с некорректным логином')
     @pytest.mark.parametrize(
         'incorrect_login, password',
-        auth_data.INCORRECT_LOGIN,
+        auth_data.INCORRECT_LOGINS_LIST,
         ids=auth_data.USER1_ADMIN_IDS
     )
     def test_login_with_incorrect_login(self, incorrect_login, password, log_out):
@@ -70,7 +70,7 @@ class TestAuth:
     @allure.story('Проверка авторизации с некорректным паролем')
     @pytest.mark.parametrize(
         'login, incorrect_password',
-        auth_data.INCORRECT_PASSWORD,
+        auth_data.INCORRECT_PASSWORDS_LIST,
         ids=auth_data.USER1_ADMIN_IDS
     )
     def test_login_with_incorrect_password(self, login, incorrect_password, log_out):

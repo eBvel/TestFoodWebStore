@@ -13,13 +13,13 @@ class AuthPage(BasePage):
         return self.find_visible_element(locators.HEADER, 3).text
 
     def enter_login(self, login):
-        with allure.step(f'Ввод логина: "{login}".'):
+        with allure.step(f'Ввод логина: "{login}"'):
             self.find_visible_element(locators.LOGIN).send_keys(login)
 
     def enter_password(self, password):
-        with allure.step(f'Ввод пароля: "{password}".'):
+        with allure.step(f'Ввод пароля: "{password}"'):
             self.find_visible_element(locators.PASSWORD).send_keys(password)
 
-    @allure.step('Нажатие кнопки "Войти".')
+    @allure.step('Нажатие кнопки "Войти"')
     def click_login_button(self):
         self.find_clickable_element(locators.LOGIN_BUTTON).click()
