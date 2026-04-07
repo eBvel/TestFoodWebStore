@@ -1,6 +1,5 @@
 import allure
 from selenium.webdriver import ActionChains
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -20,7 +19,9 @@ class BasePage:
             self.driver.get(self.url)
 
     def find(self, condition, timeout):
-        return wait(self.driver, timeout).until(condition)
+        with allure.step(f'Поиск элемента страницы "{self.url}". '
+                         f'Локатор: "{condition}"'):
+            return wait(self.driver, timeout).until(condition)
 
     def find_visible_element(self, locator, timeout=10):
         return self.find(EC.visibility_of_element_located(locator), timeout)
@@ -30,7 +31,7 @@ class BasePage:
         ActionChains(self.driver).move_to_element(element).perform()
         return element
 
-    def find_any(self, locator, timeout=10):
+    def find_presence_element(self, locator, timeout=10):
         return self.find(EC.presence_of_element_located(locator), timeout)
 
     def find_elements(self, locator, timeout=10):
@@ -60,15 +61,21 @@ class BasePage:
         return self.driver.current_url
 
     def check_header(self, expected_title):
-        AssertValues.compare_values(
-            f"{self.__class__.__name__} HEADER",
-            self.header,
-            expected_title
-        )
+        with allure.step(f'Проверка заголовка страницы '
+                         f'"{self.__class__.__name__}". Ожидаемое значение: '
+                         f'"{expected_title}"'):
+            AssertValues.compare_values(
+                f"{self.__class__.__name__} HEADER",
+                self.header,
+                expected_title
+            )
 
     def check_url(self):
-        AssertValues.compare_values(
-            f"{self.__class__.__name__} URL",
-            self.get_current_url(),
-            self.url
-        )
+        with allure.step(f'Проверка URL текущей страницы '
+                         f'"{self.__class__.__name__}". Ожидаемое значение: '
+                         f'"{self.url}"'):
+            AssertValues.compare_values(
+                f"{self.__class__.__name__} URL",
+                self.get_current_url(),
+                self.url
+            )

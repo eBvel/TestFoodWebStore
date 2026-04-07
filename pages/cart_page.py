@@ -23,7 +23,7 @@ class CartPage(BasePage):
 
     @allure.step('Запрос, пустая корзина или нет.')
     def is_empty(self):
-        return self.find_any(locators.CART_IS_EMPTY_TEXT).is_displayed()
+        return self.find_presence_element(locators.CART_IS_EMPTY_TEXT).is_displayed()
 
     @allure.step('Запрос, отображается поле "итоговая стоимость" '
                  'в корзине или нет.')
@@ -32,7 +32,7 @@ class CartPage(BasePage):
 
     @allure.step('Запрос, отображается кнопка "Оформить заказ" или нет.')
     def place_an_order_button_is_display(self):
-        return self.find_any(locators.PLACE_AN_ORDER_BUTTON).is_displayed()
+        return self.find_presence_element(locators.PLACE_AN_ORDER_BUTTON).is_displayed()
 
     def get_product_price(self, product_name):
         with allure.step(f'Запрос "цены" товара "{product_name}" в корзине.'):
