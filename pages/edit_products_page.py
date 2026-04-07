@@ -15,6 +15,34 @@ class EditProductsPage(BasePage):
     def header(self):
         return self.find_visible_element(locators.HEADER).text
 
+    def get_product_description(self, product_name):
+        with allure.step(f'Запрос значения поля "Описания" '
+                         f'у карточки товара "{product_name}"'):
+            return (
+                self
+                .find_visible_element(locators.PRODUCT_DESCRIPTION(product_name))
+                .text
+            )
+
+    def get_product_price(self, product_name):
+        with allure.step(f'Запрос значения поля "Цена" '
+                         f'у карточки товара "{product_name}"'):
+            return (
+                self
+                .find_visible_element(locators.PRODUCT_PRICE(product_name))
+                .text
+                .split(': ')[1]
+            )
+
+    def get_product_image_url(self, product_name):
+        with allure.step(f'Запрос значения поля "URL картинки" '
+                         f'у карточки товара "{product_name}"'):
+            return (
+                self
+                .find_visible_element(locators.PRODUCT_IMAGE_URL(product_name))
+                .get_attribute('src')
+            )
+
     @allure.step('Нажатие кнопки "Добавить товар"')
     def click_create_product_button(self):
         self.find_clickable_element(locators.CREATE_PRODUCT_BUTTON).click()
@@ -42,5 +70,32 @@ class EditProductsPage(BasePage):
             AssertValues.compare_values(
                 "EDIT PRODUCTS: PRODUCT IS EXISTS",
                 self.product_is_exists(product_name),
+                expected_value
+            )
+
+    def check_product_description(self, product_name, expected_value):
+        with allure.step(f'Проверка поля "Описания" у карточки товара. '
+                         f'Ожидаемое значение: "{expected_value}"'):
+            AssertValues.compare_values(
+                '',
+                self.get_product_description(product_name),
+                expected_value
+            )
+
+    def check_price_of_product(self, product_name, expected_value):
+        with allure.step(f'Проверка поля "Цена" у карточки товара. '
+                         f'Ожидаемое значение: "{expected_value}"'):
+            AssertValues.compare_values(
+                '',
+                self.get_product_price(product_name),
+                expected_value
+            )
+
+    def check_image_source_of_product(self, product_name, expected_value):
+        with allure.step(f'Проверка поля "URL картинки" у карточки товара. '
+                         f'Ожидаемое значение: "{expected_value}"'):
+            AssertValues.compare_values(
+                '',
+                self.get_product_image_url(product_name),
                 expected_value
             )

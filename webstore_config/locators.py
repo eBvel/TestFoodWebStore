@@ -106,6 +106,12 @@ class EditProductsLocators:
         (By.XPATH, f"//div[contains(text(), '{product_name}')]/../../../div[4]/button")
     PRODUCT_IS_EXISTS = lambda product_name: \
         (By.XPATH, f"//div[contains(text(), '{product_name}')]")
+    PRODUCT_DESCRIPTION = lambda product_name: \
+        (By.XPATH, f"//div[contains(text(), '{product_name}')]/../p")
+    PRODUCT_PRICE = lambda product_name: \
+        (By.XPATH, f"//div[contains(text(), '{product_name}')]/../../div[3]/div")
+    PRODUCT_IMAGE_URL = lambda product_name: \
+        (By.XPATH, f"//div[contains(text(), '{product_name}')]/../../../div[1]/img")
 
 
 class CreateProductLocators:

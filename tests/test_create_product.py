@@ -33,7 +33,9 @@ class TestCreateProductPage:
 
         #Если товар, который добавляем, уже существует - удаляем его
         if self.edit_products.product_is_exists(product_data.PEPPERONI_NAME):
-            self.edit_products.click_delete_product_button(product_data.PEPPERONI_NAME)
+            self.edit_products.click_delete_product_button(
+                product_data.PEPPERONI_NAME
+            )
 
         self.create_product.open()
         self._filling_product_data(
@@ -136,7 +138,9 @@ class TestCreateProductPage:
         self.edit_products.open()
 
         if self.edit_products.product_is_exists(product_data.MARGARITA_NAME):
-            self.edit_products.click_delete_product_button(product_data.MARGARITA_NAME)
+            self.edit_products.click_delete_product_button(
+                product_data.MARGARITA_NAME
+            )
 
         self.create_product.open()
         self._filling_product_data(
