@@ -9,6 +9,8 @@ from webdriver_manager.firefox import GeckoDriverManager as FirefoxDriverManager
 
 from pages.auth_page import AuthPage
 from pages.navigation_bar_page import NavigationBarPage
+from pages.base_page import BasePage
+from tests.test_data import headers, auth_data
 
 
 @pytest.fixture(scope='class', autouse=True)
@@ -41,32 +43,33 @@ def log_out(request):
 
 
 @pytest.fixture
-def auth_by_user(request):
-    auth_page = AuthPage(request.cls.driver)
-    try:
-        auth_page.open()
-        if auth_page.header == 'Авторизация':
-            auth_page.enter_login('покупатель')
-            auth_page.enter_password('покупатель')
-            auth_page.click_login_button()
-            time.sleep(0.3)
-    except Exception:
-        pass
-    yield auth_page
+def auth_by_user(request, auth):
+    yield auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
 
 @pytest.fixture
-def auth_by_admin(request):
-    auth_page = AuthPage(request.cls.driver)
-    try:
-        auth_page.open()
-        if auth_page.header == 'Авторизация':
-            auth_page.enter_login('admin')
-            auth_page.enter_password('admin')
+def auth_by_admin(request, auth):
+    yield auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+
+@pytest.fixture
+def auth(request, is_auth):
+    def _auth(login, password):
+        auth_page = AuthPage(request.cls.driver)
+
+        if not is_auth:
+            auth_page.open()
+            auth_page.enter_login(login)
+            auth_page.enter_password(password)
             auth_page.click_login_button()
             time.sleep(0.3)
-    except Exception:
-        pass
-    yield auth_page
+
+    yield _auth
+
+@pytest.fixture
+def is_auth(request):
+    base_page = BasePage(request.cls.driver)
+    header = base_page.header
+
+    return header in headers.main
 
 
 # @pytest.fixture(autouse=True)
