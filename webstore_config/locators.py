@@ -5,6 +5,7 @@ class BaseLocators:
     NAVIGATION_BAR = (By.XPATH, "//button[@aria-label='Toggle navigation']")
     HEADER_BUTTON = (By.XPATH, "//a[@class='router-link-active router-link-exact-active navbar-brand']")
     CART_BUTTON = (By.XPATH, "//button[@class='btn btn-light btn-sm d-flex position-relative']")
+    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
 
 
 class AuthLocators:
@@ -15,7 +16,6 @@ class AuthLocators:
 
 
 class CatalogLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     PRODUCT_TITLES = (By.XPATH, "//div[@class='card-title fs-4 text-success']")
     COUNT_OF_PRODUCT = lambda product_name: \
         (By.XPATH, f"//div[contains(text(), '{product_name}')]/../../div[@class='m-auto']/div/input")
@@ -45,7 +45,6 @@ class NavigationBarLocators:
 
 
 class CartLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     CART_IS_EMPTY_TEXT = (By.XPATH, "//div[@class='mx-auto my-2 fs-5 text-center']")
     TOTAL_PRICE = (By.XPATH, "//div[@class='mx-2 my-4 fs-5 text-end']")
     PLACE_AN_ORDER_BUTTON = (By.XPATH, "//button[@class='btn btn-success text-light text-end px-5']")
@@ -62,7 +61,6 @@ class CartLocators:
 
 
 class UserDataLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     FIRST_NAME_FIELD = (By.XPATH, "//input[@placeholder='Имя']")
     SECOND_NAME_FIELD = (By.XPATH, "//input[@placeholder='Фамилия']")
     MIDDLE_NAME_FIELD = (By.XPATH, "//input[@placeholder='Отчество']")
@@ -74,7 +72,6 @@ class UserDataLocators:
 
 
 class OrderOverviewLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     PRODUCTS_IN_ORDER = (By.XPATH, "//div[@class='card-body mx-2 d-flex flex-column justify-content-between']")
     USER_DATA = (By.XPATH, "//div[@class='fs-6 ms-3'][1]")
     DELIVERY_ADDRESS = (By.XPATH, "//div[@class='fs-6 ms-3'][2]/div[1]")
@@ -92,13 +89,11 @@ class OrderOverviewLocators:
 
 
 class CompleteLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     COMPLETE_MESSAGE = (By.XPATH, "//div[@class='mx-auto mt-1 fs-4 fw-bold text-center']")
     BACK_TO_CATALOG_BUTTON = (By.XPATH, "//button[@class='btn btn-success text-light text-end px-5 mx-auto mt-5']")
 
 
 class EditProductsLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     CREATE_PRODUCT_BUTTON = (By.XPATH, "//button[@class='btn btn-success text-light text-end px-5']")
     EDIT_PRODUCT_BUTTON = lambda product_name: \
         (By.XPATH, f"//div[contains(text(), '{product_name}')]/../../../div[3]/a/button")
@@ -115,7 +110,6 @@ class EditProductsLocators:
 
 
 class CreateProductLocators:
-    HEADER = (By.XPATH, "//div[@class='navbar-brand']")
     ID_FIELD = (By.XPATH, "//input[@placeholder='id']")
     NAME_FIELD = (By.XPATH, "//input[@placeholder='Наименование']")
     DESCRIPTION_FIELD = (By.XPATH, "//input[@placeholder='Описание']")

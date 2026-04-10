@@ -40,6 +40,15 @@ class BasePage:
             timeout
         )
 
+    @property
+    def header(self):
+        with allure.step(f'Запрос заголовка страницы: '
+                         f'"{self.__class__.__name__}"'):
+            try:
+                return self.find_visible_element(locators.HEADER, 3).text
+            except Exception:
+                return None
+
     @allure.step("Нажатие кнопки навигации (меню).")
     def click_navigation_bar(self):
         self.find_clickable_element(locators.NAVIGATION_BAR).click()
@@ -54,7 +63,7 @@ class BasePage:
 
     @allure.step("Запрос текста заголовка.")
     def get_header_text(self):
-        return self.find_visible_element(locators.HEADER_BUTTON, 5).text
+        return self.find_visible_element(locators.HEADER_BUTTON, 3).text
 
     @allure.step("Запрос текущего URL страницы.")
     def get_current_url(self):
