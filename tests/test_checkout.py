@@ -8,17 +8,18 @@ from pages.checkout_page import CheckoutPage
 from tests.test_data import headers, product_data, checkout_data
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestUserDataPage:
-    def setup_method(self):
-        self.catalog = CatalogPage(self.driver)
-        self.cart = CartPage(self.driver)
-        self.checkout = CheckoutPage(self.driver)
-        self.overview = OrderOverviewPage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.catalog = CatalogPage(cls.driver)
+        cls.cart = CartPage(cls.driver)
+        cls.checkout = CheckoutPage(cls.driver)
+        cls.overview = OrderOverviewPage(cls.driver)
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
-    def test_filling_fields_with_valid_data(self, auth_by_user):
+    def test_filling_fields_with_valid_data(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -36,7 +37,7 @@ class TestUserDataPage:
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с пустыми полями')
-    def test_place_an_order_with_empty_fields(self, auth_by_user):
+    def test_place_an_order_with_empty_fields(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -52,7 +53,7 @@ class TestUserDataPage:
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Фамилия"')
     @pytest.mark.parametrize('value', checkout_data.NAMES_DATASET)
-    def test_validation_of_second_name(self, auth_by_user, value):
+    def test_validation_of_second_name(self, auth_by_user1, value):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -65,7 +66,7 @@ class TestUserDataPage:
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Имя"')
     @pytest.mark.parametrize('value', checkout_data.NAMES_DATASET)
-    def test_validation_of_first_name(self, auth_by_user, value):
+    def test_validation_of_first_name(self, auth_by_user1, value):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -78,7 +79,7 @@ class TestUserDataPage:
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Номер карты"')
     @pytest.mark.parametrize('value', checkout_data.CART_DATASET)
-    def test_validation_of_cart_number(self, auth_by_user, value):
+    def test_validation_of_cart_number(self, auth_by_user1, value):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -90,7 +91,7 @@ class TestUserDataPage:
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода в каталог по кнопке "Обратно в магазин"')
-    def test_navigate_back_to_catalog(self, auth_by_user):
+    def test_navigate_back_to_catalog(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 

@@ -1,5 +1,4 @@
 import allure
-import pytest
 
 from pages.complete_page import CompletePage
 from tests.test_data import headers, product_data, checkout_data
@@ -9,14 +8,15 @@ from pages.order_overview_page import OrderOverviewPage
 from pages.checkout_page import CheckoutPage
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestCompletePage:
-    def setup_method(self):
-        self.catalog = CatalogPage(self.driver)
-        self.cart = CartPage(self.driver)
-        self.user_data = CheckoutPage(self.driver)
-        self.overview = OrderOverviewPage(self.driver)
-        self.complete = CompletePage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.catalog = CatalogPage(cls.driver)
+        cls.cart = CartPage(cls.driver)
+        cls.user_data = CheckoutPage(cls.driver)
+        cls.overview = OrderOverviewPage(cls.driver)
+        cls.complete = CompletePage(cls.driver)
 
     def _filling_user_data(self):
         self.user_data.enter_first_name(checkout_data.FIRST_NAME)
@@ -27,7 +27,7 @@ class TestCompletePage:
 
     @allure.feature('COMPLETE ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
-    def test_complete_order(self, auth_by_user):
+    def test_complete_order(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 

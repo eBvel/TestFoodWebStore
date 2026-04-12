@@ -1,16 +1,16 @@
 import allure
-import pytest
 
 from pages.create_product_page import CreateProductPage
 from tests.test_data import headers, product_data
 from pages.edit_products_page import EditProductsPage
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestCreateProductPage:
-    def setup_method(self):
-        self.edit_products = EditProductsPage(self.driver)
-        self.create_product = CreateProductPage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.edit_products = EditProductsPage(cls.driver)
+        cls.create_product = CreateProductPage(cls.driver)
 
     def _filling_product_data(
             self,

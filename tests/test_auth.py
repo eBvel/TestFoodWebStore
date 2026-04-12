@@ -6,11 +6,12 @@ from pages.catalog_page import CatalogPage
 from tests.test_data import auth_data, headers
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestAuth:
-    def setup_method(self):
-        self.auth_page = AuthPage(self.driver)
-        self.catalog = CatalogPage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.auth_page = AuthPage(cls.driver)
+        cls.catalog = CatalogPage(cls.driver)
 
     @allure.feature('VALID LOG IN')
     @allure.story('Проверка авторизации с корректными данными')

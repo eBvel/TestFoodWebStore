@@ -1,4 +1,3 @@
-import pytest
 import allure
 
 from pages.cart_page import CartPage
@@ -7,24 +6,24 @@ from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data import headers
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestNavigation:
 
-    def setup_method(self):
-        self.navigation_bar = NavigationBarPage(self.driver)
-        self.catalog = CatalogPage(self.driver)
-        self.cart = CartPage(self.driver)
+    @classmethod
+    def setup_class(cls):
+        cls.navigation_bar = NavigationBarPage(cls.driver)
+        cls.catalog = CatalogPage(cls.driver)
+        cls.cart = CartPage(cls.driver)
 
     @allure.feature('NAVIGATION MENU')
     @allure.story('Проверка открытия меню навигации по кнопке "Сэндвич"')
-    def test_open_navigation_menu(self, auth_by_user):
+    def test_open_navigation_menu(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.check_header(headers.NAVIGATE_PAGE)
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка перехода по пункту меню "Корзинка"')
-    def test_navigate_to_cart(self, auth_by_user):
+    def test_navigate_to_cart(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_cart_button()
@@ -33,7 +32,7 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка перехода по пункту меню "Магазин"')
-    def test_navigate_to_catalog(self, auth_by_user):
+    def test_navigate_to_catalog(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_catalog_button()
@@ -42,9 +41,9 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка выхода из учетной записи покупателя')
-    def test_log_out(self, auth_by_user):
+    def test_log_out(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_log_out()
-        auth_by_user.check_url()
-        auth_by_user.check_header(headers.AUTH_PAGE)
+        auth_by_user1.check_url()
+        auth_by_user1.check_header(headers.AUTH_PAGE)

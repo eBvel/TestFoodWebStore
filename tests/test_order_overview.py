@@ -1,5 +1,4 @@
 import allure
-import pytest
 
 from pages.complete_page import CompletePage
 from tests.test_data import headers, product_data, checkout_data
@@ -9,14 +8,15 @@ from pages.order_overview_page import OrderOverviewPage
 from pages.checkout_page import CheckoutPage
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestOverViewPage:
-    def setup_method(self):
-        self.catalog = CatalogPage(self.driver)
-        self.cart = CartPage(self.driver)
-        self.user_data = CheckoutPage(self.driver)
-        self.overview = OrderOverviewPage(self.driver)
-        self.complete = CompletePage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.catalog = CatalogPage(cls.driver)
+        cls.cart = CartPage(cls.driver)
+        cls.user_data = CheckoutPage(cls.driver)
+        cls.overview = OrderOverviewPage(cls.driver)
+        cls.complete = CompletePage(cls.driver)
 
     def _filling_user_data(self):
         self.user_data.enter_first_name(checkout_data.FIRST_NAME)
@@ -27,7 +27,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Имя"')
-    def test_first_name_matching(self, auth_by_user):
+    def test_first_name_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -41,7 +41,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Фамилия"')
-    def test_second_name_matching(self, auth_by_user):
+    def test_second_name_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -55,7 +55,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Отчество"')
-    def test_middle_name_matching(self, auth_by_user):
+    def test_middle_name_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -69,11 +69,11 @@ class TestOverViewPage:
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия списка продуктов')
-    def test_products_list_matching(self, auth_by_user):
+    def test_products_list_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_all_products_counter()
         self.catalog.add_product(product_data.NAME)
-        self.catalog.add_product(product_data.s_NAME)
+        self.catalog.add_product(product_data.SANDWICH_NAME)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -82,16 +82,16 @@ class TestOverViewPage:
         self.user_data.click_place_an_order_button()
 
         self.overview.check_products_list(
-            [product_data.NAME, product_data.s_NAME]
+            [product_data.NAME, product_data.SANDWICH_NAME]
         )
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия количества товаров')
-    def test_count_of_product_matching(self, auth_by_user):
+    def test_count_of_product_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.NAME, 5)
-        # self.catalog.add_product(product_data.s_NAME, 3)
+        self.catalog.add_product(product_data.SANDWICH_NAME, 5)
+        self.catalog.add_product(product_data.NUGGETS_NAME, 3)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -99,11 +99,12 @@ class TestOverViewPage:
         self._filling_user_data()
         self.user_data.click_place_an_order_button()
 
-        self.overview.check_products_count(product_data.NAME, 5)
+        self.overview.check_products_count(product_data.SANDWICH_NAME, 5)
+        self.overview.check_products_count(product_data.NUGGETS_NAME, 3)
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия цены товаров')
-    def test_price_of_product_matching(self, auth_by_user):
+    def test_price_of_product_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_all_products_counter()
         self.catalog.add_product(product_data.NAME)
@@ -118,7 +119,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия адреса доставки')
-    def test_delivery_address_matching(self, auth_by_user):
+    def test_delivery_address_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -132,7 +133,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия номера карты')
-    def test_cart_number_matching(self, auth_by_user):
+    def test_cart_number_matching(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
 
@@ -146,7 +147,7 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итогового количества товаров')
-    def test_total_count(self, auth_by_user):
+    def test_total_count(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_all_products_counter()
         self.catalog.add_product(product_data.NAME)
@@ -161,7 +162,7 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итоговой стоимости заказа')
-    def test_total_cost(self, auth_by_user):
+    def test_total_cost(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_all_products_counter()
         self.catalog.add_product(product_data.NAME)

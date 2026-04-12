@@ -5,20 +5,21 @@ from pages.catalog_page import CatalogPage
 from tests.test_data import product_data
 
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
 class TestCatalogPage:
-    def setup_method(self):
-        self.catalog = CatalogPage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.catalog = CatalogPage(cls.driver)
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Поиск товара по "Имени" в каталоге')
-    def test_search_product(self, auth_by_user):
+    def test_search_product(self, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_to_catalog(product_data.NAME)
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "Описание" у карточки товара')
-    def test_presence_description_of_product(self, auth_by_user):
+    def test_presence_description_of_product(self, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_description(
             product_data.NAME,
@@ -27,7 +28,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "Цена" у карточки товара')
-    def test_presence_price_of_product(self, auth_by_user):
+    def test_presence_price_of_product(self, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_price(
             product_data.NAME,
@@ -36,7 +37,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "URL картинки" у карточки товара')
-    def test_presence_image_of_product(self, auth_by_user):
+    def test_presence_image_of_product(self, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_image(
             product_data.NAME,
@@ -45,7 +46,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка добавления товара в корзину по кнопке "+"')
-    def test_add_product_to_cart(self, auth_by_user):
+    def test_add_product_to_cart(self, auth_by_user1):
         self.catalog.open()
         before_add_count = self.catalog.get_product_count(product_data.NAME)
 
@@ -65,7 +66,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка удаления товара из корзины по кнопке "-"')
-    def test_remove_product_from_cart(self, auth_by_user):
+    def test_remove_product_from_cart(self, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(product_data.NAME)
         before_remove_count = self.catalog.get_product_count(
@@ -83,7 +84,7 @@ class TestCatalogPage:
     @pytest.mark.parametrize("add_count, remove_count", [(2, 1), (5, 3)])
     def test_step_of_count_changes(
             self,
-            auth_by_user,
+            auth_by_user1,
             add_count,
             remove_count
     ):
@@ -108,7 +109,7 @@ class TestCatalogPage:
 
     @allure.feature('CART COUNTER')
     @allure.story('Проверка счетчика товаров в корзине')
-    def test_cart_counter_changes(self, auth_by_user):
+    def test_cart_counter_changes(self, auth_by_user1):
         self.catalog.open()
         current_cart_counter_value = self.catalog.get_cart_counter_value()
 
@@ -127,7 +128,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка нижней границы (0) счетчика товаров')
-    def test_lower_limit_of_counter(self, auth_by_user):
+    def test_lower_limit_of_counter(self, auth_by_user1):
         self.catalog.open()
         self.catalog.clear_product_counter(product_data.NAME)
 
@@ -139,7 +140,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка верхней границы (100) счетчика товаров')
-    def test_max_limit_of_counter(self, auth_by_user):
+    def test_max_limit_of_counter(self, auth_by_user1):
         self.catalog.open()
         # Проверяем, что текущее кол-во товара меньше или равно "100".
         # Если значение выше, то получим исключение.

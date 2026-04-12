@@ -1,6 +1,5 @@
 import time
 import allure
-import pytest
 
 from pages.create_product_page import CreateProductPage
 from pages.navigation_bar_page import NavigationBarPage
@@ -8,13 +7,15 @@ from pages.update_product_page import UpdateProductPage
 from tests.test_data import headers, product_data
 from pages.edit_products_page import EditProductsPage
 
-@pytest.mark.parametrize('driver', ['CHROME', 'FIREFOX'], indirect=True)
+
 class TestEditProductsPage:
-    def setup_method(self):
-        self.edit_products = EditProductsPage(self.driver)
-        self.navigation_bar = NavigationBarPage(self.driver)
-        self.create_product = CreateProductPage(self.driver)
-        self.update_product = UpdateProductPage(self.driver)
+
+    @classmethod
+    def setup_class(cls):
+        cls.edit_products = EditProductsPage(cls.driver)
+        cls.navigation_bar = NavigationBarPage(cls.driver)
+        cls.create_product = CreateProductPage(cls.driver)
+        cls.update_product = UpdateProductPage(cls.driver)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу "Редактировать товары"')
@@ -81,5 +82,3 @@ class TestEditProductsPage:
             product_data.MARGARITA_NAME,
             False
         )
-
-
