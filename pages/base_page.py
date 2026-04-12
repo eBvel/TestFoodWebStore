@@ -1,5 +1,4 @@
 import allure
-from selenium.webdriver import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -28,7 +27,7 @@ class BasePage:
 
     def find_clickable_element(self, locator, timeout=10):
         element = self.find(EC.element_to_be_clickable(locator), timeout)
-        ActionChains(self.driver).move_to_element(element).perform()
+        self.scroll_to_element(element)
         return element
 
     def find_presence_element(self, locator, timeout=10):
@@ -38,6 +37,12 @@ class BasePage:
         return self.find(
             EC.visibility_of_all_elements_located(locator),
             timeout
+        )
+
+    def scroll_to_element(self, element):
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block:'center', inline:'center'})",
+            element
         )
 
     @property
