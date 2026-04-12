@@ -10,11 +10,6 @@ class OrderOverviewPage(BasePage):
         super().__init__(driver)
         self.url =Links.ORDER_OVERVIEW_PAGE_URL
 
-    @property
-    @allure.step("Запрос заголовка страницы проверки заказа")
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     def get_products_title(self):
         return [product.text for product in self.find_elements(locators.PRODUCTS)]
 

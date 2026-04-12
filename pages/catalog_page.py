@@ -10,11 +10,6 @@ class CatalogPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
 
-    @property
-    @allure.step('Запрос текста заголовка страницы "Каталог".')
-    def header(self):
-        return self.find_visible_element(locators.HEADER, 5).text
-
     @allure.step('Запрос списка "Наивенования" товаров.')
     def get_product_titles(self):
         return [

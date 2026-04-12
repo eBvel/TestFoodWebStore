@@ -10,11 +10,6 @@ class CheckoutPage(BasePage):
         super().__init__(driver)
         self.url = Links.PLACE_AN_ORDER_PAGE_URL
 
-    @property
-    @allure.step('Запрос заголовка страницы "Оформление заказа"')
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     def enter_first_name(self, first_name):
         with allure.step(f'Заполнение имени значением "{first_name}"'):
             self.find_visible_element(locators.FIRST_NAME_FIELD).send_keys(first_name)

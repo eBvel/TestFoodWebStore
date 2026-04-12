@@ -12,11 +12,6 @@ class CartPage(BasePage):
         super().__init__(driver)
         self.url = Links.CART_PAGE_URL
 
-    @property
-    @allure.step('Запрос заголовка страницы "Корзинка"')
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     @allure.step('Запрос текста "сообщения" о пустой корзине')
     def get_cart_is_empty_text(self):
         return self.find_visible_element(locators.CART_IS_EMPTY_TEXT).text

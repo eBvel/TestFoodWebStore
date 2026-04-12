@@ -18,11 +18,6 @@ class CreateProductPage(BasePage):
             'image_url': locators.IMAGE_SOURCE_FIELD
         }
 
-    @property
-    @allure.step('Запрос заголовка страницы создания нового товара')
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     def __fill_in_field(self, field_name, value, locator):
         with allure.step(f'Ввод значения "{value}" в поле "{field_name}"'):
             self.find_visible_element(locator).send_keys(value)

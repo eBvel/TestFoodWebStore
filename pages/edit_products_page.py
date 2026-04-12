@@ -10,11 +10,6 @@ class EditProductsPage(BasePage):
         super().__init__(driver)
         self.url = Links.EDIT_PRODUCTS_PAGE_URL
 
-    @property
-    @allure.step('Запрос заголовка страницы "Редактирование товаров"')
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     def get_product_description(self, product_name):
         with allure.step(f'Запрос значения поля "Описания" '
                          f'у карточки товара "{product_name}"'):

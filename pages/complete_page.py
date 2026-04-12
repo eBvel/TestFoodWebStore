@@ -11,11 +11,6 @@ class CompletePage(BasePage):
         super().__init__(driver)
         self.url = Links.COMPLETE_PAGE_URL
 
-    @property
-    @allure.step("Запрос заголовка страницы завершения заказа")
-    def header(self):
-        return self.find_visible_element(locators.HEADER).text
-
     @allure.step("Запрос сообщения об успешно созданном заказе")
     def get_complete_message(self):
         return self.find_visible_element(locators.COMPLETE_MESSAGE).text
