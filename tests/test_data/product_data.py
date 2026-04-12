@@ -14,6 +14,7 @@ SANDWICH_IMAGE_URL = "https://clck.ru/3RxCex"
 
 CAVIAR_NAME = "Черная икра Белуги"
 CAVIAR_DESCRIPTION = "Натуральная черная икра Вес: 500 г."
+CAVIAR_CATEGORY = "Икра"
 CAVIAR_PRICE_INT = 100000.00
 CAVIAR_PRICE_STR = "100000.00 ₽"
 CAVIAR_IMAGE_URL = "https://clck.ru/3RxEqM"

@@ -8,3 +8,14 @@ COMPLETE_PAGE = "Оформление заказа: Заказ успешно с
 EDIT_PRODUCTS_PAGE = "Редактирование: Товары"
 CREATE_PRODUCT_PAGE = "Редактирование: Товар"
 UPDATE_PRODUCT_PAGE = "Редактирование: Товар"
+
+main = [
+    CATALOG_PAGE,
+    CART_PAGE,
+    USER_DATA_PAGE,
+    ORDER_OVERVIEW_PAGE,
+    COMPLETE_PAGE,
+    EDIT_PRODUCTS_PAGE,
+    CREATE_PRODUCT_PAGE,
+    UPDATE_PRODUCT_PAGE
+]
