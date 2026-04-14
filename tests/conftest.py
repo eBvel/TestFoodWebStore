@@ -1,4 +1,3 @@
-import time
 import pytest
 
 from selenium import webdriver
@@ -8,11 +7,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager as FirefoxDriverManager
 
 from pages.auth_page import AuthPage
-from pages.create_product_page import CreateProductPage
-from pages.edit_products_page import EditProductsPage
 from pages.navigation_bar_page import NavigationBarPage
-from pages.base_page import BasePage
-from tests.test_data import headers, auth_data, product_data
+from tests.test_data import auth_data
+from webstore_config.create_test_products import ProductFactory
+from requests import Session
+
+from webstore_config.webstore_api import WebstoreAPI
 
 
 def pytest_addoption(parser):
@@ -48,88 +48,70 @@ def driver(browser_type):
         raise pytest.UsageError('"--browser" - should be "chrome" or "firefox".')
 
 
+@pytest.fixture(scope='session')
+def api():
+    with Session() as session:
+        api = WebstoreAPI(session)
+        api.auth_by_admin(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+        yield api
+
+
 @pytest.fixture(scope='class', autouse=True)
 def attach_driver(request, driver):
     request.cls.driver = driver
 
 
 @pytest.fixture
-def log_out(driver):
-    try:
-        nav_bar = NavigationBarPage(driver)
-        if nav_bar.get_header_text() == "Магазин":
-            nav_bar.click_navigation_bar()
-            nav_bar.click_log_out()
-    except Exception:
-        pass
-
-
-@pytest.fixture
-def auth_by_user1(auth):
-    return auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
-
-
-@pytest.fixture
-def auth_by_admin(auth):
-    return auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
-
-
-@pytest.fixture
-def auth(driver, is_auth):
+def auth(driver):
     def _auth(login, password):
         auth_page = AuthPage(driver)
-
-        if not is_auth:
-            auth_page.open()
-            auth_page.enter_login(login)
-            auth_page.enter_password(password)
-            auth_page.click_login_button()
-            # explicit wait something. For example, wait to load a header of page.
-            time.sleep(0.3)
-
+        auth_page.open()
+        auth_page.log_in(login, password)
+        auth_page.get_header_text()
         return auth_page
     return _auth
 
 
 @pytest.fixture
-def is_auth(driver):
-    return BasePage(driver).header in headers.main
+def log_out(driver):
+    yield
+    try:
+        nav_bar = NavigationBarPage(driver)
+        nav_bar.click_navigation_bar()
+        nav_bar.click_log_out()
+    except Exception:
+        pass
 
 
-# @pytest.fixture(scope='class', autouse=False)
-# def test_data(request, auth_by_admin, create_product):
-#     edit_page = EditProductsPage(request.cls.driver)
-#     edit_page.open()
-#
-#     if not edit_page.product_is_exists(product_data.SANDWICH_NAME):
-#         edit_page.click_create_product_button()
-#         create_product(
-#             product_data.SANDWICH_NAME,
-#             product_data.SANDWICH_DESCRIPTION,
-#             product_data.SANDWICH_CATEGORY,
-#             product_data.SANDWICH_PRICE_INT,
-#             product_data.SANDWICH_IMAGE_URL
-#         )
-#     if not edit_page.product_is_exists(product_data.CAVIAR_NAME):
-#         edit_page.click_create_product_button()
-#         create_product(
-#             product_data.CAVIAR_NAME,
-#             product_data.CAVIAR_DESCRIPTION,
-#             product_data.CAVIAR_CATEGORY,
-#             product_data.CAVIAR_PRICE_INT,
-#             product_data.CAVIAR_IMAGE_URL
-#         )
-#
-#
-#
-# @pytest.fixture
-# def create_product(request):
-#     def _create(name, description, category, price, image_url):
-#         create_product = CreateProductPage(request.cls.driver)
-#         create_product.enter_product_name(name)
-#         create_product.enter_product_description(description)
-#         create_product.enter_expected_category(category)
-#         create_product.enter_price_of_product(price)
-#         create_product.enter_image_source(image_url)
-#         create_product.click_create_product_button()
-#     return _create
+@pytest.fixture
+def auth_by_user1(auth, log_out):
+    yield auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
+
+
+@pytest.fixture
+def auth_by_admin(auth, log_out):
+    yield auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+
+
+@pytest.fixture
+def products(request):
+    products = []
+    for param in request.param:
+        products.append(request.getfixturevalue(param))
+    return products
+
+
+@pytest.fixture(scope='session')
+def sandwich(request, api):
+    sandwich = ProductFactory.sandwich()
+    id = api.create_product(sandwich.to_json())
+    yield sandwich
+    api.delete_product(id)
+
+
+@pytest.fixture(scope='session')
+def nuggets(api):
+    nuggets = ProductFactory.nuggets()
+    id = api.create_product(nuggets.to_json())
+    yield nuggets
+    api.delete_product(id)
