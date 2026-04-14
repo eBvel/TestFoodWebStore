@@ -23,3 +23,8 @@ class AuthPage(BasePage):
     @allure.step('Нажатие кнопки "Войти"')
     def click_login_button(self):
         self.find_clickable_element(locators.LOGIN_BUTTON).click()
+
+    def log_in(self, login, password):
+        self.enter_login(login)
+        self.enter_password(password)
+        self.click_login_button()
