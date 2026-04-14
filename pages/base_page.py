@@ -68,7 +68,10 @@ class BasePage:
 
     @allure.step("Запрос текста заголовка.")
     def get_header_text(self):
-        return self.find_visible_element(locators.HEADER_BUTTON, 3).text
+        try:
+            return self.find_visible_element(locators.HEADER_BUTTON, 3).text
+        except Exception:
+            return None
 
     @allure.step("Запрос текущего URL страницы.")
     def get_current_url(self):
