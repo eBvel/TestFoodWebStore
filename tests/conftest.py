@@ -9,10 +9,13 @@ from webdriver_manager.firefox import GeckoDriverManager as FirefoxDriverManager
 from pages.auth_page import AuthPage
 from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data import auth_data
-from webstore_config.create_test_products import ProductFactory
+from tests.test_data.test_products import ProductFactory
 from requests import Session
 
 from webstore_config.webstore_api import WebstoreAPI
+
+
+TEST_PRODUCTS = {}
 
 
 def pytest_addoption(parser):
@@ -52,7 +55,8 @@ def driver(browser_type):
 def api():
     with Session() as session:
         api = WebstoreAPI(session)
-        api.auth_by_admin(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+        api.auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+        api.auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
         yield api
 
 
@@ -94,6 +98,11 @@ def auth_by_admin(auth, log_out):
 
 
 @pytest.fixture
+def product(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture
 def products(request):
     products = []
     for param in request.param:
@@ -102,16 +111,47 @@ def products(request):
 
 
 @pytest.fixture(scope='session')
-def sandwich(request, api):
-    sandwich = ProductFactory.sandwich()
-    id = api.create_product(sandwich.to_json())
-    yield sandwich
-    api.delete_product(id)
+def create_product(request, api):
+    def _create_product(test_product):
+        product_id = api.by_admin().create_product(test_product.to_json())
+        TEST_PRODUCTS[product_id] = test_product
+        return test_product
+    return _create_product
 
 
 @pytest.fixture(scope='session')
-def nuggets(api):
-    nuggets = ProductFactory.nuggets()
-    id = api.create_product(nuggets.to_json())
-    yield nuggets
-    api.delete_product(id)
+def sandwich(create_product):
+    return create_product(ProductFactory.sandwich())
+
+@pytest.fixture(scope='session')
+def nuggets(create_product):
+    return create_product(ProductFactory.nuggets())
+
+
+@pytest.fixture(autouse=True)
+def clear_cart(api):
+    product_list = api.by_user().get_product_id_list()
+    for product_data in product_list:
+        api.remove_from_cart(
+            product_data['productId'],
+            product_data['quantity']
+        )
+
+
+@pytest.fixture(scope='session', autouse=True)
+def delete_product_list(api):
+    yield
+    api.by_admin()
+    for id in TEST_PRODUCTS.keys():
+        api.delete_product(id)
+
+
+@pytest.fixture
+def product_count_to_cart(api):
+    def _add_product_to_cart(product, count):
+        product_id = next(
+            (key for key, value in TEST_PRODUCTS.items() if value == product),
+            None
+        )
+        return api.by_user().add_to_cart(product_id, count)
+    return _add_product_to_cart
