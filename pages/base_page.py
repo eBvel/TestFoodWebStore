@@ -1,4 +1,5 @@
 import allure
+
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -16,6 +17,10 @@ class BasePage:
         with allure.step(f"Открытие страницы по ссылке: {self.url}"):
             self.driver.maximize_window()
             self.driver.get(self.url)
+
+    def refresh(self):
+        with allure.step(f'Обновление страницы: "{self.__class__.__name__}"'):
+            self.driver.refresh()
 
     def find(self, condition, timeout):
         with allure.step(f'Поиск элемента страницы "{self.url}". '
@@ -41,7 +46,7 @@ class BasePage:
 
     def scroll_to_element(self, element):
         self.driver.execute_script(
-            "arguments[0].scrollIntoView({block:'center', inline:'center'})",
+            "arguments[0].scrollIntoView({behavior: 'instant', block: 'start', inline: 'start'});",
             element
         )
 
