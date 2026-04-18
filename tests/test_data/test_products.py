@@ -11,8 +11,8 @@ class Product:
     price: float
     image_url: str
 
-    def get_price_str(self):
-        return f'{self.price} ₽'
+    def get_price_str(self, right_digits=2):
+        return f'{self.price:.{right_digits}f} ₽'
 
     def to_json(self) -> dict[str, str | float]:
         return {
