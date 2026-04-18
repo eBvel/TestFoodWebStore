@@ -44,6 +44,13 @@ class BasePage:
             timeout
         )
 
+    def is_text_present(self, locator, text, timeout=10):
+        return self.find(EC.text_to_be_present_in_element(locator, text), timeout)
+
+    def is_invisible(self, locator, timeout=10):
+        return self.find(EC.invisibility_of_element_located(locator), timeout)
+
+    @allure.step('Прокрутка страницы до искомого элемента')
     def scroll_to_element(self, element):
         self.driver.execute_script(
             "arguments[0].scrollIntoView({behavior: 'instant', block: 'start', inline: 'start'});",
