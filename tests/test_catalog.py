@@ -116,15 +116,16 @@ class TestCatalogPage:
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка верхней границы (100) счетчика товаров')
     @pytest.mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_max_limit_of_counter(self, product, auth_by_user1, product_count_to_cart):
+    @pytest.mark.parametrize('start_product_count', [99, 100])
+    def test_max_limit_of_counter(
+            self,
+            product,
+            start_product_count,
+            auth_by_user1,
+            product_count_to_cart
+    ):
         self.catalog.open()
-        product_count_to_cart(product, 100)
-        self.catalog.refresh()
-        self.catalog.check_current_count_of_product(
-            product.name,
-            product_data.MAX_LIMIT
-        )
-
+        product_count_to_cart(product, start_product_count)
         self.catalog.add_product(product.name)
         self.catalog.check_current_count_of_product(
             product_data.SANDWICH_NAME,
