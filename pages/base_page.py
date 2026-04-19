@@ -2,6 +2,7 @@ import allure
 
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import TimeoutException
 
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -22,33 +23,57 @@ class BasePage:
         with allure.step(f'Обновление страницы: "{self.__class__.__name__}"'):
             self.driver.refresh()
 
+    def wait_until_not(self, condition, timeout=5):
+        with allure.step(f'Ожидание, пока условие ({condition})'
+                         f' не станет ложным'):
+            return wait(self.driver, timeout).until_not(condition)
+
     def find(self, condition, timeout):
         with allure.step(f'Поиск элемента страницы "{self.url}". '
                          f'Локатор: "{condition}"'):
             return wait(self.driver, timeout).until(condition)
 
-    def find_visible_element(self, locator, timeout=10):
+    def find_visible_element(self, locator, timeout=5):
         return self.find(EC.visibility_of_element_located(locator), timeout)
 
-    def find_clickable_element(self, locator, timeout=10):
+    def find_clickable_element(self, locator, timeout=5):
         element = self.find(EC.element_to_be_clickable(locator), timeout)
         self.scroll_to_element(element)
         return element
 
-    def find_presence_element(self, locator, timeout=10):
+    def find_presence_element(self, locator, timeout=5):
         return self.find(EC.presence_of_element_located(locator), timeout)
 
-    def find_elements(self, locator, timeout=10):
+    def find_elements(self, locator, timeout=5):
         return self.find(
             EC.visibility_of_all_elements_located(locator),
             timeout
         )
 
-    def is_text_present(self, locator, text, timeout=10):
-        return self.find(EC.text_to_be_present_in_element(locator, text), timeout)
+    def is_text_present(self, locator, text, timeout=5):
+        try:
+            return self.find(EC.text_to_be_present_in_element(locator, text), timeout)
+        except TimeoutException:
+            return False
 
-    def is_invisible(self, locator, timeout=10):
+    def is_attribute_present(self, locator, attribute, text, timeout=5):
+        try:
+            return self.find(EC.text_to_be_present_in_element_attribute(locator, attribute, text), timeout)
+        except TimeoutException:
+            return False
+
+    def is_invisible(self, locator, timeout=5):
         return self.find(EC.invisibility_of_element_located(locator), timeout)
+
+    def is_attribute_missing(self, locator, attribute, text, timeout=5):
+        try:
+            return self.wait_until_not(EC.text_to_be_present_in_element_attribute(
+                locator,
+                attribute,
+                text
+            ), timeout)
+        except TimeoutException:
+            return False
 
     @allure.step('Прокрутка страницы до искомого элемента')
     def scroll_to_element(self, element):
@@ -62,8 +87,8 @@ class BasePage:
         with allure.step(f'Запрос заголовка страницы: '
                          f'"{self.__class__.__name__}"'):
             try:
-                return self.find_visible_element(locators.HEADER, 3).text
-            except Exception:
+                return self.find_visible_element(locators.HEADER, 5).text
+            except TimeoutException:
                 return None
 
     @allure.step("Нажатие кнопки навигации (меню).")
@@ -82,7 +107,7 @@ class BasePage:
     def get_header_text(self):
         try:
             return self.find_visible_element(locators.HEADER_BUTTON, 3).text
-        except Exception:
+        except TimeoutException:
             return None
 
     @allure.step("Запрос текущего URL страницы.")
