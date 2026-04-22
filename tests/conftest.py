@@ -1,6 +1,7 @@
 import pytest
 
 from selenium import webdriver
+from selenium.webdriver.support.wait import TimeoutException
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from webdriver_manager.chrome import ChromeDriverManager
@@ -35,10 +36,8 @@ def browser_type(request):
 @pytest.fixture(scope='session')
 def driver(browser_type):
     if browser_type == 'chrome':
-        option = webdriver.ChromeOptions()
-        option.page_load_strategy = 'normal'
         with webdriver.Chrome(
-                options=option,
+                options=webdriver.ChromeOptions(),
                 service=ChromeService(ChromeDriverManager().install())
         ) as chrome_driver:
             yield chrome_driver
@@ -65,26 +64,39 @@ def attach_driver(request, driver):
     request.cls.driver = driver
 
 
+@pytest.fixture(scope='session')
+def auth_page(driver):
+    return AuthPage(driver)
+
+
+@pytest.fixture(scope='session')
+def nav_bar(driver):
+    return NavigationBarPage(driver)
+
+
 @pytest.fixture
-def auth(driver):
+def auth(auth_page):
     def _auth(login, password):
-        auth_page = AuthPage(driver)
-        auth_page.open()
-        auth_page.log_in(login, password)
-        auth_page.get_header_text()
-        return auth_page
+        try:
+            auth_page.open()
+            auth_page.log_in(login, password)
+            auth_page.get_header_text()
+            return auth_page
+        except TimeoutException:
+            print('The user is already authorized.')
+            return auth_page
     return _auth
 
 
 @pytest.fixture
-def log_out(driver):
+def log_out(nav_bar):
     yield
     try:
-        nav_bar = NavigationBarPage(driver)
-        nav_bar.click_navigation_bar()
+        if nav_bar.is_close():
+            nav_bar.click_navigation_bar()
         nav_bar.click_log_out()
-    except Exception:
-        pass
+    except TimeoutException:
+        print(f"The logout has already been performed.")
 
 
 @pytest.fixture
@@ -123,6 +135,7 @@ def create_product(request, api):
 def sandwich(create_product):
     return create_product(ProductFactory.sandwich())
 
+
 @pytest.fixture(scope='session')
 def nuggets(create_product):
     return create_product(ProductFactory.nuggets())
@@ -141,9 +154,10 @@ def clear_cart(api):
 @pytest.fixture(scope='session', autouse=True)
 def delete_product_list(api):
     yield
-    api.by_admin()
-    for id in TEST_PRODUCTS.keys():
-        api.delete_product(id)
+    if len(TEST_PRODUCTS):
+        api.by_admin()
+        for id in TEST_PRODUCTS.keys():
+            api.delete_product(id)
 
 
 @pytest.fixture
