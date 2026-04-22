@@ -1,6 +1,7 @@
 import time
 import allure
 
+from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -27,29 +28,37 @@ class CartPage(BasePage):
 
     @allure.step('Запрос, отображается кнопка "Оформить заказ" или нет.')
     def place_an_order_button_is_display(self):
-        return self.find_presence_element(locators.PLACE_AN_ORDER_BUTTON).is_displayed()
+        try:
+            return self.find_visible_element(locators.PLACE_AN_ORDER_BUTTON).is_displayed()
+        except TimeoutException:
+            return False
 
     def get_product_price(self, product_name):
         with allure.step(f'Запрос "цены" товара "{product_name}" в корзине.'):
             return self.find_visible_element(locators.PRODUCT_PRICE(product_name)).text
 
+    def multiple_button_click(self, locator, click_count=1):
+        button = self.find_clickable_element(locator)
+        while click_count > 0:
+            button.click()
+            click_count -= 1
+            time.sleep(0.3)
+
     def add_product(self, product_name, count=1):
         with allure.step(f'Добавление товара "{product_name}" '
                          f'в количестве "{count}" в корзинку.'):
-            add_button = self.find_clickable_element(locators.ADD_BUTTON(product_name))
-            while count > 0:
-                add_button.click()
-                count-=1
-                time.sleep(0.2)
+            self.multiple_button_click(
+                locators.ADD_BUTTON(product_name),
+                count
+            )
 
     def remove_product(self, product_name, count=1):
         with allure.step(f'Удаление товара "{product_name}"'
                          f'в количестве "{count}" из корзинки.'):
-            remove_button = self.find_clickable_element(locators.REMOVE_BUTTON(product_name))
-            while count > 0:
-                remove_button.click()
-                count -= 1
-                time.sleep(0.2)
+            self.multiple_button_click(
+                locators.REMOVE_BUTTON(product_name),
+                count
+            )
 
     def get_product_count(self, product_name):
         with allure.step(f'Запрос кол-ва товара "{product_name}" в корзинке.'):
@@ -65,7 +74,7 @@ class CartPage(BasePage):
                 product.text
                 for product in self.find_elements(locators.PRODUCTS_TITLE)
             ]
-        except Exception:
+        except TimeoutException:
             return []
 
     @allure.step('Запрос "итоговой стоимости" товаров в корзине.')
