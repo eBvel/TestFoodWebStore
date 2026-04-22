@@ -63,7 +63,10 @@ class BasePage:
             return False
 
     def is_invisible(self, locator, timeout=5):
-        return self.find(EC.invisibility_of_element_located(locator), timeout)
+        try:
+            return self.find(EC.invisibility_of_element_located(locator), timeout)
+        except TimeoutException:
+            return False
 
     def is_attribute_missing(self, locator, attribute, text, timeout=5):
         try:

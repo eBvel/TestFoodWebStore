@@ -39,6 +39,7 @@ class NavigationBarLocators:
     HEADER = (By.XPATH, "//h5[@class='offcanvas-title']")
     EDIT_PRODUCTS_BUTTON = (By.XPATH, "//a[@href='/manageProductsPage']")
     NAVIGATION_BAR = (By.XPATH, "//button[@aria-label='Toggle navigation']")
+    MENU = (By.XPATH, "//div[@id='offcanvasNavbar']")
     CATALOG_BUTTON = (By.XPATH, "//ul[@class='nav-item']/a[@href='/']")
     CART_BUTTON = (By.XPATH, "//ul[@class='nav-item']/a[@href='/cart']")
     LOGOUT_BUTTON = (By.XPATH, "//li[@class='nav-item']")

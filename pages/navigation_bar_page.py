@@ -8,6 +8,9 @@ class NavigationBarPage(BasePage):
     def header(self):
         return self.find_visible_element(locators.HEADER).text
 
+    def is_close(self):
+        return self.is_invisible(locators.MENU)
+
     @allure.step('Нажатие кнопки "Редактировать товары" в окне навигации.')
     def click_edit_products_button(self):
         self.find_clickable_element(locators.EDIT_PRODUCTS_BUTTON).click()
