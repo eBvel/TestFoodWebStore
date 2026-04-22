@@ -39,7 +39,7 @@ class CatalogPage(BasePage):
                 locators.PRODUCT_PRICE(product_name)
             ).text
 
-    def multiple_button_click(self, locator, click_count):
+    def multiple_button_click(self, locator, click_count=1):
         button = self.find_clickable_element(locator)
         while click_count > 0:
             button.click()
