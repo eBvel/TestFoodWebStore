@@ -1,7 +1,8 @@
 import allure
 
+from pytest import mark
 from pages.complete_page import CompletePage
-from tests.test_data import headers, product_data, checkout_data
+from tests.test_data import headers, checkout_data
 from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.order_overview_page import OrderOverviewPage
@@ -14,179 +15,197 @@ class TestOverViewPage:
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
         cls.cart = CartPage(cls.driver)
-        cls.user_data = CheckoutPage(cls.driver)
+        cls.checkout_page = CheckoutPage(cls.driver)
         cls.overview = OrderOverviewPage(cls.driver)
         cls.complete = CompletePage(cls.driver)
 
     def _filling_user_data(self):
-        self.user_data.enter_first_name(checkout_data.FIRST_NAME)
-        self.user_data.enter_second_name(checkout_data.SECOND_NAME)
-        self.user_data.enter_middle_name(checkout_data.MIDDLE_NAME)
-        self.user_data.enter_delivery_address(checkout_data.ADDRESS)
-        self.user_data.enter_cart_number(checkout_data.CART_NUMBER)
+        self.checkout_page.filling_fields(
+            checkout_data.FIRST_NAME,
+            checkout_data.SECOND_NAME,
+            checkout_data.MIDDLE_NAME,
+            checkout_data.ADDRESS,
+            checkout_data.CART_NUMBER
+        )
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Имя"')
-    def test_first_name_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_first_name_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_first_name(checkout_data.FIRST_NAME)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Фамилия"')
-    def test_second_name_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_second_name_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_second_name(checkout_data.SECOND_NAME)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Отчество"')
-    def test_middle_name_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_middle_name_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_middle_name(checkout_data.MIDDLE_NAME)
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия списка продуктов')
-    def test_products_list_matching(self, auth_by_user1):
+    @mark.parametrize('products', [['sandwich', 'nuggets']], indirect=True)
+    def test_products_list_matching(self, products, auth_by_user1):
         self.catalog.open()
-        self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.NAME)
-        self.catalog.add_product(product_data.SANDWICH_NAME)
+        for item in products:
+            self.catalog.add_product(item.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_products_list(
-            [product_data.NAME, product_data.SANDWICH_NAME]
+            [item.name for item in products]
         )
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия количества товаров')
-    def test_count_of_product_matching(self, auth_by_user1):
+    @mark.parametrize('products', [['sandwich', 'nuggets']], indirect=True)
+    @mark.parametrize('quantities', [[5, 3]])
+    def test_count_of_product_matching(
+            self,
+            products,
+            quantities: list[int],
+            auth_by_user1
+    ):
         self.catalog.open()
-        self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.SANDWICH_NAME, 5)
-        self.catalog.add_product(product_data.NUGGETS_NAME, 3)
+        for i in range(len(products)):
+            self.catalog.add_product(products[i].name, quantities[i])
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_products_count(product_data.SANDWICH_NAME, 5)
-        self.overview.check_products_count(product_data.NUGGETS_NAME, 3)
+        for i in range(len(products)):
+            self.overview.check_products_count(
+                products[i].name,
+                quantities[i]
+            )
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия цены товаров')
-    def test_price_of_product_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_price_of_product_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_products_price(product_data.NAME, product_data.PRICE)
+        self.overview.check_products_price(product.name, product.get_price_str())
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия адреса доставки')
-    def test_delivery_address_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_delivery_address_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_delivery_address(checkout_data.ADDRESS)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия номера карты')
-    def test_cart_number_matching(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_cart_number_matching(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.check_cart_number(checkout_data.CART_NUMBER)
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итогового количества товаров')
-    def test_total_count(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_total_count(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
+        #EXPECTED_VALUE
         self.overview.check_total_count(1)
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итоговой стоимости заказа')
-    def test_total_cost(self, auth_by_user1):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_total_cost(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.clear_all_products_counter()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         #EXPECTED_VALUE
-        self.overview.check_total_cost(product_data.PRICE)
+        self.overview.check_total_cost(f'{product.price:.{0}f} ₽')
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода обратно в каталог')
-    def test_navigate_back_to_catalog(self):
+    @mark.parametrize('product', ['sandwich'], indirect=True)
+    def test_navigate_back_to_catalog(self, product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product_data.NAME)
+        self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self._filling_user_data()
-        self.user_data.click_place_an_order_button()
+        self.checkout_page.click_place_an_order_button()
 
         self.overview.click_back_to_catalog_button()
         self.catalog.check_header(headers.CATALOG_PAGE)
