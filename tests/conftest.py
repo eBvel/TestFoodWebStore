@@ -110,8 +110,11 @@ def auth_by_admin(auth, log_out):
 
 
 @pytest.fixture
-def product(request):
-    return request.getfixturevalue(request.param)
+def product(request, create_product):
+    try:
+        return request.getfixturevalue(request.param)
+    except Exception:
+        return create_product(ProductFactory.create_product_by_type(request.param))
 
 
 @pytest.fixture
@@ -123,7 +126,7 @@ def products(request):
 
 
 @pytest.fixture(scope='session')
-def create_product(request, api):
+def create_product(api):
     def _create_product(test_product):
         product_id = api.by_admin().create_product(test_product.to_json())
         TEST_PRODUCTS[product_id] = test_product
@@ -139,6 +142,11 @@ def sandwich(create_product):
 @pytest.fixture(scope='session')
 def nuggets(create_product):
     return create_product(ProductFactory.nuggets())
+
+
+@pytest.fixture(scope='session')
+def caviar(create_product):
+    return create_product(ProductFactory.caviar())
 
 
 @pytest.fixture(autouse=True)

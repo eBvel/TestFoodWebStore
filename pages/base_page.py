@@ -56,7 +56,7 @@ class BasePage:
         except TimeoutException:
             return False
 
-    def is_attribute_present(self, locator, attribute, text, timeout=5):
+    def is_attribute_present(self, locator, attribute, text, timeout=1):
         try:
             return self.find(EC.text_to_be_present_in_element_attribute(locator, attribute, text), timeout)
         except TimeoutException:

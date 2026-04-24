@@ -39,17 +39,21 @@ class CatalogPage(BasePage):
                 locators.PRODUCT_PRICE(product_name)
             ).text
 
-    def multiple_button_click(self, locator, click_count=1):
+    def multiple_button_click(self, product_name, locator, click_count=1):
         button = self.find_clickable_element(locator)
-        while click_count > 0:
+        for i in range(click_count):
             button.click()
-            click_count -= 1
-
+            self.is_attribute_present(
+                locators.COUNT_OF_PRODUCT(product_name),
+                'value',
+                str(i)
+            )
 
     def add_product(self, product_name, count=1):
         with allure.step(f"Добавление товара {product_name}"
                          f" в количестве {count} в корзину."):
             self.multiple_button_click(
+                product_name,
                 locators.ADD_BUTTON(product_name),
                 count
             )
@@ -58,6 +62,7 @@ class CatalogPage(BasePage):
         with allure.step(f"Удаление товара {product_name}"
                          f" в количестве {count} из корзины."):
             self.multiple_button_click(
+                product_name,
                 locators.REMOVE_BUTTON(product_name),
                 count
             )
