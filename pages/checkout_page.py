@@ -1,4 +1,6 @@
 import allure
+
+from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -30,6 +32,20 @@ class CheckoutPage(BasePage):
         with allure.step(f'Заполнение номера карты значением "{cart_number}"'):
             self.find_visible_element(locators.CART_NUMBER_FIELD).send_keys(cart_number)
 
+    def filling_fields(
+            self,
+            first_name,
+            second_name,
+            middle_name,
+            delivery_address,
+            cart_number
+    ):
+        self.enter_first_name(first_name)
+        self.enter_second_name(second_name)
+        self.enter_middle_name(middle_name)
+        self.enter_delivery_address(delivery_address)
+        self.enter_cart_number(cart_number)
+
     @allure.step('Нажатие кнопки "Оформить заказ"')
     def click_place_an_order_button(self):
         self.find_visible_element(locators.PLACE_AN_ORDER_BUTTON).click()
@@ -40,25 +56,25 @@ class CheckoutPage(BasePage):
 
     @allure.step('Запрос значения из поля "Имя".')
     def get_first_name(self):
-        return self.find_visible_element(locators.FIRST_NAME_FIELD).text
+        return self.find_visible_element(locators.FIRST_NAME_FIELD).get_attribute('value')
 
     @allure.step('Запрос значения из поля "Фамилия".')
     def get_second_name(self):
-        return self.find_visible_element(locators.SECOND_NAME_FIELD).text
+        return self.find_visible_element(locators.SECOND_NAME_FIELD).get_attribute('value')
 
     @allure.step('Запрос значения из поля "Адрес доставки".')
     def get_delivery_address(self):
-        return self.find_visible_element(locators.DELIVERY_ADDRESS_FIELD).text
+        return self.find_visible_element(locators.DELIVERY_ADDRESS_FIELD).get_attribute('value')
 
     @allure.step('Запрос значения из поля "Номер карты".')
     def get_cart_number(self):
-        return self.find_visible_element(locators.CART_NUMBER_FIELD).text
+        return self.find_visible_element(locators.CART_NUMBER_FIELD).get_attribute('value')
 
     @allure.step('Попытка получить текст уведомления о пустых полях')
     def try_get_empty_fields_alert(self):
         try:
             return self.find_visible_element(locators.EMPTY_FIELDS_ALERT).text
-        except Exception:
+        except TimeoutException:
             return None
 
     def check_empty_fields_alert(self, expected_value):
