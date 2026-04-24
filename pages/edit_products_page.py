@@ -1,4 +1,6 @@
 import allure
+
+from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -15,7 +17,9 @@ class EditProductsPage(BasePage):
                          f'у карточки товара "{product_name}"'):
             return (
                 self
-                .find_visible_element(locators.PRODUCT_DESCRIPTION(product_name))
+                .find_visible_element(
+                    locators.PRODUCT_DESCRIPTION(product_name)
+                )
                 .text
             )
 
@@ -34,7 +38,9 @@ class EditProductsPage(BasePage):
                          f'у карточки товара "{product_name}"'):
             return (
                 self
-                .find_visible_element(locators.PRODUCT_IMAGE_URL(product_name))
+                .find_visible_element(
+                    locators.PRODUCT_IMAGE_URL(product_name)
+                )
                 .get_attribute('src')
             )
 
@@ -43,28 +49,34 @@ class EditProductsPage(BasePage):
         self.find_clickable_element(locators.CREATE_PRODUCT_BUTTON).click()
 
     def click_edit_product_button(self, product_name):
-        with allure.step(f'ТОВАР "{product_name}": нажатие кнопки "Редактировать"'):
-            self.find_clickable_element(locators.EDIT_PRODUCT_BUTTON(product_name)).click()
+        with allure.step(f'ТОВАР "{product_name}": '
+                         f'нажатие кнопки "Редактировать"'):
+            self.find_clickable_element(
+                locators.EDIT_PRODUCT_BUTTON(product_name)
+            ).click()
 
     def click_delete_product_button(self, product_name):
         with allure.step(f'ТОВАР "{product_name}": нажатие кнопки "Удалить"'):
-            self.find_clickable_element(locators.DELETE_PRODUCT_BUTTON(product_name)).click()
+            self.find_clickable_element(
+                locators.DELETE_PRODUCT_BUTTON(product_name)
+            ).click()
 
-    def product_is_exists(self, product_name):
+    def product_was_removed(self, product_name):
         with allure.step(f'Проверка, существует ли товар '
                          f'"{product_name}" в каталоге'):
             try:
-                self.find_elements(locators.PRODUCT_IS_EXISTS(product_name))
-                return True
-            except Exception:
+                return self.is_invisible(
+                    locators.PRODUCT_IS_EXISTS(product_name)
+                )
+            except TimeoutException:
                 return False
 
-    def check_product_is_exists(self, product_name, expected_value):
+    def check_product_was_removed(self, product_name, expected_value):
         with allure.step(f'Проверка наличия товара "{product_name}" в '
                          f'каталоге. Ожидаемое значение: {expected_value}'):
             AssertValues.compare_values(
                 "EDIT PRODUCTS: PRODUCT IS EXISTS",
-                self.product_is_exists(product_name),
+                self.product_was_removed(product_name),
                 expected_value
             )
 
