@@ -2,7 +2,7 @@ import allure
 
 from pytest import mark
 from pages.complete_page import CompletePage
-from tests.test_data import headers, product_data, checkout_data
+from tests.test_data import headers, checkout_data
 from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.order_overview_page import OrderOverviewPage
@@ -29,10 +29,10 @@ class TestCompletePage:
 
     @allure.feature('COMPLETE ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_complete_order(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_complete_order(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -50,10 +50,10 @@ class TestCompletePage:
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода обратно в каталог товаров')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_navigate_back_to_catalog(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_navigate_back_to_catalog(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()

@@ -2,7 +2,6 @@ import allure
 
 from pytest import mark
 from pages.create_product_page import CreateProductPage
-from pages.navigation_bar_page import NavigationBarPage
 from pages.update_product_page import UpdateProductPage
 from tests.test_data import headers
 from pages.edit_products_page import EditProductsPage
@@ -26,23 +25,24 @@ class TestEditProductsPage:
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу редактирования товара')
-    @mark.parametrize('product', ['margarita'], indirect=True)
-    def test_navigate_to_update_product_page(self, product, auth_by_admin):
+    @mark.parametrize('test_product', ['margarita'], indirect=True)
+    def test_navigate_to_update_product_page(self, test_product, auth_by_admin):
         self.edit_products.open()
-        self.edit_products.click_edit_product_button(product.name)
+        self.edit_products.click_edit_product_button(test_product.name)
 
         self.update_product.check_url()
         self.update_product.check_header(headers.UPDATE_PRODUCT_PAGE)
 
     @allure.feature('DELETE PRODUCT')
     @allure.story('Проверка удаления товара из каталога')
-    @mark.parametrize('product', ['margarita'], indirect=True)
-    def test_delete_product(self, product, auth_by_admin):
+    @mark.parametrize('test_product', ['margarita'], indirect=True)
+    def test_delete_product(self, test_product, auth_by_admin):
         self.edit_products.open()
         self.edit_products.click_delete_product_button(
-            product.name
+            test_product.name
         )
-        self.edit_products.check_product_was_removed(
-            product.name,
+        #EXPECTED_VALUE
+        self.edit_products.check_existence_of_product(
+            test_product.name,
             True
         )

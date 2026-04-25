@@ -2,7 +2,7 @@ import allure
 
 from pytest import mark
 from pages.create_product_page import CreateProductPage
-from tests.test_data import headers, product_data
+from tests.test_data import headers
 from pages.edit_products_page import EditProductsPage
 from tests.test_data.test_products import ProductFactory
 
@@ -36,7 +36,7 @@ class TestCreateProductPage:
     @allure.feature('INCORRECT CREATE PRODUCT')
     @allure.story('Проверка создания товара с пустым полем "Цена"')
     @mark.parametrize(
-        'field_name, item',
+        'field_name, product',
         [
             ('name', ProductFactory.pepperoni(name='')),
             ('description', ProductFactory.pepperoni(description='')),
@@ -55,11 +55,11 @@ class TestCreateProductPage:
     def test_create_product_with_negative_data(
             self,
             field_name,
-            item,
+            product,
             auth_by_admin
     ):
         self.create_product.open()
-        self.create_product.filling_fields(item)
+        self.create_product.filling_fields(product)
 
         self.create_product.check_field_border_color(
             field_name,

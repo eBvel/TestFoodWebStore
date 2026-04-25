@@ -10,7 +10,6 @@ from pages.checkout_page import CheckoutPage
 
 
 class TestOverViewPage:
-
     @classmethod
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
@@ -30,10 +29,10 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Имя"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_first_name_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_first_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -45,10 +44,10 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Фамилия"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_second_name_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_second_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -60,10 +59,10 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Отчество"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_middle_name_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_middle_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -75,11 +74,11 @@ class TestOverViewPage:
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия списка продуктов')
-    @mark.parametrize('products', [['sandwich', 'nuggets']], indirect=True)
-    def test_products_list_matching(self, products, auth_by_user1):
+    @mark.parametrize('test_products', [['sandwich', 'nuggets']], indirect=True)
+    def test_products_list_matching(self, test_products, auth_by_user1):
         self.catalog.open()
-        for item in products:
-            self.catalog.add_product(item.name)
+        for product in test_products:
+            self.catalog.add_product(product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -88,22 +87,26 @@ class TestOverViewPage:
         self.checkout_page.click_place_an_order_button()
 
         self.overview.check_products_list(
-            [item.name for item in products]
+            [product.name for product in test_products]
         )
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия количества товаров')
-    @mark.parametrize('products', [['sandwich', 'nuggets']], indirect=True)
+    @mark.parametrize(
+        'test_products',
+        [['sandwich', 'nuggets']],
+        indirect=True
+    )
     @mark.parametrize('quantities', [[5, 3]])
     def test_count_of_product_matching(
             self,
-            products,
+            test_products,
             quantities: list[int],
             auth_by_user1
     ):
         self.catalog.open()
-        for i in range(len(products)):
-            self.catalog.add_product(products[i].name, quantities[i])
+        for i in range(len(test_products)):
+            self.catalog.add_product(test_products[i].name, quantities[i])
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -111,18 +114,18 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        for i in range(len(products)):
+        for i in range(len(test_products)):
             self.overview.check_products_count(
-                products[i].name,
+                test_products[i].name,
                 quantities[i]
             )
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия цены товаров')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_price_of_product_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_price_of_product_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -130,14 +133,14 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_products_price(product.name, product.get_price_str())
+        self.overview.check_products_price(test_product.name, test_product.get_price_str())
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия адреса доставки')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_delivery_address_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_delivery_address_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -149,10 +152,10 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия номера карты')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_cart_number_matching(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_cart_number_matching(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -164,10 +167,10 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итогового количества товаров')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_total_count(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_total_count(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -180,10 +183,10 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итоговой стоимости заказа')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_total_cost(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_total_cost(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -192,14 +195,14 @@ class TestOverViewPage:
         self.checkout_page.click_place_an_order_button()
 
         #EXPECTED_VALUE
-        self.overview.check_total_cost(f'{product.price:.{0}f} ₽')
+        self.overview.check_total_cost(f'{test_product.price:.{0}f} ₽')
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода обратно в каталог')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_navigate_back_to_catalog(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_navigate_back_to_catalog(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()

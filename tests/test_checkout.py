@@ -9,7 +9,6 @@ from tests.test_data import headers, checkout_data
 
 
 class TestUserDataPage:
-
     @classmethod
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
@@ -19,10 +18,10 @@ class TestUserDataPage:
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_filling_fields_with_valid_data(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_filling_fields_with_valid_data(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -40,10 +39,10 @@ class TestUserDataPage:
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с пустыми полями')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_place_an_order_with_empty_fields(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_place_an_order_with_empty_fields(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -56,52 +55,60 @@ class TestUserDataPage:
 
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Фамилия"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('value', checkout_data.NAMES_DATASET)
-    def test_validation_of_second_name(self, product, auth_by_user1, value):
+    def test_validation_of_second_name(
+            self,
+            test_product,
+            value,
+            auth_by_user1
+    ):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self.checkout.enter_second_name(value)
+        #EXPECTED_VALUE
         self.checkout.check_second_name(expected_value="")
 
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Имя"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('value', checkout_data.NAMES_DATASET)
-    def test_validation_of_first_name(self, product, auth_by_user1, value):
+    def test_validation_of_first_name(self, test_product, value, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self.checkout.enter_first_name(value)
+        #EXPECTED_VALUE
         self.checkout.check_first_name(expected_value="")
 
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Номер карты"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('value', checkout_data.CART_DATASET)
-    def test_validation_of_cart_number(self, product, auth_by_user1, value):
+    def test_validation_of_cart_number(self, test_product, value, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()
 
         self.checkout.enter_cart_number(value)
+        #EXPECTED_VALUE
         self.checkout.check_cart_number(expected_value="")
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода в каталог по кнопке "Обратно в магазин"')
-    @mark.parametrize('product', ['sandwich'], indirect=True)
-    def test_navigate_back_to_catalog(self, product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    def test_navigate_back_to_catalog(self, test_product, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(product.name)
+        self.catalog.add_product(test_product.name)
 
         self.cart.open()
         self.cart.click_place_an_order_button()

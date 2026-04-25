@@ -110,7 +110,7 @@ def auth_by_admin(auth, log_out):
 
 
 @pytest.fixture
-def product(request, create_product):
+def test_product(request, create_product):
     try:
         return request.getfixturevalue(request.param)
     except Exception:
@@ -118,19 +118,22 @@ def product(request, create_product):
 
 
 @pytest.fixture
-def products(request):
+def test_products(request):
     products = []
     for param in request.param:
-        products.append(request.getfixturevalue(param))
+        try:
+            products.append(request.getfixturevalue(param))
+        except Exception:
+            products.append(ProductFactory.create_product_by_type(param))
     return products
 
 
 @pytest.fixture(scope='session')
 def create_product(api):
-    def _create_product(test_product):
-        product_id = api.by_admin().create_product(test_product.to_json())
-        TEST_PRODUCTS[product_id] = test_product
-        return test_product
+    def _create_product(product):
+        product_id = api.by_admin().create_product(product.to_json())
+        TEST_PRODUCTS[product_id] = product
+        return product
     return _create_product
 
 
@@ -157,20 +160,30 @@ def margarita(create_product):
 @pytest.fixture(autouse=True)
 def clear_cart(api):
     product_list = api.by_user().get_product_id_list()
-    for product_data in product_list:
+    for product in product_list:
         api.remove_from_cart(
-            product_data['productId'],
-            product_data['quantity']
+            product['productId'],
+            product['quantity']
         )
 
 
 @pytest.fixture(scope='session', autouse=True)
-def delete_product_list(api):
+def delete_test_products(api):
     yield
     if len(TEST_PRODUCTS):
         api.by_admin()
         for id in TEST_PRODUCTS.keys():
             api.delete_product(id)
+
+
+@pytest.fixture
+def delete_new_products(api):
+    before = api.by_admin().get_products_list()
+    yield
+    after = api.by_admin().get_products_list()
+    for product in after:
+        if product not in before:
+            api.delete_product(product.get('id'))
 
 
 @pytest.fixture
