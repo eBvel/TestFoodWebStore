@@ -19,6 +19,12 @@ class BasePage:
             self.driver.maximize_window()
             self.driver.get(self.url)
 
+    def is_url_same(self, url, timeout=5):
+        try:
+            return self.find(EC.url_to_be(url), timeout)
+        except TimeoutException:
+            return False
+
     def refresh(self):
         with allure.step(f'Обновление страницы: "{self.__class__.__name__}"'):
             self.driver.refresh()
@@ -131,6 +137,7 @@ class BasePage:
         with allure.step(f'Проверка URL текущей страницы '
                          f'"{self.__class__.__name__}". Ожидаемое значение: '
                          f'"{self.url}"'):
+            self.is_url_same(self.url)
             AssertValues.compare_values(
                 f"{self.__class__.__name__} URL",
                 self.get_current_url(),
