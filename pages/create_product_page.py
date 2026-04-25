@@ -4,6 +4,7 @@ from pages.base_page import BasePage
 from utils.assertion import AssertValues
 from webstore_config.links import Links
 from webstore_config.locators import CreateProductLocators as locators
+from tests.test_data.test_products import Product
 
 
 class CreateProductPage(BasePage):
@@ -20,6 +21,8 @@ class CreateProductPage(BasePage):
 
     def __fill_in_field(self, field_name, value, locator):
         with allure.step(f'Ввод значения "{value}" в поле "{field_name}"'):
+            if value is None:
+                value = ''
             self.find_visible_element(locator).send_keys(value)
 
     def enter_product_name(self, name):
@@ -51,6 +54,13 @@ class CreateProductPage(BasePage):
 
     def enter_image_source(self, url):
         self.__fill_in_field("URL картинки", url, locators.IMAGE_SOURCE_FIELD)
+
+    def filling_fields(self, product: Product):
+        self.enter_product_name(product.name)
+        self.enter_product_description(product.description)
+        self.enter_expected_category(product.category)
+        self.enter_price_of_product(product.price)
+        self.enter_image_source(product.image_url)
 
     @allure.step('Нажатие кнопки "Создать товар"')
     def click_create_product_button(self):
@@ -85,7 +95,7 @@ class CreateProductPage(BasePage):
         with allure.step('Проверка, активная кнопка "Создать товар" или нет.'
                          f'Ожидаемое значение: {expected_value}'):
             AssertValues.compare_values(
-                'CREATE PRODUCT: CREATE BUTTON IS ENABLED',
+                'CREATE PRODUCT: Create button is enabled',
                 self.create_product_button_is_enabled,
                 expected_value
             )
@@ -94,7 +104,7 @@ class CreateProductPage(BasePage):
         with allure.step(f'Проверка цвета рамки вокруг поля. '
                          f'Ожидаемое значение: "{expected_value}"'):
             AssertValues.compare_values(
-                f'CREATE PRODUCT: FIELD({field_name}) BORDER COLOR',
+                f'CREATE PRODUCT: Field({field_name}) - border color',
                 self.get_field_border_color(field_name),
                 expected_value
             )
