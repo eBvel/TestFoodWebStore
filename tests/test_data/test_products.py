@@ -145,19 +145,24 @@ class ProductFactory:
         )
 
     @staticmethod
-    def pepperoni():
-        return (
-            ProductBuilder()
-            .with_name('Пицца Пепперони')
-            .with_description(fake.text(max_nb_chars=40))
-            .with_category(fake.word())
-            .with_price(fake.pyfloat(
+    def pepperoni(
+            name='Пицца Пепперони',
+            description=fake.text(max_nb_chars=40),
+            category='Пицца',
+            price=fake.pyfloat(
                 right_digits=0,
                 min_value=550.0,
                 max_value=1200.0
-                )
-            )
-            .with_image_url('https://clck.ru/3Ryn8j')
+                ),
+            image_url='https://clck.ru/3Ryn8j'
+    ):
+        return (
+            ProductBuilder()
+            .with_name(name)
+            .with_description(description)
+            .with_category(category)
+            .with_price(price)
+            .with_image_url(image_url)
             .build()
         )
 
