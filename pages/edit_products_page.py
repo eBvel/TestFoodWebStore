@@ -61,7 +61,7 @@ class EditProductsPage(BasePage):
                 locators.DELETE_PRODUCT_BUTTON(product_name)
             ).click()
 
-    def product_was_removed(self, product_name):
+    def product_is_missing(self, product_name):
         with allure.step(f'Проверка, существует ли товар '
                          f'"{product_name}" в каталоге'):
             try:
@@ -71,12 +71,12 @@ class EditProductsPage(BasePage):
             except TimeoutException:
                 return False
 
-    def check_product_was_removed(self, product_name, expected_value):
+    def check_existence_of_product(self, product_name, expected_value):
         with allure.step(f'Проверка наличия товара "{product_name}" в '
                          f'каталоге. Ожидаемое значение: {expected_value}'):
             AssertValues.compare_values(
-                "EDIT PRODUCTS: PRODUCT IS EXISTS",
-                self.product_was_removed(product_name),
+                f"EDIT PRODUCTS: Product is exists ({product_name})",
+                not self.product_is_missing(product_name),
                 expected_value
             )
 
@@ -84,7 +84,7 @@ class EditProductsPage(BasePage):
         with allure.step(f'Проверка поля "Описания" у карточки товара. '
                          f'Ожидаемое значение: "{expected_value}"'):
             AssertValues.compare_values(
-                '',
+                f'EDIT PRODUCTS: Product description ({product_name})',
                 self.get_product_description(product_name),
                 expected_value
             )
@@ -93,7 +93,7 @@ class EditProductsPage(BasePage):
         with allure.step(f'Проверка поля "Цена" у карточки товара. '
                          f'Ожидаемое значение: "{expected_value}"'):
             AssertValues.compare_values(
-                '',
+                f'EDIT PRODUCTS: Price of product ({product_name})',
                 self.get_product_price(product_name),
                 expected_value
             )
@@ -102,7 +102,7 @@ class EditProductsPage(BasePage):
         with allure.step(f'Проверка поля "URL картинки" у карточки товара. '
                          f'Ожидаемое значение: "{expected_value}"'):
             AssertValues.compare_values(
-                '',
+                f'EDIT PRODUCTS: Image source of product ({product_name})',
                 self.get_product_image_url(product_name),
                 expected_value
             )
