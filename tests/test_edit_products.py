@@ -12,19 +12,8 @@ class TestEditProductsPage:
     @classmethod
     def setup_class(cls):
         cls.edit_products = EditProductsPage(cls.driver)
-        cls.navigation_bar = NavigationBarPage(cls.driver)
         cls.create_product = CreateProductPage(cls.driver)
         cls.update_product = UpdateProductPage(cls.driver)
-
-#Move test to test_navigation
-    @allure.feature('NAVIGATION')
-    @allure.story('Проверка перехода на страницу "Редактировать товары"')
-    def test_navigate_to_edit_page(self, auth_by_admin):
-        self.navigation_bar.click_navigation_bar()
-        self.navigation_bar.click_edit_products_button()
-
-        self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу создания нового товара')

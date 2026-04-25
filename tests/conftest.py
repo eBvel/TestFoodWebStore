@@ -149,6 +149,11 @@ def caviar(create_product):
     return create_product(ProductFactory.caviar())
 
 
+@pytest.fixture(scope='session')
+def margarita(create_product):
+    return create_product(ProductFactory.margarita())
+
+
 @pytest.fixture(autouse=True)
 def clear_cart(api):
     product_list = api.by_user().get_product_id_list()
