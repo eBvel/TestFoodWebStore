@@ -10,6 +10,7 @@ class WebstoreAPI:
         self.user_token = None
 
         self.auth_end_point = f"{self.base_url}authorization/login"
+        self.products_list = f"{self.base_url}storage/products"
         self.create_product_end_point = f"{self.base_url}storage/product"
         self.delete_product_end_point = f"{self.base_url}storage/product?id="
         self.cart_products_end_point = f"{self.base_url}cart/products"
@@ -41,6 +42,10 @@ class WebstoreAPI:
         if self.user_token is not None:
             self.request.set_auth_token(self.user_token)
         return self
+
+    def get_products_list(self):
+        response = self.request.get(self.products_list)
+        return response.json().get('data')
 
     def create_product(self, body_json):
         response = self.request.post(
