@@ -1,6 +1,6 @@
 import allure
 
-from selenium.webdriver.common.keys import Keys
+from selenium.common import ElementClickInterceptedException
 from pages.create_product_page import CreateProductPage
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -17,20 +17,28 @@ class UpdateProductPage(CreateProductPage):
     def product_id(self):
         return self.find_visible_element(locators.ID_FIELD).get_attribute('value')
 
+    def clear_input(self, locator):
+        try:
+            element = self.find_clickable_element(locator)
+            element.click()
+            element.clear()
+        except ElementClickInterceptedException:
+            self.find_visible_element(locator).clear()
+
     def enter_product_name(self, name):
-        super().enter_product_name(Keys.CONTROL + 'a')
+        self.clear_input(locators.NAME_FIELD)
         super().enter_product_name(name)
 
     def enter_product_description(self, description):
-        super().enter_product_description(Keys.CONTROL + 'a')
+        self.clear_input(locators.DESCRIPTION_FIELD)
         super().enter_product_description(description)
 
     def enter_price_of_product(self, price):
-        super().enter_price_of_product(Keys.CONTROL + 'a')
+        self.clear_input(locators.PRICE_FIELD)
         super().enter_price_of_product(price)
 
     def enter_image_source(self, url):
-        super().enter_image_source(Keys.CONTROL + 'a')
+        self.clear_input(locators.IMAGE_SOURCE_FIELD)
         super().enter_image_source(url)
 
     @allure.step('Нажатие кнопки "Обновить товар"')
