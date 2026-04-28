@@ -2,11 +2,13 @@ import allure
 
 from pytest import mark
 from pages.complete_page import CompletePage
-from tests.test_data import headers, checkout_data
 from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.order_overview_page import OrderOverviewPage
 from pages.checkout_page import CheckoutPage
+from tests.test_data.datasets import Datasets
+from tests.test_data.pages_data import CatalogData
+from tests.test_data.user_data import UserData
 
 
 class TestOverViewPage:
@@ -20,11 +22,11 @@ class TestOverViewPage:
 
     def _filling_user_data(self):
         self.checkout_page.filling_fields(
-            checkout_data.FIRST_NAME,
-            checkout_data.SECOND_NAME,
-            checkout_data.MIDDLE_NAME,
-            checkout_data.ADDRESS,
-            checkout_data.CART_NUMBER
+            UserData.FIRST_NAME,
+            UserData.SECOND_NAME,
+            UserData.MIDDLE_NAME,
+            UserData.ADDRESS,
+            UserData.CART_NUMBER
         )
 
     @allure.feature('USER DATA MATCHING')
@@ -40,7 +42,7 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_first_name(checkout_data.FIRST_NAME)
+        self.overview.check_first_name(UserData.FIRST_NAME)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Фамилия"')
@@ -55,7 +57,7 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_second_name(checkout_data.SECOND_NAME)
+        self.overview.check_second_name(UserData.SECOND_NAME)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Отчество"')
@@ -70,11 +72,15 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_middle_name(checkout_data.MIDDLE_NAME)
+        self.overview.check_middle_name(UserData.MIDDLE_NAME)
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия списка продуктов')
-    @mark.parametrize('test_products', [['sandwich', 'nuggets']], indirect=True)
+    @mark.parametrize(
+        'test_products',
+        [['sandwich', 'nuggets']],
+        indirect=True
+    )
     def test_products_list_matching(self, test_products, auth_by_user1):
         self.catalog.open()
         for product in test_products:
@@ -97,14 +103,18 @@ class TestOverViewPage:
         [['sandwich', 'nuggets']],
         indirect=True
     )
-    @mark.parametrize('quantities', [[5, 3]])
+    @mark.parametrize(
+        'quantities',
+        Datasets.ORDER_OVERVIEW_QUANTITIES_OF_PRODUCTS
+    )
     def test_count_of_product_matching(
             self,
             test_products,
-            quantities: list[int],
+            quantities,
             auth_by_user1
     ):
         self.catalog.open()
+
         for i in range(len(test_products)):
             self.catalog.add_product(test_products[i].name, quantities[i])
 
@@ -148,7 +158,7 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_delivery_address(checkout_data.ADDRESS)
+        self.overview.check_delivery_address(UserData.ADDRESS)
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия номера карты')
@@ -163,14 +173,20 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_cart_number(checkout_data.CART_NUMBER)
+        self.overview.check_cart_number(UserData.CART_NUMBER)
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итогового количества товаров')
-    @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    def test_total_count(self, test_product, auth_by_user1):
+    @mark.parametrize('test_products', [['sandwich', 'nuggets']], indirect=True)
+    @mark.parametrize(
+        'quantities',
+        Datasets.ORDER_OVERVIEW_QUANTITIES_OF_PRODUCTS
+    )
+    def test_total_count(self, test_products, quantities, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(test_product.name)
+
+        for i in range(len(test_products)):
+            self.catalog.add_product(test_products[i].name, quantities[i])
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -178,15 +194,22 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        #EXPECTED_VALUE
-        self.overview.check_total_count(1)
+        self.overview.check_total_count(sum(quantities))
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итоговой стоимости заказа')
-    @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    def test_total_cost(self, test_product, auth_by_user1):
+    @mark.parametrize('test_products', [['sandwich', 'nuggets']], indirect=True)
+    @mark.parametrize(
+        'quantities',
+        Datasets.ORDER_OVERVIEW_QUANTITIES_OF_PRODUCTS
+    )
+    def test_total_cost(self, test_products, quantities, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(test_product.name)
+
+        expected_total_cost = 0
+        for i in range(len(test_products)):
+            self.catalog.add_product(test_products[i].name, quantities[i])
+            expected_total_cost += test_products[i].price * quantities[i]
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -194,8 +217,7 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        #EXPECTED_VALUE
-        self.overview.check_total_cost(f'{test_product.price:.{0}f} ₽')
+        self.overview.check_total_cost(f'{expected_total_cost:.{0}f} ₽')
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода обратно в каталог')
@@ -211,4 +233,4 @@ class TestOverViewPage:
         self.checkout_page.click_place_an_order_button()
 
         self.overview.click_back_to_catalog_button()
-        self.catalog.check_header(headers.CATALOG_PAGE)
+        self.catalog.check_header(CatalogData.HEADER)

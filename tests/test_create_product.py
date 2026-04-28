@@ -2,9 +2,9 @@ import allure
 
 from pytest import mark
 from pages.create_product_page import CreateProductPage
-from tests.test_data import headers
 from pages.edit_products_page import EditProductsPage
-from tests.test_data.test_products import ProductFactory
+from tests.test_data.datasets import Datasets
+from tests.test_data.pages_data import EditProductsData
 
 
 class TestCreateProductPage:
@@ -17,8 +17,8 @@ class TestCreateProductPage:
     @allure.story('Проверка создания товара с корректными данными')
     @mark.parametrize(
         'product',
-        [ProductFactory.pepperoni(), ProductFactory.pepperoni(price=0)],
-        ids=['custom product', 'product with zero price']
+        Datasets.CREATE_PRODUCT_CORRECT_PRODUCTS,
+        ids=Datasets.CREATE_PRODUCT_CORRECT_PRODUCTS_IDS
     )
     def test_create_product(self, product, auth_by_admin, delete_new_products):
         self.create_product.open()
@@ -27,30 +27,18 @@ class TestCreateProductPage:
 
         #EXPECTED_VALUE
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
         self.edit_products.check_existence_of_product(
             product.name,
             True
         )
 
     @allure.feature('INCORRECT CREATE PRODUCT')
-    @allure.story('Проверка создания товара с пустым полем "Цена"')
+    @allure.story('Проверка создания товара с негативными данными')
     @mark.parametrize(
         'field_name, product',
-        [
-            ('name', ProductFactory.pepperoni(name='')),
-            ('description', ProductFactory.pepperoni(description='')),
-            ('price', ProductFactory.pepperoni(price=None)),
-            ('price', ProductFactory.pepperoni(price=-1)),
-            ('image_url', ProductFactory.pepperoni(image_url=''))
-        ],
-        ids=[
-            'empty name',
-            'empty description',
-            'None price',
-            'negative price',
-            'empty image_url'
-        ]
+        Datasets.CREATE_PRODUCT_INCORRECT_PRODUCTS,
+        ids=Datasets.CREATE_PRODUCT_INCORRECT_PRODUCTS_IDS
     )
     def test_create_product_with_negative_data(
             self,
@@ -75,4 +63,4 @@ class TestCreateProductPage:
         self.create_product.click_back_to_edit_products_page_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)

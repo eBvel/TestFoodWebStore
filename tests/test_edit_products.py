@@ -3,8 +3,8 @@ import allure
 from pytest import mark
 from pages.create_product_page import CreateProductPage
 from pages.update_product_page import UpdateProductPage
-from tests.test_data import headers
 from pages.edit_products_page import EditProductsPage
+from tests.test_data.pages_data import CreateProductData, UpdateProductData
 
 
 class TestEditProductsPage:
@@ -21,22 +21,31 @@ class TestEditProductsPage:
         self.edit_products.click_create_product_button()
 
         self.create_product.check_url()
-        self.create_product.check_header(headers.CREATE_PRODUCT_PAGE)
+        self.create_product.check_header(CreateProductData.HEADER)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу редактирования товара')
     @mark.parametrize('test_product', ['margarita'], indirect=True)
-    def test_navigate_to_update_product_page(self, test_product, auth_by_admin):
+    def test_navigate_to_update_product_page(
+            self,
+            test_product,
+            auth_by_admin
+    ):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(test_product.name)
 
         self.update_product.check_url()
-        self.update_product.check_header(headers.UPDATE_PRODUCT_PAGE)
+        self.update_product.check_header(UpdateProductData.HEADER)
 
     @allure.feature('DELETE PRODUCT')
     @allure.story('Проверка удаления товара из каталога')
     @mark.parametrize('test_product', ['pepperoni'], indirect=True)
-    def test_delete_product(self, test_product, auth_by_admin, delete_new_products):
+    def test_delete_product(
+            self,
+            test_product,
+            auth_by_admin,
+            delete_new_products
+    ):
         self.edit_products.open()
         self.edit_products.click_delete_product_button(
             test_product.name

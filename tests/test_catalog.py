@@ -1,8 +1,9 @@
 import allure
-import pytest
 
+from pytest import mark
 from pages.catalog_page import CatalogPage
-from tests.test_data import product_data
+from tests.test_data.pages_data import CatalogData
+from tests.test_data.datasets import Datasets
 
 
 class TestCatalogPage:
@@ -12,14 +13,14 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Поиск товара по "Имени" в каталоге')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_search_product(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_to_catalog(test_product.name)
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "Описание" у карточки товара')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_description_of_product(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_description(
@@ -29,7 +30,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "Цена" у карточки товара')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_price_of_product(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_price(
@@ -39,7 +40,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Проверка поля "URL картинки" у карточки товара')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_image_of_product(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.check_product_image(
@@ -49,7 +50,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка добавления товара в корзину по кнопке "+"')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_add_product_to_cart(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
@@ -61,7 +62,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка удаления товара из корзины по кнопке "-"')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_remove_product_from_cart(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
@@ -74,8 +75,11 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка "шага" изменения кол-ва товаров в корзине')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
-    @pytest.mark.parametrize("add_count, remove_count", [(2, 1), (5, 3)])
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize(
+        "add_count, remove_count",
+        Datasets.CATALOG_STEP_OF_COUNT
+    )
     def test_step_of_count_changes(
             self,
             test_product,
@@ -98,28 +102,32 @@ class TestCatalogPage:
 
     @allure.feature('CART COUNTER')
     @allure.story('Проверка счетчика товаров в корзине')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
-    def test_cart_counter_changes(self, test_product, auth_by_user1):
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('quantity', Datasets.CATALOG_CART_COUNTER)
+    def test_cart_counter_changes(self, test_product, quantity, auth_by_user1):
         self.catalog.open()
-        self.catalog.add_product(test_product.name, 1)
-        #EXPECTED_VALUE
-        self.catalog.check_cart_counter_value(1)
+        self.catalog.add_product(test_product.name, quantity)
+
+        self.catalog.check_cart_counter_value(quantity)
 
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка нижней границы (0) счетчика товаров')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_lower_limit_of_counter(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.remove_product(test_product.name)
         self.catalog.check_current_count_of_product(
             test_product.name,
-            product_data.MIN_LIMIT
+            CatalogData.MIN_PRODUCT_COUNT
         )
 
     @allure.feature('PRODUCT COUNTER')
     @allure.story('Проверка верхней границы (100) счетчика товаров')
-    @pytest.mark.parametrize('test_product', ['sandwich'], indirect=True)
-    @pytest.mark.parametrize('start_product_count', [99, 100])
+    @mark.parametrize('test_product', ['sandwich'], indirect=True)
+    @mark.parametrize(
+        'start_product_count',
+        Datasets.CATALOG_UPPER_LIMIT_OF_PRODUCT_COUNTER
+    )
     def test_max_limit_of_counter(
             self,
             test_product,
@@ -131,6 +139,6 @@ class TestCatalogPage:
         product_count_to_cart(test_product, start_product_count)
         self.catalog.add_product(test_product.name)
         self.catalog.check_current_count_of_product(
-            product_data.SANDWICH_NAME,
-            product_data.MAX_LIMIT
+            test_product.name,
+            CatalogData.MAX_PRODUCT_COUNT
         )

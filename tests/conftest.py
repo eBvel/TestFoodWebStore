@@ -9,7 +9,7 @@ from webdriver_manager.firefox import GeckoDriverManager as FirefoxDriverManager
 
 from pages.auth_page import AuthPage
 from pages.navigation_bar_page import NavigationBarPage
-from tests.test_data import auth_data
+from tests.test_data.login_data import LoginData
 from tests.test_data.test_products import ProductFactory
 from requests import Session
 
@@ -54,8 +54,8 @@ def driver(browser_type):
 def api():
     with Session() as session:
         api = WebstoreAPI(session)
-        api.auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
-        api.auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
+        api.auth(LoginData.ADMIN_LOGIN, LoginData.ADMIN_PASSWORD)
+        api.auth(LoginData.USER1_LOGIN, LoginData.USER1_PASSWORD)
         yield api
 
 
@@ -101,12 +101,12 @@ def log_out(nav_bar):
 
 @pytest.fixture
 def auth_by_user1(auth, log_out):
-    yield auth(auth_data.USER1_LOGIN, auth_data.USER1_PASSWORD)
+    yield auth(LoginData.USER1_LOGIN, LoginData.USER1_PASSWORD)
 
 
 @pytest.fixture
 def auth_by_admin(auth, log_out):
-    yield auth(auth_data.ADMIN_LOGIN, auth_data.ADMIN_PASSWORD)
+    yield auth(LoginData.ADMIN_LOGIN, LoginData.ADMIN_PASSWORD)
 
 
 @pytest.fixture

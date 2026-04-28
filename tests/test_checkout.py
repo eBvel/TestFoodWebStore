@@ -5,7 +5,9 @@ from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.order_overview_page import OrderOverviewPage
 from pages.checkout_page import CheckoutPage
-from tests.test_data import headers, checkout_data
+from tests.test_data.datasets import Datasets
+from tests.test_data.user_data import UserData
+from tests.test_data.pages_data import CheckoutData, OrderOverviewData, CatalogData
 
 
 class TestUserDataPage:
@@ -27,15 +29,15 @@ class TestUserDataPage:
         self.cart.click_place_an_order_button()
 
         self.checkout.filling_fields(
-            checkout_data.SECOND_NAME,
-            checkout_data.FIRST_NAME,
-            checkout_data.MIDDLE_NAME,
-            checkout_data.ADDRESS,
-            checkout_data.CART_NUMBER
+            UserData.SECOND_NAME,
+            UserData.FIRST_NAME,
+            UserData.MIDDLE_NAME,
+            UserData.ADDRESS,
+            UserData.CART_NUMBER
         )
 
         self.checkout.click_place_an_order_button()
-        self.overview.check_header(headers.ORDER_OVERVIEW_PAGE)
+        self.overview.check_header(OrderOverviewData.HEADER)
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с пустыми полями')
@@ -48,15 +50,15 @@ class TestUserDataPage:
         self.cart.click_place_an_order_button()
 
         self.checkout.click_place_an_order_button()
-        self.checkout.check_header(headers.USER_DATA_PAGE)
+        self.checkout.check_header(CheckoutData.HEADER)
         self.checkout.check_empty_fields_alert(
-            checkout_data.ALL_EMPTY_FIELDS_MESSAGE
+            CheckoutData.ALL_EMPTY_FIELDS_MESSAGE
         )
 
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Фамилия"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    @mark.parametrize('value', checkout_data.NAMES_DATASET)
+    @mark.parametrize('value', Datasets.CHECKOUT_INCORRECT_NAMES)
     def test_validation_of_second_name(
             self,
             test_product,
@@ -76,7 +78,7 @@ class TestUserDataPage:
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Имя"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    @mark.parametrize('value', checkout_data.NAMES_DATASET)
+    @mark.parametrize('value', Datasets.CHECKOUT_INCORRECT_NAMES)
     def test_validation_of_first_name(self, test_product, value, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
@@ -91,7 +93,10 @@ class TestUserDataPage:
     @allure.feature('FIELDS VALIDATION')
     @allure.story('Проверка валидации поля "Номер карты"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    @mark.parametrize('value', checkout_data.CART_DATASET)
+    @mark.parametrize(
+        'value',
+        Datasets.CHECKOUT_INCORRECT_VALUES_FOR_NUMERIC_FIELD
+    )
     def test_validation_of_cart_number(self, test_product, value, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
@@ -114,4 +119,4 @@ class TestUserDataPage:
         self.cart.click_place_an_order_button()
 
         self.checkout.click_back_to_catalog()
-        self.catalog.check_header(headers.CATALOG_PAGE)
+        self.catalog.check_header(CatalogData.HEADER)

@@ -3,8 +3,9 @@ import allure
 from pytest import mark
 from pages.create_product_page import CreateProductPage
 from pages.update_product_page import UpdateProductPage
-from tests.test_data import headers, product_data
 from pages.edit_products_page import EditProductsPage
+from tests.test_data.pages_data import UpdateProductData, EditProductsData
+from tests.test_data.new_product_data import NewProductData
 
 
 class TestCreateProductPage:
@@ -22,7 +23,7 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(test_product.name)
 
         self.update_product.check_url()
-        self.update_product.check_header(headers.UPDATE_PRODUCT_PAGE)
+        self.update_product.check_header(UpdateProductData.HEADER)
 
     @allure.feature('UPDATE PRODUCT')
     @allure.story('Проверка редактирования поля "Наименование"')
@@ -35,14 +36,15 @@ class TestCreateProductPage:
     ):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(test_product.name)
-        self.update_product.enter_product_name(product_data.NEW_MARGARITA_NAME)
+
+        self.update_product.enter_product_name(NewProductData.NAME)
         self.update_product.click_update_product_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
         #EXPECTED_VALUE
         self.edit_products.check_existence_of_product(
-            product_data.NEW_MARGARITA_NAME,
+            NewProductData.NAME,
             True
         )
 
@@ -52,16 +54,17 @@ class TestCreateProductPage:
     def test_edit_description_of_product(self, test_product, auth_by_admin):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(test_product.name)
+
         self.update_product.enter_product_description(
-            product_data.NEW_MARGARITA_DESCRIPTION
+            NewProductData.DESCRIPTION
         )
         self.update_product.click_update_product_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
         self.edit_products.check_product_description(
             test_product.name,
-            product_data.NEW_MARGARITA_DESCRIPTION
+            NewProductData.DESCRIPTION
         )
 
     @allure.feature('UPDATE PRODUCT')
@@ -72,16 +75,17 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(
             test_product.name
         )
+
         self.update_product.enter_price_of_product(
-            product_data.NEW_MARGARITA_PRICE_INT
+            NewProductData.PRICE_INT
         )
         self.update_product.click_update_product_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
         self.edit_products.check_price_of_product(
             test_product.name,
-            product_data.NEW_MARGARITA_PRICE_STR
+            NewProductData.PRICE_STR
         )
 
     @allure.feature('UPDATE PRODUCT')
@@ -94,21 +98,25 @@ class TestCreateProductPage:
         )
 
         self.update_product.enter_image_source(
-            product_data.NEW_MARGARITA_IMAGE_URL
+            NewProductData.IMAGE_URL
         )
         self.update_product.click_update_product_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
         self.edit_products.check_image_source_of_product(
             test_product.name,
-            product_data.NEW_MARGARITA_IMAGE_URL
+            NewProductData.IMAGE_URL
         )
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу "Редактирование товаров"')
     @mark.parametrize('test_product', ['margarita'], indirect=True)
-    def test_navigation_to_edit_products_page(self, test_product, auth_by_admin):
+    def test_navigation_to_edit_products_page(
+            self,
+            test_product,
+            auth_by_admin
+    ):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(
             test_product.name
@@ -117,7 +125,7 @@ class TestCreateProductPage:
         self.update_product.click_back_to_edit_products_page_button()
 
         self.edit_products.check_url()
-        self.edit_products.check_header(headers.EDIT_PRODUCTS_PAGE)
+        self.edit_products.check_header(EditProductsData.HEADER)
 
 
 
