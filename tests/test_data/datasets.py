@@ -45,6 +45,7 @@ class Datasets:
         "Admin"
     ]
 
+    CATALOG_CART_COUNTER = [1, 2, 3]
     CATALOG_STEP_OF_COUNT = [
         (2, 1),
         (5, 3)
@@ -52,6 +53,7 @@ class Datasets:
     CATALOG_UPPER_LIMIT_OF_PRODUCT_COUNTER = [99, 100]
 
     CART_QUANTITIES_OF_CAVIAR = [1, 2]
+    CART_QUANTITY_OF_PRODUCT = [2, 3]
 
     CHECKOUT_INCORRECT_NAMES = ["12345", "!@#$%^", "     "]
     CHECKOUT_INCORRECT_VALUES_FOR_NUMERIC_FIELD = ["abcde", "!@#$%^", "     "]
