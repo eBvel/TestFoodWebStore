@@ -35,8 +35,8 @@ class TestEditProductsPage:
 
     @allure.feature('DELETE PRODUCT')
     @allure.story('Проверка удаления товара из каталога')
-    @mark.parametrize('test_product', ['margarita'], indirect=True)
-    def test_delete_product(self, test_product, auth_by_admin):
+    @mark.parametrize('test_product', ['pepperoni'], indirect=True)
+    def test_delete_product(self, test_product, auth_by_admin, delete_new_products):
         self.edit_products.open()
         self.edit_products.click_delete_product_button(
             test_product.name
@@ -44,5 +44,5 @@ class TestEditProductsPage:
         #EXPECTED_VALUE
         self.edit_products.check_existence_of_product(
             test_product.name,
-            True
+            False
         )

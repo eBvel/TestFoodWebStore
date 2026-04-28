@@ -2,7 +2,7 @@ import time
 
 from pages.auth_page import AuthPage
 from utils.assertion import AssertValues
-from test_data import headers
+from tests.test_data import headers
 
 
 class TestTechnical:
@@ -22,6 +22,7 @@ class TestTechnical:
         error_rate = 0.1
         time_of_load_website = end_time-start_time-error_rate
         print(f"{time_of_load_website=}")
+        #EXPECTED_VALUE
         AssertValues.is_smaller_or_equal(
             "Time's load website",
             time_of_load_website,
