@@ -13,8 +13,9 @@ class TestTechnical:
 
     @allure.feature('SECURE CONNECTION')
     @allure.story('Проверка подключения по HTTPS протоколу')
-    def test_website_launch_by_HTTPS(self):
+    def test_website_launch_by_https(self):
         self.driver.get(TechnicalData.HTTPS_URL)
+
         self.auth_page.check_header(AuthData.HEADER)
 
     @allure.feature('TIME OF LOAD SITE')

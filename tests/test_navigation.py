@@ -21,6 +21,7 @@ class TestNavigation:
     def test_open_navigation_menu(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
+
         self.navigation_bar.check_header(NavigationData.HEADER)
 
     @allure.feature('CLICK ON MENU ITEMS')
@@ -43,8 +44,8 @@ class TestNavigation:
         self.catalog.check_url()
         self.catalog.check_header(CatalogData.HEADER)
 
-    @allure.feature('NAVIGATION')
-    @allure.story('Проверка перехода на страницу "Редактировать товары"')
+    @allure.feature('CLICK ON MENU ITEMS')
+    @allure.story('Проверка перехода по пункту меню "Редактировать товары"')
     def test_navigate_to_edit_page(self, auth_by_admin):
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_edit_products_button()

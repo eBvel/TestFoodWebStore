@@ -34,13 +34,10 @@ class TestCompletePage:
     def test_complete_order(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
         self.cart.click_place_an_order_button()
-
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
-
         self.overview.click_complete_order_button()
 
         self.complete.check_url()
@@ -53,15 +50,11 @@ class TestCompletePage:
     def test_navigate_back_to_catalog(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
         self.cart.click_place_an_order_button()
-
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
-
         self.overview.click_complete_order_button()
-
         self.complete.click_back_to_catalog_button()
 
         self.catalog.check_url()
