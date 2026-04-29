@@ -6,6 +6,7 @@ from pages.catalog_page import CatalogPage
 from pages.checkout_page import CheckoutPage
 from tests.test_data.datasets import Datasets
 from tests.test_data.pages_data import CartData, CheckoutData
+from tests.test_data.expected_values import ExpectedValues as EV
 
 
 class TestCartPage:
@@ -13,7 +14,7 @@ class TestCartPage:
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
         cls.cart = CartPage(cls.driver)
-        cls.user_data = CheckoutPage(cls.driver)
+        cls.checkout_page = CheckoutPage(cls.driver)
 
     @allure.feature('EMPTY TEXT')
     @allure.story('Проверка содержания сообщения, '
@@ -28,8 +29,8 @@ class TestCartPage:
     def test_price_matching(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
+
         self.cart.check_product_price(
             test_product.name,
             test_product.get_price_str()
@@ -41,23 +42,26 @@ class TestCartPage:
     def test_total_cost_display(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
-        #EXPECTED_VALUE
-        self.cart.check_total_cost_display(expected_value=True)
+
+        self.cart.check_total_cost_display(EV.CART_TOTAL_COST_IS_DISPLAY)
 
     @allure.feature('TOTAL COST')
     @allure.story('Проверка расчета "итоговой стоимости" товаров')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('quantity', Datasets.CART_QUANTITY_OF_PRODUCT)
-    def test_calculation_total_cost(self, test_product, quantity, auth_by_user1):
+    def test_calculation_total_cost(
+            self,
+            test_product,
+            quantity,
+            auth_by_user1
+    ):
         self.catalog.open()
         self.catalog.add_product(test_product.name, quantity)
-
         self.cart.open()
-        #EXPECTED_VALUE
+
         self.cart.check_total_cost(
-            f'Итого: {(test_product.price * quantity):.{0}f} ₽'
+            EV.CART_TOTAL_COST_TO_STRING(test_product.price * quantity)
         )
 
     @allure.feature('TOTAL COST')
@@ -68,8 +72,8 @@ class TestCartPage:
     def test_total_cost_limit(self, test_product, count, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name, count)
-
         self.cart.open()
+
         self.cart.check_total_cost(CartData.MAX_TOTAL_COST)
 
     @allure.feature('ADD/REMOVE PRODUCT')
@@ -78,11 +82,10 @@ class TestCartPage:
     def test_clear_cart(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
         self.cart.remove_product(test_product.name)
-        #EXPECTED_VALUE
-        self.cart.check_cart_is_empty(expected_value=True)
+
+        self.cart.check_cart_is_empty(EV.CART_AFTER_CLEAR_IS_EMPTY)
 
     @allure.feature('ADD/REMOVE PRODUCT')
     @allure.story('Проверка добавления товара через "Корзинку"')
@@ -90,19 +93,23 @@ class TestCartPage:
     def test_add_product_from_cart(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
         self.cart.add_product(test_product.name)
-        #EXPECTED_VALUE
-        self.cart.check_product_count(test_product.name, 2)
+
+        self.cart.check_product_count(
+            test_product.name,
+            EV.CART_COUNT_AFTER_ADD
+        )
 
     @allure.feature('PLACE AN ORDER BUTTON')
     @allure.story('Проверка отображения кнопки "Оформить заказ" '
                   'в пустой корзине')
     def test_place_an_order_button_display_in_empty_cart(self, auth_by_user1):
         self.cart.open()
-        #EXPECTED_VALUE
-        self.cart.check_place_an_order_button_display(expected_value=False)
+
+        self.cart.check_place_an_order_button_display(
+            EV.CART_PLACE_AN_ORDER_BUTTON_IS_NOT_DISPLAY
+        )
 
     @allure.feature('PLACE AN ORDER BUTTON')
     @allure.story('Проверка наличия кнопки "Оформить заказ" в корзине '
@@ -111,10 +118,11 @@ class TestCartPage:
     def test_place_an_order_button_display(self, test_product, auth_by_user1):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
-        #EXPECTED_VALUE
-        self.cart.check_place_an_order_button_display(expected_value=True)
+
+        self.cart.check_place_an_order_button_display(
+            EV.CART_PLACE_AN_ORDER_BUTTON_IS_DISPLAY
+        )
 
     @allure.feature('PLACE AN ORDER BUTTON')
     @allure.story('Проверка перехода на страницу оформления заказа '
@@ -127,7 +135,7 @@ class TestCartPage:
     ):
         self.catalog.open()
         self.catalog.add_product(test_product.name)
-
         self.cart.open()
         self.cart.click_place_an_order_button()
-        self.user_data.check_header(CheckoutData.HEADER)
+
+        self.checkout_page.check_header(CheckoutData.HEADER)

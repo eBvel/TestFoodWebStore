@@ -5,6 +5,7 @@ from pages.create_product_page import CreateProductPage
 from pages.update_product_page import UpdateProductPage
 from pages.edit_products_page import EditProductsPage
 from tests.test_data.pages_data import CreateProductData, UpdateProductData
+from tests.test_data.expected_values import ExpectedValues as EV
 
 
 class TestEditProductsPage:
@@ -50,8 +51,8 @@ class TestEditProductsPage:
         self.edit_products.click_delete_product_button(
             test_product.name
         )
-        #EXPECTED_VALUE
+
         self.edit_products.check_existence_of_product(
             test_product.name,
-            False
+            EV.EDIT_PRODUCT_IS_NOT_EXIST
         )

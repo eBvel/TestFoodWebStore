@@ -6,6 +6,7 @@ from pages.update_product_page import UpdateProductPage
 from pages.edit_products_page import EditProductsPage
 from tests.test_data.pages_data import UpdateProductData, EditProductsData
 from tests.test_data.new_product_data import NewProductData
+from tests.test_data.expected_values import ExpectedValues as EV
 
 
 class TestCreateProductPage:
@@ -36,16 +37,14 @@ class TestCreateProductPage:
     ):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(test_product.name)
-
         self.update_product.enter_product_name(NewProductData.NAME)
         self.update_product.click_update_product_button()
-
         self.edit_products.check_url()
         self.edit_products.check_header(EditProductsData.HEADER)
-        #EXPECTED_VALUE
+
         self.edit_products.check_existence_of_product(
             NewProductData.NAME,
-            True
+            EV.UPDATE_PRODUCT_IS_EXIST
         )
 
     @allure.feature('UPDATE PRODUCT')
@@ -54,7 +53,6 @@ class TestCreateProductPage:
     def test_edit_description_of_product(self, test_product, auth_by_admin):
         self.edit_products.open()
         self.edit_products.click_edit_product_button(test_product.name)
-
         self.update_product.enter_product_description(
             NewProductData.DESCRIPTION
         )
@@ -75,7 +73,6 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(
             test_product.name
         )
-
         self.update_product.enter_price_of_product(
             NewProductData.PRICE_INT
         )
@@ -96,7 +93,6 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(
             test_product.name
         )
-
         self.update_product.enter_image_source(
             NewProductData.IMAGE_URL
         )
@@ -121,12 +117,7 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(
             test_product.name
         )
-
         self.update_product.click_back_to_edit_products_page_button()
 
         self.edit_products.check_url()
         self.edit_products.check_header(EditProductsData.HEADER)
-
-
-
-
