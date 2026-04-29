@@ -7,6 +7,7 @@ from selenium.webdriver.support.wait import TimeoutException
 from utils.assertion import AssertValues
 from webstore_config.links import Links
 from webstore_config.locators import BaseLocators as locators
+from webstore_config.config import Config
 
 
 class BasePage:
@@ -14,12 +15,13 @@ class BasePage:
         self.driver = driver
         self.url = Links.BASE_URL
 
-    def open(self):
+    def open(self, is_maximize=False):
         with allure.step(f"Открытие страницы по ссылке: {self.url}"):
-            self.driver.maximize_window()
+            if is_maximize:
+                self.driver.maximize_window()
             self.driver.get(self.url)
 
-    def is_url_same(self, url, timeout=5):
+    def is_url_same(self, url, timeout=Config.TIMEOUT):
         try:
             return self.find(EC.url_to_be(url), timeout)
         except TimeoutException:
@@ -29,65 +31,94 @@ class BasePage:
         with allure.step(f'Обновление страницы: "{self.__class__.__name__}"'):
             self.driver.refresh()
 
-    def wait_until_not(self, condition, timeout=5):
+    def wait_until_not(self, condition, timeout=Config.TIMEOUT):
         with allure.step(f'Ожидание, пока условие ({condition})'
                          f' не станет ложным'):
             return wait(self.driver, timeout).until_not(condition)
 
-    def find(self, condition, timeout):
+    def find(self, condition, timeout=Config.TIMEOUT):
         with allure.step(f'Поиск элемента страницы "{self.url}". '
                          f'Локатор: "{condition}"'):
             return wait(self.driver, timeout).until(condition)
 
-    def find_visible_element(self, locator, timeout=5):
+    def find_visible_element(self, locator, timeout=Config.TIMEOUT):
         return self.find(EC.visibility_of_element_located(locator), timeout)
 
-    def find_clickable_element(self, locator, timeout=5):
+    def find_clickable_element(self, locator, timeout=Config.TIMEOUT):
         element = self.find(EC.element_to_be_clickable(locator), timeout)
         self.scroll_to_element(element)
         return element
 
-    def find_presence_element(self, locator, timeout=5):
+    def find_presence_element(self, locator, timeout=Config.TIMEOUT):
         return self.find(EC.presence_of_element_located(locator), timeout)
 
-    def find_elements(self, locator, timeout=5):
+    def find_elements(self, locator, timeout=Config.TIMEOUT):
         return self.find(
             EC.visibility_of_all_elements_located(locator),
             timeout
         )
 
-    def is_text_present(self, locator, text, timeout=5):
+    def is_text_present(self, locator, text, timeout=Config.TIMEOUT):
         try:
-            return self.find(EC.text_to_be_present_in_element(locator, text), timeout)
+            return self.find(
+                EC.text_to_be_present_in_element(locator, text),
+                timeout
+            )
         except TimeoutException:
             return False
 
-    def is_attribute_present(self, locator, attribute, text, timeout=1):
+    def is_attribute_present(
+            self,
+            locator,
+            attribute,
+            text,
+            timeout=Config.TIMEOUT
+    ):
         try:
-            return self.find(EC.text_to_be_present_in_element_attribute(locator, attribute, text), timeout)
+            return self.find(
+                EC.text_to_be_present_in_element_attribute(
+                    locator,
+                    attribute,
+                    text
+                ),
+                timeout
+            )
         except TimeoutException:
             return False
 
-    def is_invisible(self, locator, timeout=5):
+    def is_invisible(self, locator, timeout=Config.TIMEOUT):
         try:
-            return self.find(EC.invisibility_of_element_located(locator), timeout)
+            return self.find(
+                EC.invisibility_of_element_located(locator),
+                timeout
+            )
         except TimeoutException:
             return False
 
-    def is_attribute_missing(self, locator, attribute, text, timeout=5):
+    def is_attribute_missing(
+            self,
+            locator,
+            attribute,
+            text,
+            timeout=Config.TIMEOUT
+    ):
         try:
-            return self.wait_until_not(EC.text_to_be_present_in_element_attribute(
-                locator,
-                attribute,
-                text
-            ), timeout)
+            return self.wait_until_not(
+                EC.text_to_be_present_in_element_attribute(
+                    locator,
+                    attribute,
+                    text
+                ),
+                timeout
+            )
         except TimeoutException:
             return False
 
     @allure.step('Прокрутка страницы до искомого элемента')
     def scroll_to_element(self, element):
         self.driver.execute_script(
-            "arguments[0].scrollIntoView({behavior: 'instant', block: 'start', inline: 'start'});",
+            "arguments[0].scrollIntoView({behavior: 'instant', "
+            "block: 'start', inline: 'start'});",
             element
         )
 
@@ -96,7 +127,7 @@ class BasePage:
         with allure.step(f'Запрос заголовка страницы: '
                          f'"{self.__class__.__name__}"'):
             try:
-                return self.find_visible_element(locators.HEADER, 5).text
+                return self.find_visible_element(locators.HEADER).text
             except TimeoutException:
                 return None
 
@@ -115,7 +146,7 @@ class BasePage:
     @allure.step("Запрос текста заголовка.")
     def get_header_text(self):
         try:
-            return self.find_visible_element(locators.HEADER_BUTTON, 3).text
+            return self.find_visible_element(locators.HEADER_BUTTON).text
         except TimeoutException:
             return None
 
@@ -128,7 +159,7 @@ class BasePage:
                          f'"{self.__class__.__name__}". Ожидаемое значение: '
                          f'"{expected_title}"'):
             AssertValues.compare_values(
-                f"{self.__class__.__name__} HEADER",
+                f"{self.__class__.__name__}: Header",
                 self.header,
                 expected_title
             )
@@ -139,7 +170,7 @@ class BasePage:
                          f'"{self.url}"'):
             self.is_url_same(self.url)
             AssertValues.compare_values(
-                f"{self.__class__.__name__} URL",
+                f"{self.__class__.__name__}: Url",
                 self.get_current_url(),
                 self.url
             )
