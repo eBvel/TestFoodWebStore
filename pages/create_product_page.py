@@ -21,9 +21,11 @@ class CreateProductPage(BasePage):
 
     def __fill_in_field(self, field_name, value, locator):
         with allure.step(f'Ввод значения "{value}" в поле "{field_name}"'):
-            if value is None:
-                value = ''
-            self.find_visible_element(locator).send_keys(value)
+            (
+                self
+                .find_visible_element(locator)
+                .send_keys(value if value is not None else '')
+            )
 
     def enter_product_name(self, name):
         self.__fill_in_field("Наименование", name, locators.NAME_FIELD)
@@ -40,13 +42,6 @@ class CreateProductPage(BasePage):
             "Ожидаемая категория",
             expected_category,
             locators.EXPECTED_CATEGORY_FIELD
-        )
-
-    def enter_category_in_list(self, category):
-        self.__fill_in_field(
-            "Категория в списке",
-            category,
-            locators.CATEGORY_IN_LIST_FIELD
         )
 
     def enter_price_of_product(self, price):
@@ -70,7 +65,9 @@ class CreateProductPage(BasePage):
     def click_back_to_edit_products_page_button(self):
         (
             self
-            .find_clickable_element(locators.BACK_TO_EDIT_PRODUCTS_PAGE_BUTTON)
+            .find_clickable_element(
+                locators.BACK_TO_EDIT_PRODUCTS_PAGE_BUTTON
+            )
             .click()
         )
 
@@ -89,7 +86,11 @@ class CreateProductPage(BasePage):
     @property
     @allure.step('Запрос состояния кнопки "Создать товар" (активна или нет)')
     def create_product_button_is_enabled(self):
-        return self.find_visible_element(locators.CREATE_PRODUCT_BUTTON).is_enabled()
+        return (
+            self
+            .find_visible_element(locators.CREATE_PRODUCT_BUTTON)
+            .is_enabled()
+        )
 
     def check_create_button_is_enabled(self, expected_value):
         with allure.step('Проверка, активная кнопка "Создать товар" или нет.'

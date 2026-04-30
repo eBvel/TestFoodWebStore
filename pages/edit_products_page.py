@@ -51,15 +51,23 @@ class EditProductsPage(BasePage):
     def click_edit_product_button(self, product_name):
         with allure.step(f'ТОВАР "{product_name}": '
                          f'нажатие кнопки "Редактировать"'):
-            self.find_clickable_element(
-                locators.EDIT_PRODUCT_BUTTON(product_name)
-            ).click()
+            (
+                self
+                .find_clickable_element(
+                    locators.EDIT_PRODUCT_BUTTON(product_name)
+                )
+                .click()
+            )
 
     def click_delete_product_button(self, product_name):
         with allure.step(f'ТОВАР "{product_name}": нажатие кнопки "Удалить"'):
-            self.find_clickable_element(
-                locators.DELETE_PRODUCT_BUTTON(product_name)
-            ).click()
+            (
+                self
+                .find_clickable_element(
+                    locators.DELETE_PRODUCT_BUTTON(product_name)
+                )
+                .click()
+            )
 
     def product_is_missing(self, product_name):
         with allure.step(f'Проверка, существует ли товар '

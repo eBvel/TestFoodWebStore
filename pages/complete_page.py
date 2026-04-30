@@ -23,7 +23,7 @@ class CompletePage(BasePage):
         with allure.step(f'Проверка сообщения об успешно созданном заказе. '
                          f'Ожидаемое значение: "{expected_value}"'):
             AssertValues.compare_values(
-                "COMPLETE: COMPLETE MESSAGE",
+                "COMPLETE: Complete message",
                 self.get_complete_message(),
                 expected_value
             )

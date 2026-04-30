@@ -11,39 +11,44 @@ class OrderOverviewPage(BasePage):
         super().__init__(driver)
         self.url =Links.ORDER_OVERVIEW_PAGE_URL
 
+    @allure.step('Запрос списка товаров в заказе')
     def get_products_title(self):
         return [
             product.text for product in self.find_elements(locators.PRODUCTS)
         ]
 
     def get_product_count(self, product_name):
-        return int(
-            self
-            .find_visible_element(locators.PRODUCT_DATA(product_name))
-            .text
-            .split(' ')[0]
-        )
+        with allure.step(f'Запрос количества товара "{product_name}" '
+                         f'в заказа'):
+            return int(
+                self
+                .find_visible_element(locators.PRODUCT_DATA(product_name))
+                .text
+                .split(' ')[0]
+            )
 
     def get_product_price(self, product_name):
-        return (self
-        .find_visible_element(locators.PRODUCT_DATA(product_name))
-        .text
-        .split('по ')[1])
+        with allure.step(f'Запрос цены товара "{product_name}" в заказе'):
+            return (
+                self
+                .find_visible_element(locators.PRODUCT_DATA(product_name))
+                .text
+                .split('по ')[1]
+            )
 
-    @allure.step("Запрос данных пользователя в заказе")
-    def get_user_data(self):
-        return self.find_visible_element(locators.USER_DATA).text
-
+    @allure.step('Запрос значения из поля "Имя" в заказе')
     def get_first_name(self):
         return self.find_visible_element(locators.FIRST_NAME).text
 
+    @allure.step('Запрос значения из поля "Фамилия" в заказе')
     def get_second_name(self):
         return self.find_visible_element(locators.SECOND_NAME).text
 
+    @allure.step('Запрос значения из поля "Отчество" в заказе')
     def get_middle_name(self):
         return self.find_visible_element(locators.MIDDLE_NAME).text
 
-    @allure.step("Запрос данных о доставке заказа")
+    @allure.step("Запрос данных об адресе доставки заказа")
     def get_delivery_address(self):
         return (
             self
@@ -70,6 +75,7 @@ class OrderOverviewPage(BasePage):
             .split(': ')[1]
         )
 
+    @allure.step('Запрос "общего количества" товаров в заказе')
     def get_total_count(self):
         return int(
             self
@@ -78,9 +84,11 @@ class OrderOverviewPage(BasePage):
             .split(': ')[1]
         )
 
+    @allure.step('Нажатие кнопки "Завершить заказ"')
     def click_complete_order_button(self):
         self.find_clickable_element(locators.COMPLETE_ORDER_BUTTON).click()
 
+    @allure.step('Нажатие кнопки "Обратно в магазин"')
     def click_back_to_catalog_button(self):
         self.find_clickable_element(locators.BACK_TO_CATALOG_BUTTON).click()
 
@@ -88,7 +96,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка поля "Имя". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: FIRST NAME",
+                "OVERVIEW: First name",
                 self.get_first_name(),
                 f'Имя: {expected_value}'
             )
@@ -97,7 +105,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка поля "Фамилия". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: SECOND NAME",
+                "OVERVIEW: Second name",
                 self.get_second_name(),
                 f'Фамилия: {expected_value}'
             )
@@ -106,7 +114,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка поля "Отчество". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: MIDDLE NAME",
+                "OVERVIEW: Middle name",
                 self.get_middle_name(),
                 f'Отчество: {expected_value}'
             )
@@ -115,7 +123,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка списка товаров. Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: PRODUCTS LIST",
+                "OVERVIEW: Product list",
                 set(self.get_products_title()),
                 set(expected_value)
             )
@@ -124,7 +132,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка количества товаров. Ожидаемое значение:'
                          f' "{expected_value}"'):
             AssertValues.compare_values(
-                f"OVERVIEW: PRODUCT({product_name}) COUNT",
+                f"OVERVIEW: Product count ({product_name})",
                 self.get_product_count(product_name),
                 expected_value
             )
@@ -133,7 +141,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка цены товаров. Ожидаемое значение:'
                          f' "{expected_value}"'):
             AssertValues.compare_values(
-                f"OVERVIEW: PRODUCT({product_name}) PRICE",
+                f"OVERVIEW: Product price ({product_name})",
                 self.get_product_price(product_name),
                 expected_value
             )
@@ -142,7 +150,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка адреса доставки. Ожидаемое значение:'
                          f' "{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: DELIVERY ADDRESS",
+                "OVERVIEW: Delivery address",
                 self.get_delivery_address(),
                 expected_value
             )
@@ -151,7 +159,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка номера карты. Ожидаемое значение:'
                          f' "{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: CART NUMBER",
+                "OVERVIEW: Cart number",
                 self.get_cart_number(),
                 expected_value
             )
@@ -160,7 +168,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка общего количества товаров. Ожидаемое '
                          f'значение: "{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: TOTAL COUNT",
+                "OVERVIEW: Total count",
                 self.get_total_count(),
                 expected_value
             )
@@ -169,7 +177,7 @@ class OrderOverviewPage(BasePage):
         with allure.step(f'Проверка общей стоимости товаров. Ожидаемое'
                          f' значение: "{expected_value}"'):
             AssertValues.compare_values(
-                "OVERVIEW: TOTAL COST",
+                "OVERVIEW: Total cost",
                 self.get_total_cost(),
                 expected_value
             )

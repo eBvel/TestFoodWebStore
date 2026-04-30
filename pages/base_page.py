@@ -38,7 +38,7 @@ class BasePage:
 
     def find(self, condition, timeout=Config.TIMEOUT):
         with allure.step(f'Поиск элемента страницы "{self.url}". '
-                         f'Локатор: "{condition}"'):
+                         f'Условие и локатор: "{condition}"'):
             return wait(self.driver, timeout).until(condition)
 
     def find_visible_element(self, locator, timeout=Config.TIMEOUT):
@@ -131,26 +131,26 @@ class BasePage:
             except TimeoutException:
                 return None
 
-    @allure.step("Нажатие кнопки навигации (меню).")
+    @allure.step('Нажатие кнопки навигации (меню)')
     def click_navigation_bar(self):
         self.find_clickable_element(locators.NAVIGATION_BAR).click()
 
-    @allure.step("Нажатие на заголовок 'Магазин'.")
+    @allure.step('Нажатие на заголовок "Магазин"')
     def click_header_button(self):
         self.find_clickable_element(locators.HEADER_BUTTON).click()
 
-    @allure.step("Нажатие кнопки 'Корзинка'.")
+    @allure.step('Нажатие кнопки "Корзинка"')
     def click_cart_button(self):
         self.find_clickable_element(locators.CART_BUTTON).click()
 
-    @allure.step("Запрос текста заголовка.")
+    @allure.step('Запрос текста заголовка')
     def get_header_text(self):
         try:
             return self.find_visible_element(locators.HEADER_BUTTON).text
         except TimeoutException:
             return None
 
-    @allure.step("Запрос текущего URL страницы.")
+    @allure.step('Запрос текущего URL страницы')
     def get_current_url(self):
         return self.driver.current_url
 

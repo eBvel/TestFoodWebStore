@@ -1,4 +1,5 @@
 import allure
+
 from pages.base_page import BasePage
 from webstore_config.locators import AuthLocators as locators
 
@@ -10,7 +11,7 @@ class AuthPage(BasePage):
     @property
     @allure.step('Запрос заголовка страницы "Авторизация"')
     def header(self):
-        return self.find_visible_element(locators.HEADER, 3).text
+        return self.find_visible_element(locators.HEADER).text
 
     def enter_login(self, login):
         with allure.step(f'Ввод логина: "{login}"'):

@@ -12,25 +12,44 @@ class CheckoutPage(BasePage):
         super().__init__(driver)
         self.url = Links.PLACE_AN_ORDER_PAGE_URL
 
+    def __fill_in_field(self, field_name, value, locator):
+        with allure.step(f'Ввод значения "{value}" в поле "{field_name}"'):
+            (
+                self
+                .find_visible_element(locator)
+                .send_keys(value if value is not None else '')
+            )
+
     def enter_first_name(self, first_name):
-        with allure.step(f'Заполнение имени значением "{first_name}"'):
-            self.find_visible_element(locators.FIRST_NAME_FIELD).send_keys(first_name)
+        self.__fill_in_field('Имя', first_name, locators.FIRST_NAME_FIELD)
 
     def enter_second_name(self, second_name):
-        with allure.step(f'Заполнение фамилии значением "{second_name}"'):
-            self.find_visible_element(locators.SECOND_NAME_FIELD).send_keys(second_name)
+        self.__fill_in_field(
+            'Фамилия',
+            second_name,
+            locators.SECOND_NAME_FIELD
+        )
 
     def enter_middle_name(self, middle_name):
-        with allure.step(f'Заполнение отчества значением "{middle_name}"'):
-            self.find_visible_element(locators.MIDDLE_NAME_FIELD).send_keys(middle_name)
+        self.__fill_in_field(
+            'Отчество',
+            middle_name,
+            locators.MIDDLE_NAME_FIELD
+        )
 
     def enter_delivery_address(self, address):
-        with allure.step(f'Заполнение адреса доставки значением "{address}"'):
-            self.find_visible_element(locators.DELIVERY_ADDRESS_FIELD).send_keys(address)
+        self.__fill_in_field(
+            'Адрес доставки',
+            address,
+            locators.DELIVERY_ADDRESS_FIELD
+        )
 
     def enter_cart_number(self, cart_number):
-        with allure.step(f'Заполнение номера карты значением "{cart_number}"'):
-            self.find_visible_element(locators.CART_NUMBER_FIELD).send_keys(cart_number)
+        self.__fill_in_field(
+            'Номер карты',
+            cart_number,
+            locators.CART_NUMBER_FIELD
+        )
 
     def filling_fields(
             self,
@@ -54,21 +73,29 @@ class CheckoutPage(BasePage):
     def click_back_to_catalog(self):
         self.find_clickable_element(locators.BACK_TO_CATALOG_BUTTON).click()
 
-    @allure.step('Запрос значения из поля "Имя".')
+    @allure.step('Запрос значения из поля "Имя"')
     def get_first_name(self):
-        return self.find_visible_element(locators.FIRST_NAME_FIELD).get_attribute('value')
+        return (
+            self
+            .find_visible_element(locators.FIRST_NAME_FIELD)
+            .get_attribute('value')
+        )
 
-    @allure.step('Запрос значения из поля "Фамилия".')
+    @allure.step('Запрос значения из поля "Фамилия"')
     def get_second_name(self):
-        return self.find_visible_element(locators.SECOND_NAME_FIELD).get_attribute('value')
+        return (
+            self
+            .find_visible_element(locators.SECOND_NAME_FIELD)
+            .get_attribute('value')
+        )
 
-    @allure.step('Запрос значения из поля "Адрес доставки".')
-    def get_delivery_address(self):
-        return self.find_visible_element(locators.DELIVERY_ADDRESS_FIELD).get_attribute('value')
-
-    @allure.step('Запрос значения из поля "Номер карты".')
+    @allure.step('Запрос значения из поля "Номер карты"')
     def get_cart_number(self):
-        return self.find_visible_element(locators.CART_NUMBER_FIELD).get_attribute('value')
+        return (
+            self
+            .find_visible_element(locators.CART_NUMBER_FIELD)
+            .get_attribute('value')
+        )
 
     @allure.step('Попытка получить текст уведомления о пустых полях')
     def try_get_empty_fields_alert(self):
@@ -81,7 +108,7 @@ class CheckoutPage(BasePage):
         with allure.step(f'Проверка текста уведомления о пустых полях. '
                          f'Ожидаемое значение: f"{expected_value}"'):
             AssertValues.compare_values(
-                "EMPTY FIELDS ALERT",
+                "CHECKOUT: Empty field alert",
                 self.try_get_empty_fields_alert(),
                 expected_value
             )
@@ -90,7 +117,7 @@ class CheckoutPage(BasePage):
         with allure.step(f'Проверка поля "Имя". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "FIRST NAME",
+                "CHECKOUT: First name",
                 self.get_first_name(),
                 expected_value
             )
@@ -99,7 +126,7 @@ class CheckoutPage(BasePage):
         with allure.step(f'Проверка поля "Фамилия". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "SECOND_NAME",
+                "CHECKOUT: Second name",
                 self.get_second_name(),
                 expected_value
             )
@@ -108,7 +135,7 @@ class CheckoutPage(BasePage):
         with allure.step(f'Проверка поля "Номер карты". Ожидаемое значение: '
                          f'f"{expected_value}"'):
             AssertValues.compare_values(
-                "CART_NUMBER",
+                "CHECKOUT: Cart number",
                 self.get_cart_number(),
                 expected_value
             )
