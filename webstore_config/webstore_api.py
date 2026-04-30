@@ -26,7 +26,7 @@ class WebstoreAPI:
         )
         is_auth = response.status_code == 200
 
-        if is_auth and login is 'admin':
+        if is_auth and login == 'admin':
             self.admin_token = response.json().get('data').get('token')
         elif is_auth:
             self.user_token = response.json().get('data').get('token')
