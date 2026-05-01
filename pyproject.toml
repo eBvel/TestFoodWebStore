@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest]
+minversion = "9.0"
+addopts = ["-sv", "--tb=short"]
+testpaths = [
+    "tests"
+]
+markers = ["smoke: testing the basic functionality", "slow: marks test as slow-running tests"]
+python_classes = ["Test*"]
+python_files = ["test_*"]
+python_functions = ["test_*"]
+
+[project]
+name = "TestFoodWebStore"
+version = "1.0.1"
+authors = [
+    {name = "ebvel", email = "it_ebvel_qa@mail.ru"},
+]
+description="Automated testing of the website. using: Page object model, selenium and pytest."
+readme="README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "selenium==4.40.0",
+    "pytest>=9.0",
+    "python-dotenv==1.2.1",
+    "requests==2.32.5",
+    "webdriver-manager==4.0.2",
+    "allure-pytest==2.15.3",
+    "Faker>=40.1"
+]
+
+[project.urls]
+Repository = "https://github.com/eBvel/TestFoodWebStore"
