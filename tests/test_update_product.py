@@ -9,7 +9,7 @@ from tests.test_data.new_product_data import NewProductData
 from tests.test_data.expected_values import ExpectedValues as EV
 
 
-class TestCreateProductPage:
+class TestUpdateProductPage:
     @classmethod
     def setup_class(cls):
         cls.edit_products = EditProductsPage(cls.driver)
@@ -30,9 +30,9 @@ class TestCreateProductPage:
         self.edit_products.click_edit_product_button(test_product.name)
         self.update_product.enter_product_name(NewProductData.NAME)
         self.update_product.click_update_product_button()
+
         self.edit_products.check_url()
         self.edit_products.check_header(EditProductsData.HEADER)
-
         self.edit_products.check_existence_of_product(
             NewProductData.NAME,
             EV.UPDATE_PRODUCT_IS_EXIST
