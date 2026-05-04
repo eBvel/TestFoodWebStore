@@ -12,7 +12,6 @@ from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data.login_data import LoginData
 from tests.test_data.test_products import ProductFactory
 from requests import Session
-
 from webstore_config.webstore_api import WebstoreAPI
 
 
@@ -24,7 +23,14 @@ def pytest_addoption(parser):
         '--browser',
         action='store',
         default='chrome',
-        help='Browser\'s type variable. Possible values: "chrome" or "firefox".'
+        help='Browser\'s type variable. '
+             'Possible values: "chrome" or "firefox".'
+    )
+    parser.addoption(
+        '--headless',
+        action='store_true',
+        default=False,
+        help='The mode, that can run browser without UI.'
     )
 
 
@@ -34,15 +40,30 @@ def browser_type(request):
 
 
 @pytest.fixture(scope='session')
-def driver(browser_type):
+def browser_options(browser_type, request):
+    options = None
+    if browser_type == 'chrome':
+        options = webdriver.ChromeOptions()
+    elif browser_type == 'firefox':
+        options = webdriver.FirefoxOptions()
+
+    if request.config.getoption('--headless'):
+        options.add_argument('--headless')
+
+    return options
+
+
+@pytest.fixture(scope='session')
+def driver(browser_type, browser_options):
     if browser_type == 'chrome':
         with webdriver.Chrome(
-                options=webdriver.ChromeOptions(),
+                options=browser_options,
                 service=ChromeService(ChromeDriverManager().install())
         ) as chrome_driver:
             yield chrome_driver
     elif browser_type == 'firefox':
         with webdriver.Firefox(
+                options=browser_options,
                 service=FirefoxService(FirefoxDriverManager().install())
         ) as firefox_driver:
             yield firefox_driver
