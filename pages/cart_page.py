@@ -18,11 +18,11 @@ class CartPage(BasePage):
 
     @allure.step('Запрос, пустая корзина или нет')
     def is_empty(self):
-        return (
-            self
-            .find_presence_element(locators.CART_IS_EMPTY_TEXT)
-            .is_displayed()
-        )
+        try:
+            self.find_visible_element(locators.CART_IS_EMPTY_TEXT)
+            return True
+        except TimeoutException:
+            return False
 
     @allure.step('Запрос, отображается поле "итоговая стоимость" '
                  'в корзине или нет')
@@ -49,13 +49,12 @@ class CartPage(BasePage):
             )
 
     def multiple_button_click(self, product_name, locator, click_count=1):
-        button = self.find_clickable_element(locator)
         for i in range(click_count):
-            button.click()
+            self.click(locator)
             self.is_attribute_present(
                 locators.COUNT_OF_PRODUCT(product_name),
                 'value',
-                str(i)
+                str(i+1)
             )
 
     def add_product(self, product_name, count=1):
@@ -90,7 +89,7 @@ class CartPage(BasePage):
 
     @allure.step('Нажатие кнопки "Оформить заказ"')
     def click_place_an_order_button(self):
-        self.find_clickable_element(locators.PLACE_AN_ORDER_BUTTON).click()
+        self.click(locators.PLACE_AN_ORDER_BUTTON)
 
     def check_product_price(self, product_name, expected_value):
         with allure.step(f'Проверка "цены" товара "{product_name}" '
@@ -141,6 +140,11 @@ class CartPage(BasePage):
     def check_product_count(self, product_name, expected_value):
         with allure.step(f'Проверка "количества" товара "{product_name}" '
                          f'в корзине. Ожидаемое значение: {expected_value}'):
+            self.is_attribute_present(
+                locators.COUNT_OF_PRODUCT(product_name),
+                'value',
+                str(expected_value)
+            )
             AssertValues.compare_values(
                 f"CART: Product count ({product_name})",
                 self.get_product_count(product_name),

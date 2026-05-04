@@ -47,13 +47,12 @@ class CatalogPage(BasePage):
             ).text
 
     def multiple_button_click(self, product_name, locator, click_count=1):
-        button = self.find_clickable_element(locator)
         for i in range(click_count):
-            button.click()
+            self.click(locator)
             self.is_attribute_present(
                 locators.COUNT_OF_PRODUCT(product_name),
                 'value',
-                str(i)
+                str(i+1)
             )
 
     def add_product(self, product_name, count=1):

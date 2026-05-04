@@ -67,11 +67,11 @@ class CheckoutPage(BasePage):
 
     @allure.step('Нажатие кнопки "Оформить заказ"')
     def click_place_an_order_button(self):
-        self.find_visible_element(locators.PLACE_AN_ORDER_BUTTON).click()
+        self.click(locators.PLACE_AN_ORDER_BUTTON)
 
     @allure.step('Нажатие кнопки "Обратно в магазин"')
     def click_back_to_catalog(self):
-        self.find_clickable_element(locators.BACK_TO_CATALOG_BUTTON).click()
+        self.click(locators.BACK_TO_CATALOG_BUTTON)
 
     @allure.step('Запрос значения из поля "Имя"')
     def get_first_name(self):

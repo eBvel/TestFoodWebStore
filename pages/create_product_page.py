@@ -59,17 +59,11 @@ class CreateProductPage(BasePage):
 
     @allure.step('Нажатие кнопки "Создать товар"')
     def click_create_product_button(self):
-        self.find_clickable_element(locators.CREATE_PRODUCT_BUTTON).click()
+        self.click(locators.CREATE_PRODUCT_BUTTON)
 
     @allure.step('Нажатие кнопки "Обратно к товарам"')
     def click_back_to_edit_products_page_button(self):
-        (
-            self
-            .find_clickable_element(
-                locators.BACK_TO_EDIT_PRODUCTS_PAGE_BUTTON
-            )
-            .click()
-        )
+        self.click(locators.BACK_TO_EDIT_PRODUCTS_PAGE_BUTTON)
 
     def get_field_border_color(self, field_name):
         with allure.step(f'Запрос цвета рамки вокруг поля "{field_name}"'):

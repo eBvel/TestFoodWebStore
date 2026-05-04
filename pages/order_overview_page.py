@@ -86,11 +86,11 @@ class OrderOverviewPage(BasePage):
 
     @allure.step('Нажатие кнопки "Завершить заказ"')
     def click_complete_order_button(self):
-        self.find_clickable_element(locators.COMPLETE_ORDER_BUTTON).click()
+        self.click(locators.COMPLETE_ORDER_BUTTON)
 
     @allure.step('Нажатие кнопки "Обратно в магазин"')
     def click_back_to_catalog_button(self):
-        self.find_clickable_element(locators.BACK_TO_CATALOG_BUTTON).click()
+        self.click(locators.BACK_TO_CATALOG_BUTTON)
 
     def check_first_name(self, expected_value):
         with allure.step(f'Проверка поля "Имя". Ожидаемое значение: '

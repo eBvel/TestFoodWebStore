@@ -17,7 +17,7 @@ class CompletePage(BasePage):
 
     @allure.step('Нажатие кнопки "Вернутся в магазин"')
     def click_back_to_catalog_button(self):
-        self.find_clickable_element(locators.BACK_TO_CATALOG_BUTTON).click()
+        self.click(locators.BACK_TO_CATALOG_BUTTON)
 
     def check_complete_message(self, expected_value):
         with allure.step(f'Проверка сообщения об успешно созданном заказе. '
