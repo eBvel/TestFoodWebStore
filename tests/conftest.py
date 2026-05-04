@@ -12,6 +12,7 @@ from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data.login_data import LoginData
 from tests.test_data.test_products import ProductFactory
 from requests import Session
+from webstore_config.config import Config
 from webstore_config.webstore_api import WebstoreAPI
 
 
@@ -32,6 +33,18 @@ def pytest_addoption(parser):
         default=False,
         help='The mode, that can run browser without UI.'
     )
+    parser.addoption(
+        '--fullscreen',
+        action='store_true',
+        default=False,
+        help='Enlarges the window. The window will fill the screen, without '
+             'blocking the operating system’s own menus and toolbars.'
+    )
+
+
+@pytest.fixture(scope='session', autouse=True)
+def fullscreen(request):
+    Config.MAXIMIZE_WINDOW = request.config.getoption('--fullscreen')
 
 
 @pytest.fixture(scope='session')
