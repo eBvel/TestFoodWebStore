@@ -9,7 +9,7 @@ from tests.test_data.new_product_data import NewProductData
 from tests.test_data.expected_values import ExpectedValues as EV
 
 
-class TestCreateProductPage:
+class TestUpdateProductPage:
     @classmethod
     def setup_class(cls):
         cls.edit_products = EditProductsPage(cls.driver)
