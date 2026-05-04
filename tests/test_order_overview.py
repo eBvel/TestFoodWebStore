@@ -32,6 +32,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Имя"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_first_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -45,6 +46,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Фамилия"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_second_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -58,6 +60,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия поля "Отчество"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_middle_name_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -71,6 +74,7 @@ class TestOverViewPage:
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия списка продуктов')
+    @mark.smoke
     @mark.parametrize(
         'test_products',
         [['sandwich', 'nuggets']],
@@ -92,6 +96,7 @@ class TestOverViewPage:
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия количества товаров')
+    @mark.smoke
     @mark.parametrize(
         'test_products',
         [['sandwich', 'nuggets']],
@@ -124,6 +129,7 @@ class TestOverViewPage:
 
     @allure.feature('PRODUCTS DATA MATCHING')
     @allure.story('Проверка соответствия цены товаров')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_price_of_product_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -140,6 +146,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия адреса доставки')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_delivery_address_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -153,6 +160,7 @@ class TestOverViewPage:
 
     @allure.feature('USER DATA MATCHING')
     @allure.story('Проверка соответствия номера карты')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_cart_number_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -166,6 +174,7 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итогового количества товаров')
+    @mark.smoke
     @mark.parametrize(
         'test_products',
         [['sandwich', 'nuggets']],
@@ -189,6 +198,7 @@ class TestOverViewPage:
 
     @allure.feature('TOTAL DATA OF ORDER')
     @allure.story('Проверка итоговой стоимости заказа')
+    @mark.smoke
     @mark.parametrize(
         'test_products',
         [['sandwich', 'nuggets']],

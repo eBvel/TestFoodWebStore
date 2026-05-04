@@ -1,6 +1,7 @@
 import time
 import allure
 
+from pytest import mark
 from pages.auth_page import AuthPage
 from utils.assertion import AssertValues
 from tests.test_data.pages_data import TechnicalData, AuthData
@@ -13,6 +14,7 @@ class TestTechnical:
 
     @allure.feature('SECURE CONNECTION')
     @allure.story('Проверка подключения по HTTPS протоколу')
+    @mark.smoke
     def test_website_launch_by_https(self):
         self.driver.get(TechnicalData.HTTPS_URL)
 

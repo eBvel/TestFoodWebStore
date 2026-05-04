@@ -1,5 +1,6 @@
 import allure
 
+from pytest import mark
 from pages.cart_page import CartPage
 from pages.catalog_page import CatalogPage
 from pages.edit_products_page import EditProductsPage
@@ -18,6 +19,7 @@ class TestNavigation:
 
     @allure.feature('NAVIGATION MENU')
     @allure.story('Проверка открытия меню навигации по кнопке "Сэндвич"')
+    @mark.smoke
     def test_open_navigation_menu(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
@@ -26,6 +28,7 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка перехода по пункту меню "Корзинка"')
+    @mark.smoke
     def test_navigate_to_cart(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
@@ -36,6 +39,7 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка перехода по пункту меню "Магазин"')
+    @mark.smoke
     def test_navigate_to_catalog(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
@@ -46,6 +50,7 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка перехода по пункту меню "Редактировать товары"')
+    @mark.smoke
     def test_navigate_to_edit_page(self, auth_by_admin):
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_edit_products_button()
@@ -55,6 +60,7 @@ class TestNavigation:
 
     @allure.feature('CLICK ON MENU ITEMS')
     @allure.story('Проверка выхода из учетной записи покупателя')
+    @mark.smoke
     def test_log_out(self, auth_by_user1):
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()

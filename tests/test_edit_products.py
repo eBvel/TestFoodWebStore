@@ -17,6 +17,7 @@ class TestEditProductsPage:
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу создания нового товара')
+    @mark.smoke
     def test_navigate_to_create_product(self, auth_by_admin):
         self.edit_products.open()
         self.edit_products.click_create_product_button()
@@ -26,6 +27,7 @@ class TestEditProductsPage:
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода на страницу редактирования товара')
+    @mark.smoke
     @mark.parametrize('test_product', ['margarita'], indirect=True)
     def test_navigate_to_update_product_page(
             self,
@@ -40,6 +42,7 @@ class TestEditProductsPage:
 
     @allure.feature('DELETE PRODUCT')
     @allure.story('Проверка удаления товара из каталога')
+    @mark.smoke
     @mark.parametrize('test_product', ['pepperoni'], indirect=True)
     def test_delete_product(
             self,

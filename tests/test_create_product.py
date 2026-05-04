@@ -16,6 +16,7 @@ class TestCreateProductPage:
 
     @allure.feature('CREATE PRODUCT')
     @allure.story('Проверка создания товара с корректными данными')
+    @mark.smoke
     @mark.parametrize(
         'product',
         Datasets.CREATE_PRODUCT_CORRECT_PRODUCTS,

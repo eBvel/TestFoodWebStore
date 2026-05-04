@@ -22,6 +22,7 @@ class TestUserDataPage:
 
     @allure.feature('PLACE AN ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_filling_fields_with_valid_data(
             self,

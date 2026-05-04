@@ -1,6 +1,6 @@
 import allure
-import pytest
 
+from pytest import mark
 from pages.auth_page import AuthPage
 from pages.catalog_page import CatalogPage
 from tests.test_data.datasets import Datasets
@@ -16,7 +16,8 @@ class TestAuth:
 
     @allure.feature('VALID LOGIN')
     @allure.story('Проверка авторизации с корректными данными')
-    @pytest.mark.parametrize(
+    @mark.smoke
+    @mark.parametrize(
         'login, password',
         Datasets.ALL_USERS_LOGIN_DATA,
         ids=Datasets.ALL_USERS_IDS
@@ -29,7 +30,7 @@ class TestAuth:
 
     @allure.feature('LOG IN WITHOUT LOGIN')
     @allure.story('Проверка авторизации без логина')
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         'password',
         [LoginData.USER1_PASSWORD, LoginData.ADMIN_PASSWORD],
         ids=Datasets.USER1_ADMIN_IDS
@@ -43,7 +44,7 @@ class TestAuth:
 
     @allure.feature('LOG IN WITHOUT PASSWORD')
     @allure.story('Проверка авторизации без пароля')
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         'login',
         [LoginData.USER1_LOGIN, LoginData.ADMIN_LOGIN],
         ids=Datasets.USER1_ADMIN_IDS
@@ -57,7 +58,7 @@ class TestAuth:
 
     @allure.feature('LOG IN INCORRECT DATA')
     @allure.story('Проверка авторизации с некорректным логином')
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         'incorrect_login, password',
         Datasets.INCORRECT_LOGINS_LIST,
         ids=Datasets.USER1_ADMIN_IDS
@@ -75,7 +76,7 @@ class TestAuth:
 
     @allure.feature('LOG IN INCORRECT DATA')
     @allure.story('Проверка авторизации с некорректным паролем')
-    @pytest.mark.parametrize(
+    @mark.parametrize(
         'login, incorrect_password',
         Datasets.INCORRECT_PASSWORDS_LIST,
         ids=Datasets.USER1_ADMIN_IDS

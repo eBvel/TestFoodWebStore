@@ -30,6 +30,7 @@ class TestCompletePage:
 
     @allure.feature('COMPLETE ORDER')
     @allure.story('Проверка оформления заказа с корректными данными')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_complete_order(self, test_product, auth_by_user1):
         self.catalog.open()

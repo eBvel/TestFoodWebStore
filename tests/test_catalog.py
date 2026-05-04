@@ -14,6 +14,7 @@ class TestCatalogPage:
 
     @allure.feature('PRODUCT DATA')
     @allure.story('Поиск товара по "Имени" в каталоге')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_search_product(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -59,6 +60,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка добавления товара в корзину по кнопке "+"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_add_product_to_cart(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -71,6 +73,7 @@ class TestCatalogPage:
 
     @allure.feature('ADD/REMOVE PRODUCT TO CART')
     @allure.story('Проверка удаления товара из корзины по кнопке "-"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_remove_product_from_cart(self, test_product, auth_by_user1):
         self.catalog.open()

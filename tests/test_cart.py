@@ -25,6 +25,7 @@ class TestCartPage:
 
     @allure.feature('PRODUCT DATA MATCHING')
     @allure.story('Сравнение "цены" товара в каталоге и корзине')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_price_matching(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -38,6 +39,7 @@ class TestCartPage:
 
     @allure.feature('TOTAL COST')
     @allure.story('Проверка наличия поля "итоговая стоимость" в корзине')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_total_cost_display(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -48,6 +50,7 @@ class TestCartPage:
 
     @allure.feature('TOTAL COST')
     @allure.story('Проверка расчета "итоговой стоимости" товаров')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('quantity', Datasets.CART_QUANTITY_OF_PRODUCT)
     def test_calculation_total_cost(
@@ -78,6 +81,7 @@ class TestCartPage:
 
     @allure.feature('ADD/REMOVE PRODUCT')
     @allure.story('Проверка удаления всех товаров через "Корзинку"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_clear_cart(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -89,6 +93,7 @@ class TestCartPage:
 
     @allure.feature('ADD/REMOVE PRODUCT')
     @allure.story('Проверка добавления товара через "Корзинку"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_add_product_from_cart(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -114,6 +119,7 @@ class TestCartPage:
     @allure.feature('PLACE AN ORDER BUTTON')
     @allure.story('Проверка наличия кнопки "Оформить заказ" в корзине '
                   'с товарами')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_place_an_order_button_display(self, test_product, auth_by_user1):
         self.catalog.open()
@@ -127,6 +133,7 @@ class TestCartPage:
     @allure.feature('PLACE AN ORDER BUTTON')
     @allure.story('Проверка перехода на страницу оформления заказа '
                   'по кнопке "Оформить заказ"')
+    @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_navigate_to_place_an_order_page(
             self,

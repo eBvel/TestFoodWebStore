@@ -15,9 +15,9 @@ class BasePage:
         self.driver = driver
         self.url = Links.BASE_URL
 
-    def open(self, is_maximize=False):
+    def open(self):
         with allure.step(f"Открытие страницы по ссылке: {self.url}"):
-            if is_maximize:
+            if Config.MAXIMIZE_WINDOW:
                 self.driver.maximize_window()
             self.driver.get(self.url)
 
