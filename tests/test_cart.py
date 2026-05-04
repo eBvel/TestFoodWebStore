@@ -57,10 +57,10 @@ class TestCartPage:
             self,
             test_product,
             quantity,
-            auth_by_user1
+            auth_by_user1,
+            product_count_to_cart
     ):
-        self.catalog.open()
-        self.catalog.add_product(test_product.name, quantity)
+        product_count_to_cart(test_product, quantity)
         self.cart.open()
 
         self.cart.check_total_cost(
@@ -71,10 +71,15 @@ class TestCartPage:
     @allure.story('Проверка верхнего граничного значения для поля '
                   '"итоговая стоимость"')
     @mark.parametrize('test_product', ['caviar'], indirect=True)
-    @mark.parametrize("count", Datasets.CART_QUANTITIES_OF_CAVIAR)
-    def test_total_cost_limit(self, test_product, count, auth_by_user1):
-        self.catalog.open()
-        self.catalog.add_product(test_product.name, count)
+    @mark.parametrize("quantity", Datasets.CART_QUANTITIES_OF_CAVIAR)
+    def test_total_cost_limit(
+            self,
+            test_product,
+            quantity,
+            auth_by_user1,
+            product_count_to_cart
+    ):
+        product_count_to_cart(test_product, quantity)
         self.cart.open()
 
         self.cart.check_total_cost(CartData.MAX_TOTAL_COST)

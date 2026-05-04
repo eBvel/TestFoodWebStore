@@ -75,9 +75,14 @@ class TestCatalogPage:
     @allure.story('Проверка удаления товара из корзины по кнопке "-"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
-    def test_remove_product_from_cart(self, test_product, auth_by_user1):
+    def test_remove_product_from_cart(
+            self,
+            test_product,
+            auth_by_user1,
+            product_count_to_cart
+    ):
+        product_count_to_cart(test_product)
         self.catalog.open()
-        self.catalog.add_product(test_product.name)
         self.catalog.remove_product(test_product.name)
 
         self.catalog.check_current_count_of_product(
@@ -122,10 +127,11 @@ class TestCatalogPage:
             self,
             test_product,
             quantity,
-            auth_by_user1
+            auth_by_user1,
+            product_count_to_cart
     ):
+        product_count_to_cart(test_product, quantity)
         self.catalog.open()
-        self.catalog.add_product(test_product.name, quantity)
 
         self.catalog.check_cart_counter_value(quantity)
 

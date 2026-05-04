@@ -222,7 +222,7 @@ def delete_new_products(api):
 
 @pytest.fixture
 def product_count_to_cart(api):
-    def _add_product_to_cart(product, count):
+    def _add_product_to_cart(product, count=1):
         product_id = next(
             (key for key, value in TEST_PRODUCTS.items() if value == product),
             None

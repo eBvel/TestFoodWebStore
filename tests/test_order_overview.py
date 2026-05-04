@@ -110,11 +110,11 @@ class TestOverViewPage:
             self,
             test_products,
             quantities,
-            auth_by_user1
+            auth_by_user1,
+            product_count_to_cart
     ):
-        self.catalog.open()
         for i in range(len(test_products)):
-            self.catalog.add_product(test_products[i].name, quantities[i])
+            product_count_to_cart(test_products[i], quantities[i])
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -184,10 +184,15 @@ class TestOverViewPage:
         'quantities',
         Datasets.ORDER_OVERVIEW_QUANTITIES_OF_PRODUCTS
     )
-    def test_total_count(self, test_products, quantities, auth_by_user1):
-        self.catalog.open()
+    def test_total_count(
+            self,
+            test_products,
+            quantities,
+            auth_by_user1,
+            product_count_to_cart
+    ):
         for i in range(len(test_products)):
-            self.catalog.add_product(test_products[i].name, quantities[i])
+            product_count_to_cart(test_products[i], quantities[i])
 
         self.cart.open()
         self.cart.click_place_an_order_button()
@@ -208,12 +213,16 @@ class TestOverViewPage:
         'quantities',
         Datasets.ORDER_OVERVIEW_QUANTITIES_OF_PRODUCTS
     )
-    def test_total_cost(self, test_products, quantities, auth_by_user1):
-        self.catalog.open()
-
+    def test_total_cost(
+            self,
+            test_products,
+            quantities,
+            auth_by_user1,
+            product_count_to_cart
+    ):
         expected_total_cost = 0
         for i in range(len(test_products)):
-            self.catalog.add_product(test_products[i].name, quantities[i])
+            product_count_to_cart(test_products[i], quantities[i])
             expected_total_cost += test_products[i].price * quantities[i]
 
         self.cart.open()
