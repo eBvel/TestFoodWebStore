@@ -3,6 +3,7 @@ import allure
 from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import TimeoutException
+from selenium.common import ElementClickInterceptedException
 
 from utils.assertion import AssertValues
 from webstore_config.links import Links
@@ -48,6 +49,13 @@ class BasePage:
         element = self.find(EC.element_to_be_clickable(locator), timeout)
         self.scroll_to_element(element)
         return element
+
+    def click(self, locator):
+        button = self.find_clickable_element(locator)
+        try:
+            button.click()
+        except ElementClickInterceptedException:
+            self.driver.execute_script('arguments[0].click()', button)
 
     def find_presence_element(self, locator, timeout=Config.TIMEOUT):
         return self.find(EC.presence_of_element_located(locator), timeout)
