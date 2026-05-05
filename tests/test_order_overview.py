@@ -30,7 +30,7 @@ class TestOverViewPage:
             UserData.CART_NUMBER
         )
 
-    @allure.feature('USER DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия поля "Имя"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -44,7 +44,7 @@ class TestOverViewPage:
 
         self.overview.check_first_name(UserData.FIRST_NAME)
 
-    @allure.feature('USER DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия поля "Фамилия"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -58,7 +58,7 @@ class TestOverViewPage:
 
         self.overview.check_second_name(UserData.SECOND_NAME)
 
-    @allure.feature('USER DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия поля "Отчество"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -72,7 +72,7 @@ class TestOverViewPage:
 
         self.overview.check_middle_name(UserData.MIDDLE_NAME)
 
-    @allure.feature('PRODUCTS DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия списка продуктов')
     @mark.smoke
     @mark.parametrize(
@@ -94,7 +94,7 @@ class TestOverViewPage:
             [product.name for product in test_products]
         )
 
-    @allure.feature('PRODUCTS DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия количества товаров')
     @mark.smoke
     @mark.parametrize(
@@ -127,7 +127,7 @@ class TestOverViewPage:
                 quantities[i]
             )
 
-    @allure.feature('PRODUCTS DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия цены товаров')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -144,7 +144,7 @@ class TestOverViewPage:
             test_product.get_price_str()
         )
 
-    @allure.feature('USER DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия адреса доставки')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -158,7 +158,7 @@ class TestOverViewPage:
 
         self.overview.check_delivery_address(UserData.ADDRESS)
 
-    @allure.feature('USER DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия номера карты')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -172,7 +172,7 @@ class TestOverViewPage:
 
         self.overview.check_cart_number(UserData.CART_NUMBER)
 
-    @allure.feature('TOTAL DATA OF ORDER')
+    @allure.feature('OPERATIONS')
     @allure.story('Проверка итогового количества товаров')
     @mark.smoke
     @mark.parametrize(
@@ -201,7 +201,7 @@ class TestOverViewPage:
 
         self.overview.check_total_count(sum(quantities))
 
-    @allure.feature('TOTAL DATA OF ORDER')
+    @allure.feature('OPERATIONS')
     @allure.story('Проверка итоговой стоимости заказа')
     @mark.smoke
     @mark.parametrize(

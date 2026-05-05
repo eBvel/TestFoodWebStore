@@ -17,7 +17,7 @@ class TestNavigation:
         cls.cart = CartPage(cls.driver)
         cls.edit_products = EditProductsPage(cls.driver)
 
-    @allure.feature('NAVIGATION MENU')
+    @allure.feature('NAVIGATION')
     @allure.story('Проверка открытия меню навигации по кнопке "Сэндвич"')
     @mark.smoke
     def test_open_navigation_menu(self, auth_by_user1):
@@ -26,7 +26,7 @@ class TestNavigation:
 
         self.navigation_bar.check_header(NavigationData.HEADER)
 
-    @allure.feature('CLICK ON MENU ITEMS')
+    @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Корзинка"')
     @mark.smoke
     def test_navigate_to_cart(self, auth_by_user1):
@@ -37,7 +37,7 @@ class TestNavigation:
         self.cart.check_url()
         self.cart.check_header(CartData.HEADER)
 
-    @allure.feature('CLICK ON MENU ITEMS')
+    @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Магазин"')
     @mark.smoke
     def test_navigate_to_catalog(self, auth_by_user1):
@@ -48,7 +48,7 @@ class TestNavigation:
         self.catalog.check_url()
         self.catalog.check_header(CatalogData.HEADER)
 
-    @allure.feature('CLICK ON MENU ITEMS')
+    @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Редактировать товары"')
     @mark.smoke
     def test_navigate_to_edit_page(self, auth_by_admin):
@@ -58,7 +58,7 @@ class TestNavigation:
         self.edit_products.check_url()
         self.edit_products.check_header(EditProductsData.HEADER)
 
-    @allure.feature('CLICK ON MENU ITEMS')
+    @allure.feature('NAVIGATION')
     @allure.story('Проверка выхода из учетной записи покупателя')
     @mark.smoke
     def test_log_out(self, auth_by_user1):

@@ -16,14 +16,14 @@ class TestCartPage:
         cls.cart = CartPage(cls.driver)
         cls.checkout_page = CheckoutPage(cls.driver)
 
-    @allure.feature('EMPTY TEXT')
+    @allure.feature('DATA MATCH')
     @allure.story('Проверка содержания сообщения, '
                   'когда в корзине нет товаров')
     def test_cart_is_empty_text(self, auth_by_user1):
         self.cart.open()
         self.cart.check_cart_is_empty_text(CartData.EMPTY_TEXT)
 
-    @allure.feature('PRODUCT DATA MATCHING')
+    @allure.feature('DATA MATCH')
     @allure.story('Сравнение "цены" товара в каталоге и корзине')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -37,7 +37,7 @@ class TestCartPage:
             test_product.get_price_str()
         )
 
-    @allure.feature('TOTAL COST')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка наличия поля "итоговая стоимость" в корзине')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -48,7 +48,7 @@ class TestCartPage:
 
         self.cart.check_total_cost_display(EV.CART_TOTAL_COST_IS_DISPLAY)
 
-    @allure.feature('TOTAL COST')
+    @allure.feature('OPERATIONS')
     @allure.story('Проверка расчета "итоговой стоимости" товаров')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -67,7 +67,7 @@ class TestCartPage:
             EV.CART_TOTAL_COST_TO_STRING(test_product.price * quantity)
         )
 
-    @allure.feature('TOTAL COST')
+    @allure.feature('BOUNDARY VALUES')
     @allure.story('Проверка верхнего граничного значения для поля '
                   '"итоговая стоимость"')
     @mark.parametrize('test_product', ['caviar'], indirect=True)
@@ -84,7 +84,7 @@ class TestCartPage:
 
         self.cart.check_total_cost(CartData.MAX_TOTAL_COST)
 
-    @allure.feature('ADD/REMOVE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка удаления всех товаров через "Корзинку"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -96,7 +96,7 @@ class TestCartPage:
 
         self.cart.check_cart_is_empty(EV.CART_AFTER_CLEAR_IS_EMPTY)
 
-    @allure.feature('ADD/REMOVE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка добавления товара через "Корзинку"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -111,7 +111,7 @@ class TestCartPage:
             EV.CART_COUNT_AFTER_ADD
         )
 
-    @allure.feature('PLACE AN ORDER BUTTON')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка отображения кнопки "Оформить заказ" '
                   'в пустой корзине')
     def test_place_an_order_button_display_in_empty_cart(self, auth_by_user1):
@@ -121,7 +121,7 @@ class TestCartPage:
             EV.CART_PLACE_AN_ORDER_BUTTON_IS_NOT_DISPLAY
         )
 
-    @allure.feature('PLACE AN ORDER BUTTON')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка наличия кнопки "Оформить заказ" в корзине '
                   'с товарами')
     @mark.smoke
@@ -135,7 +135,7 @@ class TestCartPage:
             EV.CART_PLACE_AN_ORDER_BUTTON_IS_DISPLAY
         )
 
-    @allure.feature('PLACE AN ORDER BUTTON')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка перехода на страницу оформления заказа '
                   'по кнопке "Оформить заказ"')
     @mark.smoke

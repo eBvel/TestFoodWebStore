@@ -14,7 +14,7 @@ class TestCreateProductPage:
         cls.edit_products = EditProductsPage(cls.driver)
         cls.create_product = CreateProductPage(cls.driver)
 
-    @allure.feature('CREATE PRODUCT')
+    @allure.feature('VALID DATA')
     @allure.story('Проверка создания товара с корректными данными')
     @mark.smoke
     @mark.parametrize(
@@ -39,7 +39,7 @@ class TestCreateProductPage:
             EV.CREATE_PRODUCT_IS_EXIST
         )
 
-    @allure.feature('INCORRECT CREATE PRODUCT')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка создания товара с негативными данными')
     @mark.parametrize(
         'field_name, product',

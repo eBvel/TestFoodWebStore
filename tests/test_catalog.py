@@ -12,7 +12,7 @@ class TestCatalogPage:
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
 
-    @allure.feature('PRODUCT DATA')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Поиск товара по "Имени" в каталоге')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -21,7 +21,7 @@ class TestCatalogPage:
 
         self.catalog.check_product_to_catalog(test_product.name)
 
-    @allure.feature('PRODUCT DATA')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка поля "Описание" у карточки товара')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_description_of_product(
@@ -36,7 +36,7 @@ class TestCatalogPage:
             test_product.description
         )
 
-    @allure.feature('PRODUCT DATA')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка поля "Цена" у карточки товара')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_price_of_product(self, test_product, auth_by_user1):
@@ -47,7 +47,7 @@ class TestCatalogPage:
             test_product.get_price_str()
         )
 
-    @allure.feature('PRODUCT DATA')
+    @allure.feature('PRESENCE DATA')
     @allure.story('Проверка поля "URL картинки" у карточки товара')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_presence_image_of_product(self, test_product, auth_by_user1):
@@ -58,7 +58,7 @@ class TestCatalogPage:
             test_product.image_url
         )
 
-    @allure.feature('ADD/REMOVE PRODUCT TO CART')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка добавления товара в корзину по кнопке "+"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -71,7 +71,7 @@ class TestCatalogPage:
             EV.CATALOG_COUNT_AFTER_ADD
         )
 
-    @allure.feature('ADD/REMOVE PRODUCT TO CART')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка удаления товара из корзины по кнопке "-"')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -90,7 +90,7 @@ class TestCatalogPage:
            EV.CATALOG_COUNT_AFTER_REMOVE
         )
 
-    @allure.feature('PRODUCT COUNTER')
+    @allure.feature('OPERATIONS')
     @allure.story('Проверка "шага" изменения кол-ва товаров в корзине')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize(
@@ -119,7 +119,7 @@ class TestCatalogPage:
             add_count - remove_count
         )
 
-    @allure.feature('CART COUNTER')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка счетчика товаров в корзине')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('quantity', Datasets.CATALOG_CART_COUNTER)
@@ -135,7 +135,7 @@ class TestCatalogPage:
 
         self.catalog.check_cart_counter_value(quantity)
 
-    @allure.feature('PRODUCT COUNTER')
+    @allure.feature('BOUNDARY VALUES')
     @allure.story('Проверка нижней границы (0) счетчика товаров')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_lower_limit_of_counter(self, test_product, auth_by_user1):
@@ -147,7 +147,7 @@ class TestCatalogPage:
             CatalogData.MIN_PRODUCT_COUNT
         )
 
-    @allure.feature('PRODUCT COUNTER')
+    @allure.feature('BOUNDARY VALUES')
     @allure.story('Проверка верхней границы (100) счетчика товаров')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize(

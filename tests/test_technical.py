@@ -12,7 +12,7 @@ class TestTechnical:
     def setup_class(cls):
         cls.auth_page = AuthPage(cls.driver)
 
-    @allure.feature('SECURE CONNECTION')
+    @allure.feature('CONNECTION')
     @allure.story('Проверка подключения по HTTPS протоколу')
     @mark.smoke
     def test_website_launch_by_https(self):
@@ -20,7 +20,7 @@ class TestTechnical:
 
         self.auth_page.check_header(AuthData.HEADER)
 
-    @allure.feature('TIME OF LOAD SITE')
+    @allure.feature('CONNECTION')
     @allure.story('Проверка времени загрузки сайта')
     def test_website_load_time(self):
         start_time = time.time()

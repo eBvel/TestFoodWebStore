@@ -20,7 +20,7 @@ class TestUserDataPage:
         cls.checkout = CheckoutPage(cls.driver)
         cls.overview = OrderOverviewPage(cls.driver)
 
-    @allure.feature('PLACE AN ORDER')
+    @allure.feature('VALID DATA')
     @allure.story('Проверка оформления заказа с корректными данными')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
@@ -44,7 +44,7 @@ class TestUserDataPage:
 
         self.overview.check_header(OrderOverviewData.HEADER)
 
-    @allure.feature('PLACE AN ORDER')
+    @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка оформления заказа с пустыми полями')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     def test_place_an_order_with_empty_fields(
@@ -63,7 +63,7 @@ class TestUserDataPage:
             CheckoutData.ALL_EMPTY_FIELDS_MESSAGE
         )
 
-    @allure.feature('FIELDS VALIDATION')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка валидации поля "Фамилия"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('value', Datasets.CHECKOUT_INCORRECT_NAMES)
@@ -81,7 +81,7 @@ class TestUserDataPage:
 
         self.checkout.check_second_name(EV.CHECKOUT_EMPTY_FIELD)
 
-    @allure.feature('FIELDS VALIDATION')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка валидации поля "Имя"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize('value', Datasets.CHECKOUT_INCORRECT_NAMES)
@@ -99,7 +99,7 @@ class TestUserDataPage:
 
         self.checkout.check_first_name(EV.CHECKOUT_EMPTY_FIELD)
 
-    @allure.feature('FIELDS VALIDATION')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка валидации поля "Номер карты"')
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
     @mark.parametrize(

@@ -14,7 +14,7 @@ class TestAuth:
         cls.auth_page = AuthPage(cls.driver)
         cls.catalog = CatalogPage(cls.driver)
 
-    @allure.feature('VALID LOGIN')
+    @allure.feature('VALID DATA')
     @allure.story('Проверка авторизации с корректными данными')
     @mark.smoke
     @mark.parametrize(
@@ -28,7 +28,7 @@ class TestAuth:
 
         self.catalog.check_header(CatalogData.HEADER)
 
-    @allure.feature('LOG IN WITHOUT LOGIN')
+    @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка авторизации без логина')
     @mark.parametrize(
         'password',
@@ -42,7 +42,7 @@ class TestAuth:
 
         self.auth_page.check_header(AuthData.HEADER)
 
-    @allure.feature('LOG IN WITHOUT PASSWORD')
+    @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка авторизации без пароля')
     @mark.parametrize(
         'login',
@@ -56,7 +56,7 @@ class TestAuth:
 
         self.auth_page.check_header(AuthData.HEADER)
 
-    @allure.feature('LOG IN INCORRECT DATA')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка авторизации с некорректным логином')
     @mark.parametrize(
         'incorrect_login, password',
@@ -74,7 +74,7 @@ class TestAuth:
 
         self.auth_page.check_header(AuthData.HEADER)
 
-    @allure.feature('LOG IN INCORRECT DATA')
+    @allure.feature('INVALID DATA')
     @allure.story('Проверка авторизации с некорректным паролем')
     @mark.parametrize(
         'login, incorrect_password',

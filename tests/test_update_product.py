@@ -16,7 +16,7 @@ class TestUpdateProductPage:
         cls.create_product = CreateProductPage(cls.driver)
         cls.update_product = UpdateProductPage(cls.driver)
 
-    @allure.feature('UPDATE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка редактирования поля "Наименование"')
     @mark.smoke
     @mark.parametrize('test_product', ['pepperoni'], indirect=True)
@@ -38,7 +38,7 @@ class TestUpdateProductPage:
             EV.UPDATE_PRODUCT_IS_EXIST
         )
 
-    @allure.feature('UPDATE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка редактирования поля "Описание"')
     @mark.smoke
     @mark.parametrize('test_product', ['margarita'], indirect=True)
@@ -57,7 +57,7 @@ class TestUpdateProductPage:
             NewProductData.DESCRIPTION
         )
 
-    @allure.feature('UPDATE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка редактирования поля "Цена"')
     @mark.smoke
     @mark.parametrize('test_product', ['margarita'], indirect=True)
@@ -78,7 +78,7 @@ class TestUpdateProductPage:
             NewProductData.PRICE_STR
         )
 
-    @allure.feature('UPDATE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка редактирования поля "URL картинки"')
     @mark.smoke
     @mark.parametrize('test_product', ['margarita'], indirect=True)

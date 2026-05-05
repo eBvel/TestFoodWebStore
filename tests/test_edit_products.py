@@ -40,7 +40,7 @@ class TestEditProductsPage:
         self.update_product.check_url()
         self.update_product.check_header(UpdateProductData.HEADER)
 
-    @allure.feature('DELETE PRODUCT')
+    @allure.feature('FUNCTIONAL')
     @allure.story('Проверка удаления товара из каталога')
     @mark.smoke
     @mark.parametrize('test_product', ['pepperoni'], indirect=True)

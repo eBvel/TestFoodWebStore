@@ -28,7 +28,7 @@ class TestCompletePage:
             UserData.CART_NUMBER
         )
 
-    @allure.feature('COMPLETE ORDER')
+    @allure.feature('VALID DATA')
     @allure.story('Проверка оформления заказа с корректными данными')
     @mark.smoke
     @mark.parametrize('test_product', ['sandwich'], indirect=True)
