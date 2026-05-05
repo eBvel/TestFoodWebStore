@@ -1,5 +1,6 @@
 import pytest
 
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.support.wait import TimeoutException
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -17,6 +18,17 @@ from webstore_config.webstore_api import WebstoreAPI
 
 
 TEST_PRODUCTS = {}
+
+
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    rep = outcome.get_result()
+    if rep.when == "call" and rep.failed:
+        driver = item.cls.driver
+        now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        screenshot_path = f'..\\screenshots\\ss_{item.name}_{now}.png'
+        driver.save_screenshot(screenshot_path)
 
 
 def pytest_addoption(parser):
