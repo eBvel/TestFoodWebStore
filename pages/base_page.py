@@ -56,6 +56,8 @@ class BasePage:
             button.click()
         except ElementClickInterceptedException:
             self.driver.execute_script('arguments[0].click()', button)
+        except TimeoutException:
+            self.driver.execute_script('arguments[0].click()', button)
 
     def find_presence_element(self, locator, timeout=Config.TIMEOUT):
         return self.find(EC.presence_of_element_located(locator), timeout)
