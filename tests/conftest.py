@@ -27,7 +27,7 @@ def pytest_runtest_makereport(item, call):
     if rep.when == "call" and rep.failed:
         driver = item.cls.driver
         now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        screenshot_path = f'..\\screenshots\\ss_{item.name}_{now}.png'
+        screenshot_path = f'screenshots\\ss_{item.name}_{now}.png'
         driver.save_screenshot(screenshot_path)
 
 
