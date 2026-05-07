@@ -13,7 +13,6 @@ from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data.login_data import LoginData
 from tests.test_data.test_products import ProductFactory
 from requests import Session
-from webstore_config.config import Config
 from webstore_config.webstore_api import WebstoreAPI
 
 
@@ -55,8 +54,9 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='session', autouse=True)
-def fullscreen(request):
-    Config.MAXIMIZE_WINDOW = request.config.getoption('--fullscreen')
+def fullscreen(request, driver):
+    if request.config.getoption('--fullscreen'):
+        driver.maximize_window()
 
 
 @pytest.fixture(scope='session')

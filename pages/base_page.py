@@ -18,8 +18,6 @@ class BasePage:
 
     def open(self):
         with allure.step(f"Открытие страницы по ссылке: {self.url}"):
-            if Config.MAXIMIZE_WINDOW:
-                self.driver.maximize_window()
             self.driver.get(self.url)
 
     def is_url_same(self, url, timeout=Config.TIMEOUT):
