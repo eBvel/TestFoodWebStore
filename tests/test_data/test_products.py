@@ -103,14 +103,10 @@ class ProductFactory:
         return (
             ProductBuilder()
             .with_name('Сэндвич с ветчиной и сыром')
-            .with_description(fake.text(max_nb_chars=40))
+            .with_description('Тостовый хлеб с ветчиной и сыром, лист салата, '
+                              'томаты, соус тартар. Вес: 260 г.')
             .with_category('Сэндвич')
-            .with_price(fake.pyfloat(
-                right_digits=0,
-                min_value=1.0,
-                max_value=999.0
-                )
-            )
+            .with_price(390.0)
             .with_image_url('https://clck.ru/3RxCex')
             .build()
         )
