@@ -12,7 +12,7 @@ from tests.test_data.pages_data import (CheckoutData, OrderOverviewData,
 from tests.test_data.expected_values import ExpectedValues as EV
 
 
-class TestUserDataPage:
+class TestCheckoutPage:
     @classmethod
     def setup_class(cls):
         cls.catalog = CatalogPage(cls.driver)
