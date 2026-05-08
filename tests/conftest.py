@@ -1,3 +1,5 @@
+import os
+import allure
 import pytest
 
 from datetime import datetime
@@ -25,9 +27,19 @@ def pytest_runtest_makereport(item, call):
     rep = outcome.get_result()
     if rep.when == "call" and rep.failed:
         driver = item.cls.driver
-        now = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        screenshot_path = f'screenshots\\ss_{item.name}_{now}.png'
-        driver.save_screenshot(screenshot_path)
+
+        now = datetime.now()
+        screenshot_path = f'screenshots\\{now.strftime("%Y-%m-%d")}\\'
+        screenshot_name = f'ss_{item.name}_{now.strftime("%H-%M-%S")}.png'
+
+        if not os.path.exists(screenshot_path):
+            os.makedirs(screenshot_path)
+
+        driver.save_screenshot(screenshot_path+screenshot_name)
+        allure.attach.file(
+            screenshot_path+screenshot_name,
+            attachment_type=allure.attachment_type.PNG
+        )
 
 
 def pytest_addoption(parser):
