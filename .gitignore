@@ -5,3 +5,6 @@ __pycache__/
 /main.py
 /.idea
 /.env
+test_results
+screenshots
+logs
