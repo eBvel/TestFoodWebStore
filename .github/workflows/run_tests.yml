@@ -41,7 +41,13 @@ jobs:
           install-chromedriver: true
       - name: Run all tests to Chrome
         if: "github.event.inputs.deployment_target == 'Chrome_all_tests'"
-        run: pytest --headless --alluredir=allure-results
+        run: > 
+          USER1_LOGIN=${{ secrets.USER1_LOGIN }} USER1_PASSWORD=${{ secrets.USER1_PASSWORD }}
+          USER2_LOGIN=${{ secrets.USER2_LOGIN }} USER2_PASSWORD=${{ secrets.USER2_PASSWORD }}
+          USER3_LOGIN=${{ secrets.USER3_LOGIN }} USER3_PASSWORD=${{ secrets.USER3_PASSWORD }}
+          USER4_LOGIN=${{ secrets.USER4_LOGIN }} USER4_PASSWORD=${{ secrets.USER4_PASSWORD }}
+          ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }} ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          pytest --headless --alluredir=allure-results
         continue-on-error: true
       - name: Run smoke tests to Chrome
         if: "github.event.inputs.deployment_target == 'Chrome_smoke_tests'"
