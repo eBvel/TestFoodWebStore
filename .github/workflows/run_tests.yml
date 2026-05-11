@@ -51,7 +51,13 @@ jobs:
         continue-on-error: true
       - name: Run smoke tests to Chrome
         if: "github.event.inputs.deployment_target == 'Chrome_smoke_tests'"
-        run: pytest -m smoke --headless --alluredir=allure-results
+        run: > 
+          USER1_LOGIN=${{ secrets.USER1_LOGIN }} USER1_PASSWORD=${{ secrets.USER1_PASSWORD }}
+          USER2_LOGIN=${{ secrets.USER2_LOGIN }} USER2_PASSWORD=${{ secrets.USER2_PASSWORD }}
+          USER3_LOGIN=${{ secrets.USER3_LOGIN }} USER3_PASSWORD=${{ secrets.USER3_PASSWORD }}
+          USER4_LOGIN=${{ secrets.USER4_LOGIN }} USER4_PASSWORD=${{ secrets.USER4_PASSWORD }}
+          ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }} ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          pytest -m smoke --headless --alluredir=allure-results
         continue-on-error: true
 
       - name: Setup Firefox
@@ -61,20 +67,32 @@ jobs:
           firefox-version: 150.0.1
       - name: Run all tests to Firefox
         if: "github.event.inputs.deployment_target == 'Firefox_all_tests'"
-        run: pytest --headless --browser=firefox --alluredir=allure-results
+        run: > 
+          USER1_LOGIN=${{ secrets.USER1_LOGIN }} USER1_PASSWORD=${{ secrets.USER1_PASSWORD }}
+          USER2_LOGIN=${{ secrets.USER2_LOGIN }} USER2_PASSWORD=${{ secrets.USER2_PASSWORD }}
+          USER3_LOGIN=${{ secrets.USER3_LOGIN }} USER3_PASSWORD=${{ secrets.USER3_PASSWORD }}
+          USER4_LOGIN=${{ secrets.USER4_LOGIN }} USER4_PASSWORD=${{ secrets.USER4_PASSWORD }}
+          ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }} ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          pytest --headless --browser=firefox --alluredir=allure-results
         continue-on-error: true
       - name: Run smoke tests to Firefox
         if: "github.event.inputs.deployment_target == 'Firefox_smoke_tests'"
-        run: pytest -m smoke --headless --browser=firefox --alluredir=allure-results
+        run: > 
+          USER1_LOGIN=${{ secrets.USER1_LOGIN }} USER1_PASSWORD=${{ secrets.USER1_PASSWORD }}
+          USER2_LOGIN=${{ secrets.USER2_LOGIN }} USER2_PASSWORD=${{ secrets.USER2_PASSWORD }}
+          USER3_LOGIN=${{ secrets.USER3_LOGIN }} USER3_PASSWORD=${{ secrets.USER3_PASSWORD }}
+          USER4_LOGIN=${{ secrets.USER4_LOGIN }} USER4_PASSWORD=${{ secrets.USER4_PASSWORD }}
+          ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }} ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          pytest -m smoke --headless --browser=firefox --alluredir=allure-results
         continue-on-error: true
 
       - name: Upload Allure Results
+        if: always()
         uses: actions/upload-artifact@v7
         id: upload-artifact
         with:
           name: allure-results
-          path:
-            allure-results
+          path: allure-results
           retention-days: 1
       - name: Save artifact id
         run: ARTIFACT_ID=${{ steps.upload-artifact.outputs.artifact-id }}
@@ -94,13 +112,15 @@ jobs:
         run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.36.0/allure-2.36.0.tgz && sudo tar -zxvf allure-2.36.0.tgz -C /opt/ && sudo ln -s /opt/allure-2.36.0/bin/allure /usr/bin/allure
       - name: Download workflow artifacts
         uses: actions/download-artifact@v7
+        with:
+          name: allure-results
+          path: allure-results
       - run: allure generate -c allure-results -o _site
       - name: Store generated report
         uses: actions/upload-artifact@v7
         with:
           name: _site
-          path:
-            _site
+          path: _site
           retention-days: 1
 
   publish-allure-report:
