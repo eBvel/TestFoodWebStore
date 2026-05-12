@@ -24,3 +24,22 @@ class Assert:
         print(f"{value_name}\n{current_value=}\n{limit=}")
         assert current_value >= limit, "FAILED: value is smaller than limit."
         print("PASSED: Value is bigger than or equal to the limit.")
+
+    @staticmethod
+    def check_header(page, expected_header):
+        current_header = page.header
+        print(
+            f"{page.__class__.__name__} - header"
+            f"\n{current_header=}\n{expected_header=}"
+        )
+        assert page.header == expected_header, 'FAILED: incorrect header.'
+        print("PASSED: header is correct.")
+
+    @staticmethod
+    def check_url(page):
+        print(
+            f"{page.__class__.__name__} - URL\n"
+            f"current_url={page.get_current_url()}\nexpected_url={page.url}"
+        )
+        assert page.is_url_same(page.url), 'FAILED: incorrect URL.'
+        print('PASSED: URL is correct.')
