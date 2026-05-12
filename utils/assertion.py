@@ -1,6 +1,6 @@
 
 
-class AssertValues:
+class Assert:
     @staticmethod
     def compare_values(value_name, current_value, expected_value):
         print(f"{value_name}\n{current_value=}\n{expected_value=}")

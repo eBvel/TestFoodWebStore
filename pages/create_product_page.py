@@ -1,7 +1,7 @@
 import allure
 
 from pages.base_page import BasePage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import CreateProductLocators as locators
 from tests.test_data.test_products import Product
@@ -89,7 +89,7 @@ class CreateProductPage(BasePage):
     def check_create_button_is_enabled(self, expected_value):
         with allure.step('Проверка, активная кнопка "Создать товар" или нет.'
                          f'Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 'CREATE PRODUCT: Create button is enabled',
                 self.create_product_button_is_enabled,
                 expected_value
@@ -98,7 +98,7 @@ class CreateProductPage(BasePage):
     def check_field_border_color(self, field_name, expected_value):
         with allure.step(f'Проверка цвета рамки вокруг поля. '
                          f'Ожидаемое значение: "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f'CREATE PRODUCT: Field({field_name}) - border color',
                 self.get_field_border_color(field_name),
                 expected_value

@@ -3,7 +3,7 @@ import allure
 
 from pytest import mark
 from pages.auth_page import AuthPage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from tests.test_data.pages_data import TechnicalData, AuthData
 
 
@@ -30,7 +30,7 @@ class TestTechnical:
         error_rate = 0.1
         time_of_load_website = end_time-start_time-error_rate
 
-        AssertValues.is_smaller_or_equal(
+        Assert.is_smaller_or_equal(
             "TECHNICAL: Time's load website",
             time_of_load_website,
             TechnicalData.MAX_TIME_OF_LOAD_WEBSITE

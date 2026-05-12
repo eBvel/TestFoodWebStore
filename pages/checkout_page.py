@@ -2,7 +2,7 @@ import allure
 
 from selenium.common import TimeoutException
 from pages.base_page import BasePage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import UserDataLocators as locators
 
@@ -107,7 +107,7 @@ class CheckoutPage(BasePage):
     def check_empty_fields_alert(self, expected_value):
         with allure.step(f'Проверка текста уведомления о пустых полях. '
                          f'Ожидаемое значение: f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CHECKOUT: Empty field alert",
                 self.try_get_empty_fields_alert(),
                 expected_value
@@ -116,7 +116,7 @@ class CheckoutPage(BasePage):
     def check_first_name(self, expected_value):
         with allure.step(f'Проверка поля "Имя". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CHECKOUT: First name",
                 self.get_first_name(),
                 expected_value
@@ -125,7 +125,7 @@ class CheckoutPage(BasePage):
     def check_second_name(self, expected_value):
         with allure.step(f'Проверка поля "Фамилия". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CHECKOUT: Second name",
                 self.get_second_name(),
                 expected_value
@@ -134,7 +134,7 @@ class CheckoutPage(BasePage):
     def check_cart_number(self, expected_value):
         with allure.step(f'Проверка поля "Номер карты". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CHECKOUT: Cart number",
                 self.get_cart_number(),
                 expected_value

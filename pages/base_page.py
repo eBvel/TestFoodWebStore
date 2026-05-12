@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import TimeoutException
 from selenium.common import ElementClickInterceptedException
 
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import BaseLocators as locators
 from webstore_config.config import Config
@@ -52,9 +52,7 @@ class BasePage:
         button = self.find_clickable_element(locator)
         try:
             button.click()
-        except ElementClickInterceptedException:
-            self.driver.execute_script('arguments[0].click()', button)
-        except TimeoutException:
+        except (ElementClickInterceptedException, TimeoutException):
             self.driver.execute_script('arguments[0].click()', button)
 
     def find_presence_element(self, locator, timeout=Config.TIMEOUT):
@@ -166,7 +164,7 @@ class BasePage:
         with allure.step(f'Проверка заголовка страницы '
                          f'"{self.__class__.__name__}". Ожидаемое значение: '
                          f'"{expected_title}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"{self.__class__.__name__}: Header",
                 self.header,
                 expected_title
@@ -177,7 +175,7 @@ class BasePage:
                          f'"{self.__class__.__name__}". Ожидаемое значение: '
                          f'"{self.url}"'):
             self.is_url_same(self.url)
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"{self.__class__.__name__}: Url",
                 self.get_current_url(),
                 self.url

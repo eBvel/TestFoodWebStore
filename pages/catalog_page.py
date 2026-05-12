@@ -1,7 +1,7 @@
 import allure
 
 from pages.base_page import BasePage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.locators import CatalogLocators as locators
 
 
@@ -80,7 +80,7 @@ class CatalogPage(BasePage):
     def check_product_to_catalog(self, product_name):
         with allure.step(f'Проверка наличия товара "{product_name}"'
                          f' в каталоге'):
-            AssertValues.contains(
+            Assert.contains(
                 f"CATALOG: Product name ({product_name})",
                 product_name,
                 self.get_product_titles()
@@ -101,7 +101,7 @@ class CatalogPage(BasePage):
                 self.is_attribute_present(*check_attribute_args)
             current_count = self.get_product_count(product_name)
 
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CATALOG: Current count of product ({product_name})",
                 current_count,
                 expected_count
@@ -111,7 +111,7 @@ class CatalogPage(BasePage):
         with allure.step(f'Проверка текущего значения счетчика корзины.'
                          f' Ожидаемое значение: {expected_value}'):
             self.is_text_present(locators.CART_COUNTER, str(expected_value))
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CATALOG: Cart counter",
                 self.get_cart_counter_value(),
                 expected_value
@@ -120,7 +120,7 @@ class CatalogPage(BasePage):
     def check_product_description(self, product_name, expected_value):
         with allure.step(f'Проверка "Описания" товара "{product_name}".'
                          f' Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CATALOG: Product description ({product_name})",
                 self.get_product_description(product_name),
                 expected_value
@@ -129,7 +129,7 @@ class CatalogPage(BasePage):
     def check_product_price(self, product_name, expected_value):
         with allure.step(f'Проверка "Цены" товара "{product_name}".'
                          f' Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CATALOG: Product price ({product_name})",
                 self.get_product_price(product_name),
                 expected_value
@@ -138,7 +138,7 @@ class CatalogPage(BasePage):
     def check_product_image(self, product_name, expected_value):
         with allure.step(f'Проверка "URL картинки" товара "{product_name}".'
                          f' Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CATALOG: Product image url ({product_name})",
                 self.get_product_image_url(product_name),
                 expected_value

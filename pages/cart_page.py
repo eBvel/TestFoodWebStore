@@ -2,7 +2,7 @@ import allure
 
 from selenium.common import TimeoutException
 from pages.base_page import BasePage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import CartLocators as locators
 
@@ -95,7 +95,7 @@ class CartPage(BasePage):
         with allure.step(f'Проверка "цены" товара "{product_name}" '
                          f'в корзине'):
             cart_product_price = self.get_product_price(product_name)
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CART: Product price ({product_name})",
                 cart_product_price,
                 expected_value
@@ -104,7 +104,7 @@ class CartPage(BasePage):
     def check_total_cost_display(self, expected_value):
         with allure.step('Проверка отображения кнопки "Оформить заказ".'
                          f'Ожидаемый результат: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CART: Total cost is display",
                 self.total_cost_is_displayed(),
                 expected_value
@@ -113,7 +113,7 @@ class CartPage(BasePage):
     def check_cart_is_empty_text(self, expected_value):
         with allure.step('Проверка текста "сообщения" о пустой корзине. '
                          f'Ожидаемый результат: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CART: Empty text",
                 self.get_cart_is_empty_text(),
                 expected_value
@@ -122,7 +122,7 @@ class CartPage(BasePage):
     def check_total_cost(self, expected_value):
         with allure.step('Проверка поля "итоговая стоимость" в корзине. '
                          f'Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CART: Total cost",
                 self.get_total_cost(),
                 expected_value
@@ -131,7 +131,7 @@ class CartPage(BasePage):
     def check_cart_is_empty(self, expected_value):
         with allure.step('Проверка корзины на пустоту. '
                          f'Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CART: Cart is empty",
                 self.is_empty(),
                 expected_value
@@ -145,7 +145,7 @@ class CartPage(BasePage):
                 'value',
                 str(expected_value)
             )
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"CART: Product count ({product_name})",
                 self.get_product_count(product_name),
                 expected_value
@@ -154,7 +154,7 @@ class CartPage(BasePage):
     def check_place_an_order_button_display(self, expected_value):
         with allure.step('Проверка отображения кнопки "Оформить заказ". '
                          f'Ожидаемое значение: {expected_value}'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "CART: Place an order button is display",
                 self.place_an_order_button_is_display(),
                 expected_value

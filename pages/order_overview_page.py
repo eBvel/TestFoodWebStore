@@ -1,7 +1,7 @@
 import allure
 
 from pages.base_page import BasePage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from webstore_config.locators import OrderOverviewLocators as locators
 from webstore_config.links import Links
 
@@ -95,7 +95,7 @@ class OrderOverviewPage(BasePage):
     def check_first_name(self, expected_value):
         with allure.step(f'Проверка поля "Имя". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: First name",
                 self.get_first_name(),
                 f'Имя: {expected_value}'
@@ -104,7 +104,7 @@ class OrderOverviewPage(BasePage):
     def check_second_name(self, expected_value):
         with allure.step(f'Проверка поля "Фамилия". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Second name",
                 self.get_second_name(),
                 f'Фамилия: {expected_value}'
@@ -113,7 +113,7 @@ class OrderOverviewPage(BasePage):
     def check_middle_name(self, expected_value):
         with allure.step(f'Проверка поля "Отчество". Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Middle name",
                 self.get_middle_name(),
                 f'Отчество: {expected_value}'
@@ -122,7 +122,7 @@ class OrderOverviewPage(BasePage):
     def check_products_list(self, expected_value):
         with allure.step(f'Проверка списка товаров. Ожидаемое значение: '
                          f'f"{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Product list",
                 set(self.get_products_title()),
                 set(expected_value)
@@ -131,7 +131,7 @@ class OrderOverviewPage(BasePage):
     def check_products_count(self, product_name, expected_value):
         with allure.step(f'Проверка количества товаров. Ожидаемое значение:'
                          f' "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"OVERVIEW: Product count ({product_name})",
                 self.get_product_count(product_name),
                 expected_value
@@ -140,7 +140,7 @@ class OrderOverviewPage(BasePage):
     def check_products_price(self, product_name, expected_value):
         with allure.step(f'Проверка цены товаров. Ожидаемое значение:'
                          f' "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 f"OVERVIEW: Product price ({product_name})",
                 self.get_product_price(product_name),
                 expected_value
@@ -149,7 +149,7 @@ class OrderOverviewPage(BasePage):
     def check_delivery_address(self, expected_value):
         with allure.step(f'Проверка адреса доставки. Ожидаемое значение:'
                          f' "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Delivery address",
                 self.get_delivery_address(),
                 expected_value
@@ -158,7 +158,7 @@ class OrderOverviewPage(BasePage):
     def check_cart_number(self, expected_value):
         with allure.step(f'Проверка номера карты. Ожидаемое значение:'
                          f' "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Cart number",
                 self.get_cart_number(),
                 expected_value
@@ -167,7 +167,7 @@ class OrderOverviewPage(BasePage):
     def check_total_count(self, expected_value):
         with allure.step(f'Проверка общего количества товаров. Ожидаемое '
                          f'значение: "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Total count",
                 self.get_total_count(),
                 expected_value
@@ -176,7 +176,7 @@ class OrderOverviewPage(BasePage):
     def check_total_cost(self, expected_value):
         with allure.step(f'Проверка общей стоимости товаров. Ожидаемое'
                          f' значение: "{expected_value}"'):
-            AssertValues.compare_values(
+            Assert.compare_values(
                 "OVERVIEW: Total cost",
                 self.get_total_cost(),
                 expected_value
