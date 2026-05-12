@@ -8,6 +8,7 @@ from pages.order_overview_page import OrderOverviewPage
 from pages.checkout_page import CheckoutPage
 from tests.test_data.pages_data import CatalogData, CompleteData
 from tests.test_data.user_data import UserData
+from utils.assertion import Assert
 
 
 class TestCompletePage:
@@ -41,9 +42,13 @@ class TestCompletePage:
         self.checkout_page.click_place_an_order_button()
         self.overview.click_complete_order_button()
 
-        self.complete.check_url()
-        self.complete.check_header(CompleteData.HEADER)
-        self.complete.check_complete_message(CompleteData.SUCCESS_MESSAGE)
+        Assert.check_header(self.complete, CompleteData.HEADER)
+        Assert.check_url(self.complete)
+        Assert.compare_values(
+            value_name='Complete message',
+            current_value=self.complete.get_complete_message(),
+            expected_value=CompleteData.SUCCESS_MESSAGE
+        )
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода обратно в каталог товаров')
@@ -58,5 +63,5 @@ class TestCompletePage:
         self.overview.click_complete_order_button()
         self.complete.click_back_to_catalog_button()
 
-        self.catalog.check_url()
-        self.catalog.check_header(CatalogData.HEADER)
+        Assert.check_header(self.catalog, CatalogData.HEADER)
+        Assert.check_url(self.catalog)

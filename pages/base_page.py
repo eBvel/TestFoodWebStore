@@ -4,8 +4,7 @@ from selenium.webdriver.support.wait import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import TimeoutException
 from selenium.common import ElementClickInterceptedException
-
-from utils.assertion import Assert
+from utils.conditions import WaitValueChanges, WaitTextChanges
 from webstore_config.links import Links
 from webstore_config.locators import BaseLocators as locators
 from webstore_config.config import Config
@@ -64,12 +63,17 @@ class BasePage:
             timeout
         )
 
-    def is_text_present(self, locator, text, timeout=Config.TIMEOUT):
+    @allure.step('Ожидание изменения значения "value" у элемента')
+    def wait_value_change(self, locator, timeout=Config.TIMEOUT):
         try:
-            return self.find(
-                EC.text_to_be_present_in_element(locator, text),
-                timeout
-            )
+            return self.find(WaitValueChanges(locator), timeout)
+        except TimeoutException:
+            return False
+
+    @allure.step('Ожидание изменения значения "text" у элемента')
+    def wait_text_change(self, locator, timeout=Config.TIMEOUT):
+        try:
+            return self.find(WaitTextChanges(locator), timeout)
         except TimeoutException:
             return False
 
@@ -96,25 +100,6 @@ class BasePage:
         try:
             return self.find(
                 EC.invisibility_of_element_located(locator),
-                timeout
-            )
-        except TimeoutException:
-            return False
-
-    def is_attribute_missing(
-            self,
-            locator,
-            attribute,
-            text,
-            timeout=Config.TIMEOUT
-    ):
-        try:
-            return self.wait_until_not(
-                EC.text_to_be_present_in_element_attribute(
-                    locator,
-                    attribute,
-                    text
-                ),
                 timeout
             )
         except TimeoutException:
@@ -159,24 +144,3 @@ class BasePage:
     @allure.step('Запрос текущего URL страницы')
     def get_current_url(self):
         return self.driver.current_url
-
-    def check_header(self, expected_title):
-        with allure.step(f'Проверка заголовка страницы '
-                         f'"{self.__class__.__name__}". Ожидаемое значение: '
-                         f'"{expected_title}"'):
-            Assert.compare_values(
-                f"{self.__class__.__name__}: Header",
-                self.header,
-                expected_title
-            )
-
-    def check_url(self):
-        with allure.step(f'Проверка URL текущей страницы '
-                         f'"{self.__class__.__name__}". Ожидаемое значение: '
-                         f'"{self.url}"'):
-            self.is_url_same(self.url)
-            Assert.compare_values(
-                f"{self.__class__.__name__}: Url",
-                self.get_current_url(),
-                self.url
-            )

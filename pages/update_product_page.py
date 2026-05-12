@@ -2,7 +2,6 @@ import allure
 
 from selenium.common import ElementClickInterceptedException
 from pages.create_product_page import CreateProductPage
-from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import CreateProductLocators as locators
 
@@ -50,12 +49,5 @@ class UpdateProductPage(CreateProductPage):
     def click_update_product_button(self):
         self.click_create_product_button()
 
-    def check_url(self):
-        expected_url = self.url + self.product_id
-        with allure.step(f'Проверка URL текущей страницы: "UpdateProductPage".'
-                         f' Ожидаемое значение: "{expected_url}"'):
-            Assert.compare_values(
-                "UPDATE PRODUCT: Url",
-                self.get_current_url(),
-                expected_url
-            )
+    def get_url(self):
+        return self.url + self.product_id

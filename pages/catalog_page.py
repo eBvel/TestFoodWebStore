@@ -1,7 +1,6 @@
 import allure
 
 from pages.base_page import BasePage
-from utils.assertion import Assert
 from webstore_config.locators import CatalogLocators as locators
 
 
@@ -18,6 +17,7 @@ class CatalogPage(BasePage):
 
     def get_product_count(self, product_name):
         with allure.step(f'Запрос кол-ва товара "{product_name}" в корзине'):
+            self.wait_value_change(locators.COUNT_OF_PRODUCT(product_name))
             return int(
                 self
                 .find_visible_element(locators.COUNT_OF_PRODUCT(product_name))
@@ -75,71 +75,5 @@ class CatalogPage(BasePage):
 
     @allure.step('Запрос "текущего значения" счетчика корзины')
     def get_cart_counter_value(self):
+        self.wait_text_change(locators.CART_COUNTER)
         return int(self.find_visible_element(locators.CART_COUNTER).text)
-
-    def check_product_to_catalog(self, product_name):
-        with allure.step(f'Проверка наличия товара "{product_name}"'
-                         f' в каталоге'):
-            Assert.contains(
-                f"CATALOG: Product name ({product_name})",
-                product_name,
-                self.get_product_titles()
-            )
-
-    def check_current_count_of_product(self, product_name, expected_count):
-        with allure.step(f'Проверка количества товара "{product_name}" '
-                         f'в корзине. Ожидаемое значение: {expected_count}'):
-            check_attribute_args = (
-                locators.COUNT_OF_PRODUCT(product_name),
-                'value',
-                str(expected_count)
-            )
-            current_count = self.get_product_count(product_name)
-            if current_count == expected_count:
-                self.is_attribute_missing(*check_attribute_args)
-            else:
-                self.is_attribute_present(*check_attribute_args)
-            current_count = self.get_product_count(product_name)
-
-            Assert.compare_values(
-                f"CATALOG: Current count of product ({product_name})",
-                current_count,
-                expected_count
-            )
-
-    def check_cart_counter_value(self, expected_value):
-        with allure.step(f'Проверка текущего значения счетчика корзины.'
-                         f' Ожидаемое значение: {expected_value}'):
-            self.is_text_present(locators.CART_COUNTER, str(expected_value))
-            Assert.compare_values(
-                f"CATALOG: Cart counter",
-                self.get_cart_counter_value(),
-                expected_value
-            )
-
-    def check_product_description(self, product_name, expected_value):
-        with allure.step(f'Проверка "Описания" товара "{product_name}".'
-                         f' Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                f"CATALOG: Product description ({product_name})",
-                self.get_product_description(product_name),
-                expected_value
-            )
-
-    def check_product_price(self, product_name, expected_value):
-        with allure.step(f'Проверка "Цены" товара "{product_name}".'
-                         f' Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                f"CATALOG: Product price ({product_name})",
-                self.get_product_price(product_name),
-                expected_value
-            )
-
-    def check_product_image(self, product_name, expected_value):
-        with allure.step(f'Проверка "URL картинки" товара "{product_name}".'
-                         f' Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                f"CATALOG: Product image url ({product_name})",
-                self.get_product_image_url(product_name),
-                expected_value
-            )

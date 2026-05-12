@@ -3,7 +3,6 @@ import allure
 from pages.base_page import BasePage
 from webstore_config.links import Links
 from webstore_config.locators import CompleteLocators as locators
-from utils.assertion import Assert
 
 
 class CompletePage(BasePage):
@@ -18,12 +17,3 @@ class CompletePage(BasePage):
     @allure.step('Нажатие кнопки "Вернутся в магазин"')
     def click_back_to_catalog_button(self):
         self.click(locators.BACK_TO_CATALOG_BUTTON)
-
-    def check_complete_message(self, expected_value):
-        with allure.step(f'Проверка сообщения об успешно созданном заказе. '
-                         f'Ожидаемое значение: "{expected_value}"'):
-            Assert.compare_values(
-                "COMPLETE: Complete message",
-                self.get_complete_message(),
-                expected_value
-            )

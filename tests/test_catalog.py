@@ -5,6 +5,7 @@ from pages.catalog_page import CatalogPage
 from tests.test_data.pages_data import CatalogData
 from tests.test_data.datasets import Datasets
 from tests.test_data.expected_values import ExpectedValues as EV
+from utils.assertion import Assert
 
 
 class TestCatalogPage:
@@ -19,7 +20,11 @@ class TestCatalogPage:
     def test_search_product(self, test_product, auth_by_user1):
         self.catalog.open()
 
-        self.catalog.check_product_to_catalog(test_product.name)
+        Assert.contains(
+            value_name='Product name',
+            value=test_product.name,
+            data=self.catalog.get_product_titles()
+        )
 
     @allure.feature('PRESENCE DATA')
     @allure.story('Проверка поля "Описание" у карточки товара')
@@ -30,10 +35,12 @@ class TestCatalogPage:
             auth_by_user1
     ):
         self.catalog.open()
-
-        self.catalog.check_product_description(
-            test_product.name,
-            test_product.description
+        Assert.compare_values(
+            value_name='Product description',
+            current_value=self.catalog.get_product_description(
+                test_product.name
+            ),
+            expected_value=test_product.description
         )
 
     @allure.feature('PRESENCE DATA')
@@ -42,9 +49,10 @@ class TestCatalogPage:
     def test_presence_price_of_product(self, test_product, auth_by_user1):
         self.catalog.open()
 
-        self.catalog.check_product_price(
-            test_product.name,
-            test_product.get_price_str()
+        Assert.compare_values(
+            value_name='Product price',
+            current_value=self.catalog.get_product_price(test_product.name),
+            expected_value=test_product.get_price_str()
         )
 
     @allure.feature('PRESENCE DATA')
@@ -53,9 +61,12 @@ class TestCatalogPage:
     def test_presence_image_of_product(self, test_product, auth_by_user1):
         self.catalog.open()
 
-        self.catalog.check_product_image(
-            test_product.name,
-            test_product.image_url
+        Assert.compare_values(
+            value_name='Product image url',
+            current_value=self.catalog.get_product_image_url(
+                test_product.name
+            ),
+            expected_value=test_product.image_url
         )
 
     @allure.feature('FUNCTIONAL')
@@ -66,9 +77,10 @@ class TestCatalogPage:
         self.catalog.open()
         self.catalog.add_product(test_product.name)
 
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-            EV.CATALOG_COUNT_AFTER_ADD
+        Assert.compare_values(
+            value_name='Count of product (after add)',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=EV.CATALOG_COUNT_AFTER_ADD
         )
 
     @allure.feature('FUNCTIONAL')
@@ -85,9 +97,10 @@ class TestCatalogPage:
         self.catalog.open()
         self.catalog.remove_product(test_product.name)
 
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-           EV.CATALOG_COUNT_AFTER_REMOVE
+        Assert.compare_values(
+            value_name='Count of product (after remove)',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=EV.CATALOG_COUNT_AFTER_REMOVE
         )
 
     @allure.feature('OPERATIONS')
@@ -106,17 +119,17 @@ class TestCatalogPage:
     ):
         self.catalog.open()
         self.catalog.add_product(test_product.name, add_count)
-
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-            add_count
+        Assert.compare_values(
+            value_name='Count of product (after add)',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=add_count
         )
 
         self.catalog.remove_product(test_product.name, remove_count)
-
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-            add_count - remove_count
+        Assert.compare_values(
+            value_name='Count of product (after remove)',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=add_count-remove_count
         )
 
     @allure.feature('FUNCTIONAL')
@@ -133,7 +146,11 @@ class TestCatalogPage:
         product_count_to_cart(test_product, quantity)
         self.catalog.open()
 
-        self.catalog.check_cart_counter_value(quantity)
+        Assert.compare_values(
+            value_name='Cart counter',
+            current_value=self.catalog.get_cart_counter_value(),
+            expected_value=quantity
+        )
 
     @allure.feature('BOUNDARY VALUES')
     @allure.story('Проверка нижней границы (0) счетчика товаров')
@@ -142,9 +159,10 @@ class TestCatalogPage:
         self.catalog.open()
         self.catalog.remove_product(test_product.name)
 
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-            CatalogData.MIN_PRODUCT_COUNT
+        Assert.compare_values(
+            value_name='Lower limit of product counter',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=CatalogData.MIN_PRODUCT_COUNT
         )
 
     @allure.feature('BOUNDARY VALUES')
@@ -165,7 +183,8 @@ class TestCatalogPage:
         product_count_to_cart(test_product, start_product_count)
         self.catalog.add_product(test_product.name)
 
-        self.catalog.check_current_count_of_product(
-            test_product.name,
-            CatalogData.MAX_PRODUCT_COUNT
+        Assert.compare_values(
+            value_name='Upper limit of product counter',
+            current_value=self.catalog.get_product_count(test_product.name),
+            expected_value=CatalogData.MAX_PRODUCT_COUNT
         )

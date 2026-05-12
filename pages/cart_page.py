@@ -2,7 +2,6 @@ import allure
 
 from selenium.common import TimeoutException
 from pages.base_page import BasePage
-from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import CartLocators as locators
 
@@ -13,7 +12,7 @@ class CartPage(BasePage):
         self.url = Links.CART_PAGE_URL
 
     @allure.step('Запрос текста "сообщения" о пустой корзине')
-    def get_cart_is_empty_text(self):
+    def get_empty_text(self):
         return self.find_visible_element(locators.CART_IS_EMPTY_TEXT).text
 
     @allure.step('Запрос, пустая корзина или нет')
@@ -26,11 +25,11 @@ class CartPage(BasePage):
 
     @allure.step('Запрос, отображается поле "итоговая стоимость" '
                  'в корзине или нет')
-    def total_cost_is_displayed(self):
+    def is_total_cost_displayed(self):
         return self.find_visible_element(locators.TOTAL_COST).is_displayed()
 
     @allure.step('Запрос, отображается кнопка "Оформить заказ" или нет')
-    def place_an_order_button_is_display(self):
+    def is_place_an_order_button_display(self):
         try:
             return (
                 self
@@ -77,6 +76,7 @@ class CartPage(BasePage):
 
     def get_product_count(self, product_name):
         with allure.step(f'Запрос кол-ва товара "{product_name}" в корзинке'):
+            self.wait_value_change(locators.COUNT_OF_PRODUCT(product_name))
             return int(
                 self
                .find_visible_element(locators.COUNT_OF_PRODUCT(product_name))
@@ -90,72 +90,3 @@ class CartPage(BasePage):
     @allure.step('Нажатие кнопки "Оформить заказ"')
     def click_place_an_order_button(self):
         self.click(locators.PLACE_AN_ORDER_BUTTON)
-
-    def check_product_price(self, product_name, expected_value):
-        with allure.step(f'Проверка "цены" товара "{product_name}" '
-                         f'в корзине'):
-            cart_product_price = self.get_product_price(product_name)
-            Assert.compare_values(
-                f"CART: Product price ({product_name})",
-                cart_product_price,
-                expected_value
-            )
-
-    def check_total_cost_display(self, expected_value):
-        with allure.step('Проверка отображения кнопки "Оформить заказ".'
-                         f'Ожидаемый результат: {expected_value}'):
-            Assert.compare_values(
-                "CART: Total cost is display",
-                self.total_cost_is_displayed(),
-                expected_value
-            )
-
-    def check_cart_is_empty_text(self, expected_value):
-        with allure.step('Проверка текста "сообщения" о пустой корзине. '
-                         f'Ожидаемый результат: {expected_value}'):
-            Assert.compare_values(
-                "CART: Empty text",
-                self.get_cart_is_empty_text(),
-                expected_value
-            )
-
-    def check_total_cost(self, expected_value):
-        with allure.step('Проверка поля "итоговая стоимость" в корзине. '
-                         f'Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                "CART: Total cost",
-                self.get_total_cost(),
-                expected_value
-            )
-
-    def check_cart_is_empty(self, expected_value):
-        with allure.step('Проверка корзины на пустоту. '
-                         f'Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                "CART: Cart is empty",
-                self.is_empty(),
-                expected_value
-            )
-
-    def check_product_count(self, product_name, expected_value):
-        with allure.step(f'Проверка "количества" товара "{product_name}" '
-                         f'в корзине. Ожидаемое значение: {expected_value}'):
-            self.is_attribute_present(
-                locators.COUNT_OF_PRODUCT(product_name),
-                'value',
-                str(expected_value)
-            )
-            Assert.compare_values(
-                f"CART: Product count ({product_name})",
-                self.get_product_count(product_name),
-                expected_value
-            )
-
-    def check_place_an_order_button_display(self, expected_value):
-        with allure.step('Проверка отображения кнопки "Оформить заказ". '
-                         f'Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                "CART: Place an order button is display",
-                self.place_an_order_button_is_display(),
-                expected_value
-            )

@@ -2,7 +2,6 @@ import allure
 
 from selenium.common import TimeoutException
 from pages.base_page import BasePage
-from utils.assertion import Assert
 from webstore_config.links import Links
 from webstore_config.locators import EditProductsLocators as locators
 
@@ -68,38 +67,5 @@ class EditProductsPage(BasePage):
             except TimeoutException:
                 return False
 
-    def check_existence_of_product(self, product_name, expected_value):
-        with allure.step(f'Проверка наличия товара "{product_name}" в '
-                         f'каталоге. Ожидаемое значение: {expected_value}'):
-            Assert.compare_values(
-                f"EDIT PRODUCTS: Product is exists ({product_name})",
-                not self.product_is_missing(product_name),
-                expected_value
-            )
-
-    def check_product_description(self, product_name, expected_value):
-        with allure.step(f'Проверка поля "Описания" у карточки товара. '
-                         f'Ожидаемое значение: "{expected_value}"'):
-            Assert.compare_values(
-                f'EDIT PRODUCTS: Product description ({product_name})',
-                self.get_product_description(product_name),
-                expected_value
-            )
-
-    def check_price_of_product(self, product_name, expected_value):
-        with allure.step(f'Проверка поля "Цена" у карточки товара. '
-                         f'Ожидаемое значение: "{expected_value}"'):
-            Assert.compare_values(
-                f'EDIT PRODUCTS: Price of product ({product_name})',
-                self.get_product_price(product_name),
-                expected_value
-            )
-
-    def check_image_source_of_product(self, product_name, expected_value):
-        with allure.step(f'Проверка поля "URL картинки" у карточки товара. '
-                         f'Ожидаемое значение: "{expected_value}"'):
-            Assert.compare_values(
-                f'EDIT PRODUCTS: Image source of product ({product_name})',
-                self.get_product_image_url(product_name),
-                expected_value
-            )
+    def is_product_exists(self, product_name):
+        return not self.product_is_missing(product_name)

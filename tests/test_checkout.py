@@ -10,6 +10,7 @@ from tests.test_data.user_data import UserData
 from tests.test_data.pages_data import (CheckoutData, OrderOverviewData,
                                         CatalogData)
 from tests.test_data.expected_values import ExpectedValues as EV
+from utils.assertion import Assert
 
 
 class TestCheckoutPage:
@@ -42,7 +43,8 @@ class TestCheckoutPage:
         )
         self.checkout.click_place_an_order_button()
 
-        self.overview.check_header(OrderOverviewData.HEADER)
+        Assert.check_header(self.overview, OrderOverviewData.HEADER)
+        Assert.check_url(self.overview)
 
     @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка оформления заказа с пустыми полями')
@@ -58,9 +60,11 @@ class TestCheckoutPage:
         self.cart.click_place_an_order_button()
         self.checkout.click_place_an_order_button()
 
-        self.checkout.check_header(CheckoutData.HEADER)
-        self.checkout.check_empty_fields_alert(
-            CheckoutData.ALL_EMPTY_FIELDS_MESSAGE
+        Assert.check_header(self.checkout, CheckoutData.HEADER)
+        Assert.compare_values(
+            value_name='Text of empty fields message',
+            current_value=self.checkout.try_get_empty_fields_alert(),
+            expected_value=CheckoutData.ALL_EMPTY_FIELDS_MESSAGE
         )
 
     @allure.feature('INVALID DATA')
@@ -79,7 +83,11 @@ class TestCheckoutPage:
         self.cart.click_place_an_order_button()
         self.checkout.enter_second_name(value)
 
-        self.checkout.check_second_name(EV.CHECKOUT_EMPTY_FIELD)
+        Assert.compare_values(
+            value_name='Second name',
+            current_value=self.checkout.get_second_name(),
+            expected_value=EV.CHECKOUT_EMPTY_FIELD
+        )
 
     @allure.feature('INVALID DATA')
     @allure.story('Проверка валидации поля "Имя"')
@@ -97,7 +105,11 @@ class TestCheckoutPage:
         self.cart.click_place_an_order_button()
         self.checkout.enter_first_name(value)
 
-        self.checkout.check_first_name(EV.CHECKOUT_EMPTY_FIELD)
+        Assert.compare_values(
+            value_name='First name',
+            current_value=self.checkout.get_first_name(),
+            expected_value=EV.CHECKOUT_EMPTY_FIELD
+        )
 
     @allure.feature('INVALID DATA')
     @allure.story('Проверка валидации поля "Номер карты"')
@@ -118,7 +130,11 @@ class TestCheckoutPage:
         self.cart.click_place_an_order_button()
         self.checkout.enter_cart_number(value)
 
-        self.checkout.check_cart_number(EV.CHECKOUT_EMPTY_FIELD)
+        Assert.compare_values(
+            value_name='Cart number',
+            current_value=self.checkout.get_cart_number(),
+            expected_value=EV.CHECKOUT_EMPTY_FIELD
+        )
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода в каталог по кнопке "Обратно в магазин"')
@@ -130,4 +146,4 @@ class TestCheckoutPage:
         self.cart.click_place_an_order_button()
         self.checkout.click_back_to_catalog()
 
-        self.catalog.check_header(CatalogData.HEADER)
+        Assert.check_header(self.catalog, CatalogData.HEADER)
