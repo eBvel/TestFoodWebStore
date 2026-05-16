@@ -1,5 +1,7 @@
 from faker import Faker
 from dataclasses import dataclass
+from typing import Callable, TypeVar
+from typing_extensions import Self
 fake = Faker("ru_RU")
 
 
@@ -11,7 +13,7 @@ class Product:
     price: float
     image_url: str
 
-    def get_price_str(self, right_digits=2):
+    def get_price_str(self, right_digits: int = 2) -> str:
         return f'{self.price:.{right_digits}f} ₽'
 
     def to_json(self) -> dict[str, str | float]:
@@ -25,35 +27,39 @@ class Product:
         }
 
 
+T = TypeVar("T")
+BuildProductType = Callable[[T], Product]
+
+
 class ProductBuilder:
-    def __init__(self):
+    def __init__(self) -> None:
         self.__name = None
         self.__description = None
         self.__category = None
         self.__price = None
         self.__image_url = None
 
-    def with_name(self, name):
+    def with_name(self, name: str) -> Self:
         self.__name = name
         return self
 
-    def with_description(self, description):
+    def with_description(self, description: str) -> Self:
         self.__description = description
         return self
 
-    def with_category(self, category):
+    def with_category(self, category: str) -> Self:
         self.__category = category
         return self
 
-    def with_price(self, price):
+    def with_price(self, price: float) -> Self:
         self.__price = price
         return self
 
-    def with_image_url(self, url):
+    def with_image_url(self, url: str) -> Self:
         self.__image_url = url
         return self
 
-    def build(self):
+    def build(self) -> Product:
         return Product(
             self.__name,
             self.__description,
@@ -65,7 +71,7 @@ class ProductBuilder:
 
 class ProductFactory:
     @staticmethod
-    def create_product_by_type(product_type) -> Product:
+    def create_product_by_type(product_type: str) -> Product:
         try:
             products = ProductFactory.get_product_types()
             return products[product_type]()
@@ -87,7 +93,13 @@ class ProductFactory:
             )
 
     @staticmethod
-    def create_product(product_name, description, category, price, image_url):
+    def create_product(
+            product_name: str,
+            description: str,
+            category: str,
+            price: float,
+            image_url: str
+    ) -> Product:
         return (
             ProductBuilder()
             .with_name(product_name)
@@ -99,7 +111,7 @@ class ProductFactory:
         )
 
     @staticmethod
-    def sandwich():
+    def sandwich() -> Product:
         return (
             ProductBuilder()
             .with_name('Сэндвич с ветчиной и сыром')
@@ -112,7 +124,7 @@ class ProductFactory:
         )
 
     @staticmethod
-    def caviar():
+    def caviar() -> Product:
         return (
             ProductBuilder()
             .with_name('Черная икра Белуги')
@@ -124,7 +136,7 @@ class ProductFactory:
         )
 
     @staticmethod
-    def nuggets():
+    def nuggets() -> Product:
         return (
             ProductBuilder()
             .with_name('Наггетсы')
@@ -142,16 +154,16 @@ class ProductFactory:
 
     @staticmethod
     def pepperoni(
-            name='Пицца Пепперони',
-            description=fake.text(max_nb_chars=40),
-            category='Пицца',
-            price=fake.pyfloat(
+            name: str = 'Пицца Пепперони',
+            description: str = fake.text(max_nb_chars=40),
+            category: str = 'Пицца',
+            price: float = fake.pyfloat(
                 right_digits=0,
                 min_value=550.0,
                 max_value=1200.0
-                ),
-            image_url='https://clck.ru/3Ryn8j'
-    ):
+            ),
+            image_url: str = 'https://clck.ru/3Ryn8j'
+    ) -> Product:
         return (
             ProductBuilder()
             .with_name(name)
@@ -163,7 +175,7 @@ class ProductFactory:
         )
 
     @staticmethod
-    def margarita():
+    def margarita() -> Product:
         return (
             ProductBuilder()
             .with_name('Пицца Маргарита')
@@ -180,7 +192,7 @@ class ProductFactory:
         )
 
     @staticmethod
-    def get_product_types():
+    def get_product_types() -> dict[str, BuildProductType]:
         return {
             'sandwich': ProductFactory.sandwich,
             'caviar': ProductFactory.caviar,

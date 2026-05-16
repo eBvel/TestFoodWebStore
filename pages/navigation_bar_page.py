@@ -7,25 +7,25 @@ from pages.base_page import BasePage
 class NavigationBarPage(BasePage):
     @property
     @allure.step('Запрос заголовка: "Меню"')
-    def header(self):
+    def header(self) -> str | None:
         return self.find_visible_element(locators.HEADER).text
 
     @allure.step('Запрос, открыто ли меню или нет')
-    def is_close(self):
+    def is_close(self) -> bool:
         return self.is_invisible(locators.MENU)
 
     @allure.step('Нажатие кнопки "Редактировать товары" в окне навигации')
-    def click_edit_products_button(self):
+    def click_edit_products_button(self) -> None:
         self.find_clickable_element(locators.EDIT_PRODUCTS_BUTTON).click()
 
     @allure.step('Нажатие кнопки "Каталог" в окне навигации')
-    def click_catalog_button(self):
+    def click_catalog_button(self) -> None:
         self.find_clickable_element(locators.CATALOG_BUTTON).click()
 
     @allure.step('Нажатие кнопки "Корзинка" в окне навигации')
-    def click_cart_button(self):
+    def click_cart_button(self) -> None:
         self.find_clickable_element(locators.CART_BUTTON).click()
 
     @allure.step('Нажатие кнопки "Выход" в окне навигации')
-    def click_log_out(self):
+    def click_log_out(self) -> None:
         self.find_clickable_element(locators.LOGOUT_BUTTON).click()

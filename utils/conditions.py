@@ -1,12 +1,17 @@
 from selenium.common import StaleElementReferenceException
+from selenium.webdriver.remote.webdriver import WebDriver
+from typing import Literal
+
+ByType = Literal["id", "xpath", "link text", "partial link text", "name", "tag name", "class name", "css selector"]
+LocatorType = tuple[ByType, str]
 
 
 class WaitValueChanges(object):
-    def __init__(self, locator):
+    def __init__(self, locator: LocatorType):
         self.locator = locator
         self.value = None
 
-    def __call__(self, driver):
+    def __call__(self, driver: WebDriver):
         try:
             element_value = (
                 driver
@@ -21,11 +26,11 @@ class WaitValueChanges(object):
 
 
 class WaitTextChanges(object):
-    def __init__(self, locator):
+    def __init__(self, locator: LocatorType):
         self.locator = locator
         self.text = None
 
-    def __call__(self, driver):
+    def __call__(self, driver: WebDriver):
         try:
             element_text = driver.find_element(*self.locator).text
             if not self.text:

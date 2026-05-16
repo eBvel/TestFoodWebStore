@@ -5,6 +5,6 @@ __pycache__/
 /main.py
 /.idea
 /.env
-test_results
+allure-results
 screenshots
 logs

@@ -1,26 +1,27 @@
 import allure
 
 from selenium.common import ElementClickInterceptedException
-from pages.create_product_page import CreateProductPage
+from pages.create_product_page import CreateProductPage, WebDriver
 from webstore_config.links import Links
-from webstore_config.locators import CreateProductLocators as locators
+from webstore_config.locators import (CreateProductLocators as locators,
+                                      LocatorType)
 
 
 class UpdateProductPage(CreateProductPage):
-    def __init__(self, driver):
+    def __init__(self, driver: WebDriver) -> None:
         super().__init__(driver)
         self.url = Links.UPDATE_PRODUCT_PAGE_URL
 
     @property
     @allure.step('Запрос идентификатора продукта')
-    def product_id(self):
+    def product_id(self) -> str | None:
         return (
             self
             .find_visible_element(locators.ID_FIELD)
             .get_attribute('value')
         )
 
-    def clear_input(self, locator):
+    def clear_input(self, locator: LocatorType) -> None:
         with allure.step(f'Запрос отчистки поля с локатором: "{locators}"'):
             try:
                 element = self.find_clickable_element(locator)
@@ -29,25 +30,26 @@ class UpdateProductPage(CreateProductPage):
             except ElementClickInterceptedException:
                 self.find_visible_element(locator).clear()
 
-    def enter_product_name(self, name):
+    def enter_product_name(self, name: str) -> None:
         self.clear_input(locators.NAME_FIELD)
         super().enter_product_name(name)
 
-    def enter_product_description(self, description):
+    def enter_product_description(self, description: str) -> None:
         self.clear_input(locators.DESCRIPTION_FIELD)
         super().enter_product_description(description)
 
-    def enter_price_of_product(self, price):
+    def enter_price_of_product(self, price: float) -> None:
         self.clear_input(locators.PRICE_FIELD)
         super().enter_price_of_product(price)
 
-    def enter_image_source(self, url):
+    def enter_image_source(self, url: str) -> None:
         self.clear_input(locators.IMAGE_SOURCE_FIELD)
         super().enter_image_source(url)
 
     @allure.step('Нажатие кнопки "Обновить товар"')
-    def click_update_product_button(self):
+    def click_update_product_button(self) -> None:
         self.click_create_product_button()
 
-    def get_url(self):
+    @allure.step('Запрос URL страницы редактирования товара')
+    def get_url(self) -> str:
         return self.url + self.product_id

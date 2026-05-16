@@ -1,30 +1,24 @@
+from requests import Session, Response
 from utils.http_methods import CustomRequests
+from webstore_config.end_points import EndPoints
+from typing_extensions import Self
 
 
 class WebstoreAPI:
-    def __init__(self, session):
-        self.request = CustomRequests(session)
-        self.base_url = "http://91.197.96.80:5267/api/v1/"
+    def __init__(self, session: Session):
+        self.request: CustomRequests = CustomRequests(session)
+        self.admin_token: str = ''
+        self.user_token: str = ''
 
-        self.admin_token = None
-        self.user_token = None
-
-        self.auth_end_point = f"{self.base_url}authorization/login"
-        self.products_list = f"{self.base_url}storage/products"
-        self.create_product_end_point = f"{self.base_url}storage/product"
-        self.delete_product_end_point = f"{self.base_url}storage/product?id="
-        self.cart_products_end_point = f"{self.base_url}cart/products"
-        self.cart_product_end_point = f"{self.base_url}cart/product"
-
-    def auth(self, login, password):
-        response = self.request.post(
-            url=self.auth_end_point,
+    def auth(self, login: str, password: str) -> bool:
+        response: Response = self.request.post(
+            url=EndPoints.AUTH,
             body={
                 "username": login,
                 "password": password
             }
         )
-        is_auth = response.status_code == 200
+        is_auth: bool = response.status_code == 200
 
         if is_auth and login == 'admin':
             self.admin_token = response.json().get('data').get('token')
@@ -33,53 +27,53 @@ class WebstoreAPI:
 
         return is_auth
 
-    def by_admin(self):
+    def by_admin(self) -> Self:
         if self.admin_token is not None:
             self.request.set_auth_token(self.admin_token)
         return self
 
-    def by_user(self):
+    def by_user(self) -> Self:
         if self.user_token is not None:
             self.request.set_auth_token(self.user_token)
         return self
 
-    def get_products_list(self):
-        response = self.request.get(self.products_list)
+    def get_products_list(self) -> dict[str, int | str | float]:
+        response: Response = self.request.get(EndPoints.PRODUCT_LIST)
         return response.json().get('data')
 
-    def create_product(self, body_json):
-        response = self.request.post(
-            url=self.create_product_end_point,
+    def create_product(self, body_json: dict[str, str | float] | str) -> int:
+        response: Response = self.request.post(
+            url=EndPoints.CREATE_PRODUCT,
             body=body_json
         )
         return response.json().get('data').get('id')
 
-    def delete_product(self, product_id):
-        response = self.request.delete(
-            url=self.delete_product_end_point+f"{product_id}"
+    def delete_product(self, product_id: int) -> bool:
+        response: Response = self.request.delete(
+            url=EndPoints.DELETE_PRODUCT+f"{product_id}"
         )
         return response.status_code == 200
 
-    def get_product_id_list(self):
-        response = self.request.get(self.cart_products_end_point)
+    def get_product_id_list(self) -> dict[str, int]:
+        response: Response = self.request.get(EndPoints.CART_PRODUCTS)
         return response.json().get('data')
 
-    def add_to_cart(self, product_id, count):
-        response = self.request.post(
-            url=self.cart_product_end_point,
+    def add_to_cart(self, product_id: int, quantity: int) -> bool:
+        response: Response = self.request.post(
+            url=EndPoints.CART_PRODUCT,
             body={
                 "productId": product_id,
-                "quantity": count
+                "quantity": quantity
             }
         )
         return response.status_code == 200
 
-    def remove_from_cart(self, product_id, count):
-        response = self.request.delete(
-            url=self.cart_product_end_point,
+    def remove_from_cart(self, product_id: int, quantity: int) -> bool:
+        response: Response = self.request.delete(
+            url=EndPoints.CART_PRODUCT,
             body={
                 "productId": product_id,
-                "quantity": count
+                "quantity": quantity
             }
         )
         return response.status_code == 200

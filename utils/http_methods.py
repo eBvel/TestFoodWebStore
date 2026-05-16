@@ -1,20 +1,20 @@
-from requests import Session
+from requests import Session, Response
 
 
 class CustomRequests:
     def __init__(self, session):
         self.session : Session = session
-        self.headers = {"Content-type": "application/json"}
-        self.cookie = {}
+        self.headers: dict = {"Content-type": "application/json"}
+        self.cookie: dict = {}
 
-    def get(self, url):
+    def get(self, url: str) -> Response:
         return self.session.get(
             url=url,
             headers=self.headers,
             cookies=self.cookie
         )
 
-    def post(self, url, body):
+    def post(self, url: str, body: dict | str) -> Response:
         return self.session.post(
             url,
             json=body,
@@ -22,7 +22,7 @@ class CustomRequests:
             cookies=self.cookie
         )
 
-    def delete(self, url, body=None):
+    def delete(self, url: str, body: dict | str =None) -> Response:
         return self.session.delete(
             url,
             json=body,
@@ -30,5 +30,5 @@ class CustomRequests:
             cookies=self.cookie
         )
 
-    def set_auth_token(self, token):
+    def set_auth_token(self, token: str) -> None:
         self.headers["Authorization"] = f"Bearer {token}"

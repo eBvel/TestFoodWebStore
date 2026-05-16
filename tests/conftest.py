@@ -4,21 +4,31 @@ import pytest
 
 from datetime import datetime
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.support.wait import TimeoutException
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.remote.webdriver import WebDriver
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager as FirefoxDriverManager
+from _pytest.fixtures import FixtureRequest
 
 from pages.auth_page import AuthPage
 from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data.login_data import LoginData
-from tests.test_data.test_products import ProductFactory
+from tests.test_data.test_products import ProductFactory, Product
 from requests import Session
 from webstore_config.webstore_api import WebstoreAPI
+from typing import Generator, Callable, Union, Any
+
+AuthFuncType = Callable[[str, str], AuthPage]
+CreateProductType = Callable[[Product], Product]
+YieldNone = Generator[None, Any, None]
+Options = Union[ChromeOptions, FirefoxOptions]
 
 
-TEST_PRODUCTS = {}
+TEST_PRODUCTS: dict[int, Product] = {}
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -66,23 +76,29 @@ def pytest_addoption(parser):
 
 
 @pytest.fixture(scope='session', autouse=True)
-def fullscreen(request, driver):
+def fullscreen(request: FixtureRequest, driver: WebDriver) -> None:
     if request.config.getoption('--fullscreen'):
         driver.maximize_window()
 
 
 @pytest.fixture(scope='session')
-def browser_type(request):
+def browser_type(request: FixtureRequest) -> str:
     return request.config.getoption('--browser').lower()
 
 
 @pytest.fixture(scope='session')
-def browser_options(browser_type, request):
-    options = None
+def browser_options(
+        browser_type: str,
+        request: FixtureRequest
+) -> Options:
     if browser_type == 'chrome':
         options = webdriver.ChromeOptions()
     elif browser_type == 'firefox':
         options = webdriver.FirefoxOptions()
+    else:
+        raise pytest.UsageError(
+            '"--browser" - should be "chrome" or "firefox".'
+        )
 
     if request.config.getoption('--headless'):
         options.add_argument('--headless')
@@ -91,7 +107,10 @@ def browser_options(browser_type, request):
 
 
 @pytest.fixture(scope='session')
-def driver(browser_type, browser_options):
+def driver(
+        browser_type: str,
+        browser_options: Options
+) -> Generator[WebDriver | WebDriver, Any, None]:
     if browser_type == 'chrome':
         with webdriver.Chrome(
                 options=browser_options,
@@ -104,12 +123,10 @@ def driver(browser_type, browser_options):
                 service=FirefoxService(FirefoxDriverManager().install())
         ) as firefox_driver:
             yield firefox_driver
-    else:
-        raise pytest.UsageError('"--browser" - should be "chrome" or "firefox".')
 
 
 @pytest.fixture(scope='session')
-def api():
+def api() -> Generator[WebstoreAPI, Any, None]:
     with Session() as session:
         api = WebstoreAPI(session)
         api.auth(LoginData.ADMIN_LOGIN, LoginData.ADMIN_PASSWORD)
@@ -118,22 +135,22 @@ def api():
 
 
 @pytest.fixture(scope='class', autouse=True)
-def attach_driver(request, driver):
+def attach_driver(request: FixtureRequest, driver: WebDriver) -> None:
     request.cls.driver = driver
 
 
 @pytest.fixture(scope='session')
-def auth_page(driver):
+def auth_page(driver: WebDriver) -> AuthPage:
     return AuthPage(driver)
 
 
 @pytest.fixture(scope='session')
-def nav_bar(driver):
+def nav_bar(driver: WebDriver) -> NavigationBarPage:
     return NavigationBarPage(driver)
 
 
 @pytest.fixture
-def auth(auth_page):
+def auth(auth_page: AuthPage) -> AuthFuncType:
     def _auth(login, password):
         try:
             auth_page.open()
@@ -147,7 +164,7 @@ def auth(auth_page):
 
 
 @pytest.fixture
-def log_out(nav_bar):
+def log_out(nav_bar: NavigationBarPage) -> YieldNone:
     yield
     try:
         if nav_bar.is_close():
@@ -158,36 +175,52 @@ def log_out(nav_bar):
 
 
 @pytest.fixture
-def auth_by_user1(auth, log_out):
+def auth_by_user1(
+        auth: AuthFuncType,
+        log_out: YieldNone
+) -> Generator[AuthPage, Any, None]:
     yield auth(LoginData.USER1_LOGIN, LoginData.USER1_PASSWORD)
 
 
 @pytest.fixture
-def auth_by_admin(auth, log_out):
+def auth_by_admin(
+        auth: AuthFuncType,
+        log_out: YieldNone
+) -> Generator[AuthPage, Any, None]:
     yield auth(LoginData.ADMIN_LOGIN, LoginData.ADMIN_PASSWORD)
 
 
 @pytest.fixture
-def test_product(request, create_product):
+def test_product(
+        request: FixtureRequest,
+        create_product: CreateProductType
+) -> Product:
     try:
         return request.getfixturevalue(request.param)
     except Exception:
-        return create_product(ProductFactory.create_product_by_type(request.param))
+        return create_product(
+            ProductFactory.create_product_by_type(request.param)
+        )
 
 
 @pytest.fixture
-def test_products(request):
+def test_products(
+        request: FixtureRequest,
+        create_product: CreateProductType
+) -> list[Product]:
     products = []
     for param in request.param:
         try:
             products.append(request.getfixturevalue(param))
         except Exception:
-            products.append(ProductFactory.create_product_by_type(param))
+            products.append(
+                create_product(ProductFactory.create_product_by_type(param))
+            )
     return products
 
 
 @pytest.fixture(scope='session')
-def create_product(api):
+def create_product(api: WebstoreAPI) -> CreateProductType:
     def _create_product(product):
         product_id = api.by_admin().create_product(product.to_json())
         TEST_PRODUCTS[product_id] = product
@@ -196,27 +229,27 @@ def create_product(api):
 
 
 @pytest.fixture(scope='session')
-def sandwich(create_product):
+def sandwich(create_product: CreateProductType) -> Product:
     return create_product(ProductFactory.sandwich())
 
 
 @pytest.fixture(scope='session')
-def nuggets(create_product):
+def nuggets(create_product: CreateProductType) -> Product:
     return create_product(ProductFactory.nuggets())
 
 
 @pytest.fixture(scope='session')
-def caviar(create_product):
+def caviar(create_product: CreateProductType) -> Product:
     return create_product(ProductFactory.caviar())
 
 
 @pytest.fixture(scope='session')
-def margarita(create_product):
+def margarita(create_product: CreateProductType) -> Product:
     return create_product(ProductFactory.margarita())
 
 
 @pytest.fixture(autouse=True)
-def clear_cart(api):
+def clear_cart(api: WebstoreAPI) -> None:
     product_list = api.by_user().get_product_id_list()
     for product in product_list:
         api.remove_from_cart(
@@ -226,7 +259,7 @@ def clear_cart(api):
 
 
 @pytest.fixture(scope='session', autouse=True)
-def delete_test_products(api):
+def delete_test_products(api: WebstoreAPI) -> YieldNone:
     yield
     if len(TEST_PRODUCTS):
         api.by_admin()
@@ -235,7 +268,7 @@ def delete_test_products(api):
 
 
 @pytest.fixture
-def delete_new_products(api):
+def delete_new_products(api: WebstoreAPI) -> YieldNone:
     before = api.by_admin().get_products_list()
     yield
     after = api.by_admin().get_products_list()
@@ -245,7 +278,7 @@ def delete_new_products(api):
 
 
 @pytest.fixture
-def product_count_to_cart(api):
+def product_count_to_cart(api: WebstoreAPI) -> Callable[[Product, int], bool]:
     def _add_product_to_cart(product, count=1):
         product_id = next(
             (key for key, value in TEST_PRODUCTS.items() if value == product),

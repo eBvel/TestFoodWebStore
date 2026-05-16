@@ -1,5 +1,6 @@
 
 
 class Config:
-    TIMEOUT = 1
-    MAXIMIZE_WINDOW : bool
+    TIMEOUT: float = 1
+    POLL_FREQUENCY: float = 0.5
+    MAXIMIZE_WINDOW: bool
