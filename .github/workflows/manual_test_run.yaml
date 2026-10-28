@@ -16,6 +16,7 @@ jobs:
       - name: Build Docker
         uses: docker/build-push-action@v7
         with:
+          load: true
           tags: tests_runner
 
       - name: Run tests
