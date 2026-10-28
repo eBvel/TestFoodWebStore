@@ -7,6 +7,7 @@ from pages.edit_products_page import EditProductsPage
 from tests.test_data.pages_data import EditProductsData
 from tests.test_data.new_product_data import NewProductData
 from tests.test_data.expected_values import ExpectedValues as EV
+from utils.assertion import Assert
 
 
 class TestUpdateProductPage:
@@ -31,11 +32,14 @@ class TestUpdateProductPage:
         self.update_product.enter_product_name(NewProductData.NAME)
         self.update_product.click_update_product_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
-        self.edit_products.check_existence_of_product(
-            NewProductData.NAME,
-            EV.UPDATE_PRODUCT_IS_EXIST
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)
+        Assert.compare_values(
+            value_name='Product is exists (changed name)',
+            current_value=self.edit_products.is_product_exists(
+                NewProductData.NAME
+            ),
+            expected_value=EV.UPDATE_PRODUCT_IS_EXIST
         )
 
     @allure.feature('FUNCTIONAL')
@@ -50,11 +54,14 @@ class TestUpdateProductPage:
         )
         self.update_product.click_update_product_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
-        self.edit_products.check_product_description(
-            test_product.name,
-            NewProductData.DESCRIPTION
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)
+        Assert.compare_values(
+            value_name='Product description (changed)',
+            current_value=self.edit_products.get_product_description(
+                test_product.name
+            ),
+            expected_value=NewProductData.DESCRIPTION
         )
 
     @allure.feature('FUNCTIONAL')
@@ -71,11 +78,14 @@ class TestUpdateProductPage:
         )
         self.update_product.click_update_product_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
-        self.edit_products.check_price_of_product(
-            test_product.name,
-            NewProductData.PRICE_STR
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)
+        Assert.compare_values(
+            value_name='Product price (changed)',
+            current_value=self.edit_products.get_product_price(
+                test_product.name
+            ),
+            expected_value=NewProductData.PRICE_STR
         )
 
     @allure.feature('FUNCTIONAL')
@@ -92,11 +102,14 @@ class TestUpdateProductPage:
         )
         self.update_product.click_update_product_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
-        self.edit_products.check_image_source_of_product(
-            test_product.name,
-            NewProductData.IMAGE_URL
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)
+        Assert.compare_values(
+            value_name='Product image source (changed)',
+            current_value=self.edit_products.get_product_image_url(
+                test_product.name
+            ),
+            expected_value=NewProductData.IMAGE_URL
         )
 
     @allure.feature('NAVIGATION')
@@ -113,5 +126,5 @@ class TestUpdateProductPage:
         )
         self.update_product.click_back_to_edit_products_page_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)

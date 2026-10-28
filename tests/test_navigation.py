@@ -7,6 +7,7 @@ from pages.edit_products_page import EditProductsPage
 from pages.navigation_bar_page import NavigationBarPage
 from tests.test_data.pages_data import (NavigationData, CartData, CatalogData,
                                         EditProductsData, AuthData)
+from utils.assertion import Assert
 
 
 class TestNavigation:
@@ -24,7 +25,7 @@ class TestNavigation:
         self.navigation_bar.open()
         self.navigation_bar.click_navigation_bar()
 
-        self.navigation_bar.check_header(NavigationData.HEADER)
+        Assert.check_header(self.navigation_bar, NavigationData.HEADER)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Корзинка"')
@@ -34,8 +35,8 @@ class TestNavigation:
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_cart_button()
 
-        self.cart.check_url()
-        self.cart.check_header(CartData.HEADER)
+        Assert.check_url(self.cart)
+        Assert.check_header(self.cart, CartData.HEADER)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Магазин"')
@@ -45,8 +46,8 @@ class TestNavigation:
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_catalog_button()
 
-        self.catalog.check_url()
-        self.catalog.check_header(CatalogData.HEADER)
+        Assert.check_url(self.catalog)
+        Assert.check_header(self.catalog, CatalogData.HEADER)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка перехода по пункту меню "Редактировать товары"')
@@ -55,8 +56,8 @@ class TestNavigation:
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_edit_products_button()
 
-        self.edit_products.check_url()
-        self.edit_products.check_header(EditProductsData.HEADER)
+        Assert.check_url(self.edit_products)
+        Assert.check_header(self.edit_products, EditProductsData.HEADER)
 
     @allure.feature('NAVIGATION')
     @allure.story('Проверка выхода из учетной записи покупателя')
@@ -66,5 +67,5 @@ class TestNavigation:
         self.navigation_bar.click_navigation_bar()
         self.navigation_bar.click_log_out()
 
-        auth_by_user1.check_url()
-        auth_by_user1.check_header(AuthData.HEADER)
+        Assert.check_url(auth_by_user1)
+        Assert.check_header(auth_by_user1, AuthData.HEADER)

@@ -6,6 +6,7 @@ from pages.catalog_page import CatalogPage
 from tests.test_data.datasets import Datasets
 from tests.test_data.pages_data import AuthData, CatalogData
 from tests.test_data.login_data import LoginData
+from utils.assertion import Assert
 
 
 class TestAuth:
@@ -26,7 +27,7 @@ class TestAuth:
         self.auth_page.open()
         self.auth_page.log_in(login, password)
 
-        self.catalog.check_header(CatalogData.HEADER)
+        Assert.check_header(self.catalog, CatalogData.HEADER)
 
     @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка авторизации без логина')
@@ -40,7 +41,7 @@ class TestAuth:
         self.auth_page.enter_password(password)
         self.auth_page.click_login_button()
 
-        self.auth_page.check_header(AuthData.HEADER)
+        Assert.check_header(self.auth_page, AuthData.HEADER)
 
     @allure.feature('EMPTY FIELDS')
     @allure.story('Проверка авторизации без пароля')
@@ -54,7 +55,7 @@ class TestAuth:
         self.auth_page.enter_login(login)
         self.auth_page.click_login_button()
 
-        self.auth_page.check_header(AuthData.HEADER)
+        Assert.check_header(self.auth_page, AuthData.HEADER)
 
     @allure.feature('INVALID DATA')
     @allure.story('Проверка авторизации с некорректным логином')
@@ -72,7 +73,7 @@ class TestAuth:
         self.auth_page.open()
         self.auth_page.log_in(incorrect_login, password)
 
-        self.auth_page.check_header(AuthData.HEADER)
+        Assert.check_header(self.auth_page, AuthData.HEADER)
 
     @allure.feature('INVALID DATA')
     @allure.story('Проверка авторизации с некорректным паролем')
@@ -90,4 +91,4 @@ class TestAuth:
         self.auth_page.open()
         self.auth_page.log_in(login, incorrect_password)
 
-        self.auth_page.check_header(AuthData.HEADER)
+        Assert.check_header(self.auth_page, AuthData.HEADER)

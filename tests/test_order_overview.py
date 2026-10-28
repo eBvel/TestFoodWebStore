@@ -10,6 +10,7 @@ from tests.test_data.datasets import Datasets
 from tests.test_data.pages_data import CatalogData
 from tests.test_data.user_data import UserData
 from tests.test_data.expected_values import ExpectedValues as EV
+from utils.assertion import Assert
 
 
 class TestOverViewPage:
@@ -42,7 +43,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_first_name(UserData.FIRST_NAME)
+        Assert.compare_values(
+            value_name='First name (match)',
+            current_value=self.overview.get_first_name(),
+            expected_value=UserData.FIRST_NAME
+        )
 
     @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия поля "Фамилия"')
@@ -56,7 +61,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_second_name(UserData.SECOND_NAME)
+        Assert.compare_values(
+            value_name='Second name (match)',
+            current_value=self.overview.get_second_name(),
+            expected_value=UserData.SECOND_NAME
+        )
 
     @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия поля "Отчество"')
@@ -70,7 +79,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_middle_name(UserData.MIDDLE_NAME)
+        Assert.compare_values(
+            value_name='Middle name (match)',
+            current_value=self.overview.get_middle_name(),
+            expected_value=UserData.MIDDLE_NAME
+        )
 
     @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия списка продуктов')
@@ -90,8 +103,10 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_products_list(
-            [product.name for product in test_products]
+        Assert.compare_values(
+            value_name='Product list (match)',
+            current_value=set(self.overview.get_products_title()),
+            expected_value=set(product.name for product in test_products)
         )
 
     @allure.feature('DATA MATCH')
@@ -122,9 +137,11 @@ class TestOverViewPage:
         self.checkout_page.click_place_an_order_button()
 
         for i in range(len(test_products)):
-            self.overview.check_products_count(
-                test_products[i].name,
-                quantities[i]
+            product_name = test_products[i].name
+            Assert.compare_values(
+                value_name=f'Count of product: {product_name} (match)',
+                current_value=self.overview.get_product_count(product_name),
+                expected_value=quantities[i]
             )
 
     @allure.feature('DATA MATCH')
@@ -139,9 +156,10 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_products_price(
-            test_product.name,
-            test_product.get_price_str()
+        Assert.compare_values(
+            value_name='Product price (match)',
+            current_value=self.overview.get_product_price(test_product.name),
+            expected_value=test_product.get_price_str()
         )
 
     @allure.feature('DATA MATCH')
@@ -156,7 +174,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_delivery_address(UserData.ADDRESS)
+        Assert.compare_values(
+            value_name='Delivery address (match)',
+            current_value=self.overview.get_delivery_address(),
+            expected_value=UserData.ADDRESS
+        )
 
     @allure.feature('DATA MATCH')
     @allure.story('Проверка соответствия номера карты')
@@ -170,7 +192,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_cart_number(UserData.CART_NUMBER)
+        Assert.compare_values(
+            value_name='Cart number (match)',
+            current_value=self.overview.get_cart_number(),
+            expected_value=UserData.CART_NUMBER
+        )
 
     @allure.feature('OPERATIONS')
     @allure.story('Проверка итогового количества товаров')
@@ -199,7 +225,11 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_total_count(sum(quantities))
+        Assert.compare_values(
+            value_name='Total count of products',
+            current_value=self.overview.get_total_count(),
+            expected_value=sum(quantities)
+        )
 
     @allure.feature('OPERATIONS')
     @allure.story('Проверка итоговой стоимости заказа')
@@ -230,8 +260,12 @@ class TestOverViewPage:
         self._filling_user_data()
         self.checkout_page.click_place_an_order_button()
 
-        self.overview.check_total_cost(
-            EV.OVERVIEW_TOTAL_COST_TO_STRING(expected_total_cost)
+        Assert.compare_values(
+            value_name='Total cost of products',
+            current_value=self.overview.get_total_cost(),
+            expected_value=EV.OVERVIEW_TOTAL_COST_TO_STRING(
+                expected_total_cost
+            )
         )
 
     @allure.feature('NAVIGATION')
@@ -246,5 +280,5 @@ class TestOverViewPage:
         self.checkout_page.click_place_an_order_button()
         self.overview.click_back_to_catalog_button()
 
-        self.catalog.check_url()
-        self.catalog.check_header(CatalogData.HEADER)
+        Assert.check_header(self.catalog, CatalogData.HEADER)
+        Assert.check_url(self.catalog)

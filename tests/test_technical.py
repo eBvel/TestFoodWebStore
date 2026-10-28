@@ -3,7 +3,7 @@ import allure
 
 from pytest import mark
 from pages.auth_page import AuthPage
-from utils.assertion import AssertValues
+from utils.assertion import Assert
 from tests.test_data.pages_data import TechnicalData, AuthData
 
 
@@ -18,7 +18,7 @@ class TestTechnical:
     def test_website_launch_by_https(self):
         self.driver.get(TechnicalData.HTTPS_URL)
 
-        self.auth_page.check_header(AuthData.HEADER)
+        Assert.check_header(self.auth_page, AuthData.HEADER)
 
     @allure.feature('CONNECTION')
     @allure.story('Проверка времени загрузки сайта')
@@ -30,8 +30,8 @@ class TestTechnical:
         error_rate = 0.1
         time_of_load_website = end_time-start_time-error_rate
 
-        AssertValues.is_smaller_or_equal(
-            "TECHNICAL: Time's load website",
-            time_of_load_website,
-            TechnicalData.MAX_TIME_OF_LOAD_WEBSITE
+        Assert.is_smaller_or_equal(
+            value_name="Time's load website",
+            current_value=time_of_load_website,
+            limit=TechnicalData.MAX_TIME_OF_LOAD_WEBSITE
         )

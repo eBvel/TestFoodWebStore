@@ -7,6 +7,7 @@ from pages.checkout_page import CheckoutPage
 from tests.test_data.datasets import Datasets
 from tests.test_data.pages_data import CartData, CheckoutData
 from tests.test_data.expected_values import ExpectedValues as EV
+from utils.assertion import Assert
 
 
 class TestCartPage:
@@ -21,7 +22,12 @@ class TestCartPage:
                   'когда в корзине нет товаров')
     def test_cart_is_empty_text(self, auth_by_user1):
         self.cart.open()
-        self.cart.check_cart_is_empty_text(CartData.EMPTY_TEXT)
+
+        Assert.compare_values(
+            value_name='Cart empty text',
+            current_value=self.cart.get_empty_text(),
+            expected_value=CartData.EMPTY_TEXT
+        )
 
     @allure.feature('DATA MATCH')
     @allure.story('Сравнение "цены" товара в каталоге и корзине')
@@ -32,9 +38,10 @@ class TestCartPage:
         self.catalog.add_product(test_product.name)
         self.cart.open()
 
-        self.cart.check_product_price(
-            test_product.name,
-            test_product.get_price_str()
+        Assert.compare_values(
+            value_name='Price of product (match)',
+            current_value=self.cart.get_product_price(test_product.name),
+            expected_value=test_product.get_price_str()
         )
 
     @allure.feature('PRESENCE DATA')
@@ -46,7 +53,11 @@ class TestCartPage:
         self.catalog.add_product(test_product.name)
         self.cart.open()
 
-        self.cart.check_total_cost_display(EV.CART_TOTAL_COST_IS_DISPLAY)
+        Assert.compare_values(
+            value_name='Display status of total cost',
+            current_value=self.cart.is_total_cost_displayed(),
+            expected_value=EV.CART_TOTAL_COST_IS_DISPLAY
+        )
 
     @allure.feature('OPERATIONS')
     @allure.story('Проверка расчета "итоговой стоимости" товаров')
@@ -63,8 +74,12 @@ class TestCartPage:
         product_count_to_cart(test_product, quantity)
         self.cart.open()
 
-        self.cart.check_total_cost(
-            EV.CART_TOTAL_COST_TO_STRING(test_product.price * quantity)
+        Assert.compare_values(
+            value_name='Calculation of total cost',
+            current_value=self.cart.get_total_cost(),
+            expected_value=EV.CART_TOTAL_COST_TO_STRING(
+                test_product.price * quantity
+            )
         )
 
     @allure.feature('BOUNDARY VALUES')
@@ -82,7 +97,11 @@ class TestCartPage:
         product_count_to_cart(test_product, quantity)
         self.cart.open()
 
-        self.cart.check_total_cost(CartData.MAX_TOTAL_COST)
+        Assert.compare_values(
+            value_name='Upper limit value of total cost',
+            current_value=self.cart.get_total_cost(),
+            expected_value=CartData.MAX_TOTAL_COST
+        )
 
     @allure.feature('FUNCTIONAL')
     @allure.story('Проверка удаления всех товаров через "Корзинку"')
@@ -94,7 +113,11 @@ class TestCartPage:
         self.cart.open()
         self.cart.remove_product(test_product.name)
 
-        self.cart.check_cart_is_empty(EV.CART_AFTER_CLEAR_IS_EMPTY)
+        Assert.compare_values(
+            value_name='Cart is empty (after remove)',
+            current_value=self.cart.is_empty(),
+            expected_value=EV.CART_AFTER_CLEAR_IS_EMPTY
+        )
 
     @allure.feature('FUNCTIONAL')
     @allure.story('Проверка добавления товара через "Корзинку"')
@@ -106,9 +129,10 @@ class TestCartPage:
         self.cart.open()
         self.cart.add_product(test_product.name)
 
-        self.cart.check_product_count(
-            test_product.name,
-            EV.CART_COUNT_AFTER_ADD
+        Assert.compare_values(
+            value_name='Count of product to cart (after add)',
+            current_value=self.cart.get_product_count(test_product.name),
+            expected_value=EV.CART_COUNT_AFTER_ADD
         )
 
     @allure.feature('PRESENCE DATA')
@@ -117,8 +141,10 @@ class TestCartPage:
     def test_place_an_order_button_display_in_empty_cart(self, auth_by_user1):
         self.cart.open()
 
-        self.cart.check_place_an_order_button_display(
-            EV.CART_PLACE_AN_ORDER_BUTTON_IS_NOT_DISPLAY
+        Assert.compare_values(
+            value_name='Display status of place an order button (empty cart)',
+            current_value=self.cart.is_place_an_order_button_display(),
+            expected_value=EV.CART_PLACE_AN_ORDER_BUTTON_IS_NOT_DISPLAY
         )
 
     @allure.feature('PRESENCE DATA')
@@ -131,8 +157,10 @@ class TestCartPage:
         self.catalog.add_product(test_product.name)
         self.cart.open()
 
-        self.cart.check_place_an_order_button_display(
-            EV.CART_PLACE_AN_ORDER_BUTTON_IS_DISPLAY
+        Assert.compare_values(
+            value_name='Display status of the place an order button',
+            current_value=self.cart.is_place_an_order_button_display(),
+            expected_value=EV.CART_PLACE_AN_ORDER_BUTTON_IS_DISPLAY
         )
 
     @allure.feature('FUNCTIONAL')
@@ -150,4 +178,4 @@ class TestCartPage:
         self.cart.open()
         self.cart.click_place_an_order_button()
 
-        self.checkout_page.check_header(CheckoutData.HEADER)
+        Assert.check_header(self.checkout_page, CheckoutData.HEADER)
