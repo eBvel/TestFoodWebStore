@@ -93,6 +93,7 @@ def browser_options(
 ) -> Options:
     if browser_type == 'chrome':
         options = webdriver.ChromeOptions()
+        options.add_argument('--no-sandbox')
     elif browser_type == 'firefox':
         options = webdriver.FirefoxOptions()
     else:

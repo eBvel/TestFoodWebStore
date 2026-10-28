@@ -1,0 +1,10 @@
+.github/
+.idea/
+.venv/
+allure-results/
+logs/
+screenshots/
+.gitignore
+logger_setting.json
+main.py
+README.md
