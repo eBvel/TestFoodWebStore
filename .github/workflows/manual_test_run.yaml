@@ -20,6 +20,12 @@ jobs:
           tags: tests_runner
 
       - name: Run tests
-        run: docker run --rm --mount type=bind,src=${{ github.workspace }},target=/test_app tests_runner
-
-
+        run: > 
+          docker run --rm 
+          --mount type=bind,src=${{ github.workspace }},target=/test_app
+          -e USER1_LOGIN=${{ secrets.USER1_LOGIN }} -e USER1_PASSWORD=${{ secrets.USER1_PASSWORD }}
+          -e USER2_LOGIN=${{ secrets.USER2_LOGIN }} -e USER2_PASSWORD=${{ secrets.USER2_PASSWORD }}
+          -e USER3_LOGIN=${{ secrets.USER3_LOGIN }} -e USER3_PASSWORD=${{ secrets.USER3_PASSWORD }}
+          -e USER4_LOGIN=${{ secrets.USER4_LOGIN }} -e USER4_PASSWORD=${{ secrets.USER4_PASSWORD }}
+          -e ADMIN_LOGIN=${{ secrets.ADMIN_LOGIN }} -e ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }} 
+          tests_runner
