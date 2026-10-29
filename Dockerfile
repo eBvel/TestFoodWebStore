@@ -26,4 +26,14 @@ WORKDIR /test_app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["pytest", "--headless", "-n", "2", "/test_app/tests"]
+ENV GROUP_NUMBER=1 \
+    TOTAL_SPLITS=4
+
+CMD [
+    "pytest",
+    "--headless",
+    "--splits ${TOTAL_SPLITS}", "--group ${GROUP_NUMBER}", "--splitting-algorithm least_duration",
+    "-n auto",
+    "--dist worksteal",
+    "/test_app/tests"
+]
