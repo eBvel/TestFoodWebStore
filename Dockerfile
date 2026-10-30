@@ -3,7 +3,6 @@ FROM python:3.10-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-# Базовые зависимости для работы Google Chrome
 RUN apt-get update && apt-get install -y \
     wget curl unzip ca-certificates \
     fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 \
@@ -15,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean\
     && rm -rf /var/lib/apt/lists/*
 
-# Скачиваем и устанавливаем официальный Google Chrome
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt-get update && \
     apt-get install -y ./google-chrome-stable_current_amd64.deb && \
@@ -29,4 +27,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV GROUP_NUMBER=1 \
     TOTAL_SPLITS=4
 
-CMD ["pytest", "--headless", "--splits", "${TOTAL_SPLITS}", "--group", "${GROUP_NUMBER}", "--splitting-algorithm", "least_duration", "-n", "auto", "--dist", "worksteal", "/test_app/tests"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
