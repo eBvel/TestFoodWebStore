@@ -27,7 +27,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV GROUP_NUMBER=1 \
     TOTAL_SPLITS=4
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD []
